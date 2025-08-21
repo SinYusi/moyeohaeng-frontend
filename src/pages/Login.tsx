@@ -1,3 +1,4 @@
+import BlueBackgroundBtn from "../components/common/BlueBackgroundBtn";
 import TextInput from "../components/common/TextInput";
 import Divider from "../components/login/Divider";
 import GoogleLoginBtn from "../components/login/GoogleLoginBtn";
@@ -16,6 +17,7 @@ const Login = () => {
           type="email"
           required
         />
+        <BlueBackgroundBtn text="로그인" />
       </div>
     </div>
   );
