@@ -1,3 +1,4 @@
+import TextInput from "../components/common/TextInput";
 import Divider from "../components/login/Divider";
 import GoogleLoginBtn from "../components/login/GoogleLoginBtn";
 import KakaoLoginBtn from "../components/login/KakaoLoginBtn";
@@ -9,6 +10,12 @@ const Login = () => {
         <KakaoLoginBtn />
         <GoogleLoginBtn />
         <Divider />
+        <TextInput
+          label="이메일"
+          placeholder="abcdefg@goorm.com"
+          type="email"
+          required
+        />
       </div>
     </div>
   );
