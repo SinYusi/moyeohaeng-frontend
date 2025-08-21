@@ -1,3 +1,4 @@
+import Divider from "../components/login/Divider";
 import GoogleLoginBtn from "../components/login/GoogleLoginBtn";
 import KakaoLoginBtn from "../components/login/KakaoLoginBtn";
 
@@ -7,6 +8,7 @@ const Login = () => {
       <div className="flex flex-col gap-4 w-[390px]">
         <KakaoLoginBtn />
         <GoogleLoginBtn />
+        <Divider />
       </div>
     </div>
   );
