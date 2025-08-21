@@ -3,6 +3,7 @@ interface TextInputProps {
   placeholder: string;
   type?: "text" | "email" | "password" | "number" | "tel" | "url";
   required?: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const TextInput = ({
@@ -10,6 +11,7 @@ const TextInput = ({
   placeholder,
   type = "text",
   required = false,
+  onChange,
 }: TextInputProps) => {
   return (
     <div>
@@ -23,6 +25,7 @@ const TextInput = ({
         type={type}
         placeholder={placeholder}
         className="border border border-[#7b8482] focus:border-[#3864f4] focus:outline-none p-[11px] rounded w-full"
+        onChange={onChange}
       />
     </div>
   );
