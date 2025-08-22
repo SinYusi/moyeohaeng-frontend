@@ -3,6 +3,8 @@ interface TextInputProps {
   placeholder: string;
   type?: "text" | "email" | "password" | "number" | "tel" | "url";
   required?: boolean;
+  value?: string;
+  autoComplete?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -11,6 +13,8 @@ const TextInput = ({
   placeholder,
   type = "text",
   required = false,
+  value,
+  autoComplete,
   onChange,
 }: TextInputProps) => {
   return (
@@ -24,7 +28,11 @@ const TextInput = ({
       <input
         type={type}
         placeholder={placeholder}
-        className="border border border-[#7b8482] focus:border-[#3864f4] focus:outline-none p-[11px] rounded w-full"
+        aria-label={label || undefined}
+        required={required}
+        value={value}
+        autoComplete={autoComplete}
+        className="border border-[#7b8482] focus:border-[#3864f4] focus:outline-none p-[11px] rounded w-full"
         onChange={onChange}
       />
     </div>

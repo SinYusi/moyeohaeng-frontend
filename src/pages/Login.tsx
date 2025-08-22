@@ -34,6 +34,8 @@ const Login = () => {
           placeholder="abcdefg@goorm.com"
           type="email"
           required
+          autoComplete="email"
+          aria-label="이메일"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setEmail(e.target.value)
           }
@@ -43,6 +45,8 @@ const Login = () => {
           placeholder="비밀번호를 입력해 주세요."
           type="password"
           required
+          autoComplete="current-password"
+          aria-label="비밀번호"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setPassword(e.target.value)
           }
