@@ -25,7 +25,7 @@ const Login = () => {
       <p className="font-bold text-[24px] leading-[34px] tracking-[-0.6px] mb-[42px]">
         로그인
       </p>
-      <div className="flex flex-col gap-4 w-[390px]">
+      <form onSubmit={handleLogin} className="flex flex-col gap-4 w-[390px]">
         <KakaoLoginBtn />
         <GoogleLoginBtn />
         <Divider />
@@ -55,6 +55,7 @@ const Login = () => {
           />
           <BlueTextBtn
             text="비밀번호 재설정"
+            type="button"
             onClick={() => {
               route("/forgot-password");
             }}
@@ -62,8 +63,8 @@ const Login = () => {
         </div>
         <BlueBackgroundBtn
           text="로그인"
-          onClick={handleLogin}
           disabled={!email || !password}
+          type="submit"
         />
         <BlueTextBtn
           text="이메일로 회원가입 →"
@@ -71,7 +72,7 @@ const Login = () => {
             route("/signup");
           }}
         />
-      </div>
+      </form>
     </div>
   );
 };
