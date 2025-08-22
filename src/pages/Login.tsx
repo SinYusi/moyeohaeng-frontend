@@ -1,8 +1,8 @@
 import { useState } from "react";
-import BlueTextBtn from "../components/common/BlueTextBtn";
+import BlueTextBtn from "../components/common/ColorTextBtn";
 import Checkbox from "../components/common/CheckBox";
 import TextInput from "../components/common/TextInput";
-import Divider from "../components/login/Divider";
+import Divider from "../components/common/Divider";
 import kakaoLogo from "../assets/images/kakaoLogo.svg";
 import { useNavigate } from "react-router-dom";
 import useLogin from "../hooks/useLogin";
@@ -51,7 +51,7 @@ const Login = () => {
           />
           Google 계정으로 로그인
         </ColorBackgroundBtn>
-        <Divider />
+        <Divider color="#131416" label="또는 이메일로 로그인" />
 
         {/* 이메일 입력 필드 */}
         <TextInput
@@ -89,12 +89,14 @@ const Login = () => {
 
           {/* 비밀번호 재설정 버튼 */}
           <BlueTextBtn
-            text="비밀번호 재설정"
             type="button"
+            color="#3864f4"
             onClick={() => {
               route("/forgot-password");
             }}
-          />
+          >
+            비밀번호 재설정
+          </BlueTextBtn>
         </div>
 
         {/* 로그인 버튼 */}
@@ -110,11 +112,13 @@ const Login = () => {
 
         {/* 이메일로 회원가입 버튼 */}
         <BlueTextBtn
-          text="이메일로 회원가입 →"
+          color="#3864f4"
           onClick={() => {
             route("/signup");
           }}
-        />
+        >
+          이메일로 회원가입 →
+        </BlueTextBtn>
       </form>
     </div>
   );
