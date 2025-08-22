@@ -18,6 +18,7 @@ const Login = () => {
 
   const handleLogin = async () => {
     await login(email, password);
+    // TODO: 로그인 성공 시 전역 상태 관리 및 홈 화면 이동
   };
 
   return (
@@ -26,6 +27,7 @@ const Login = () => {
         로그인
       </p>
       <form onSubmit={handleLogin} className="flex flex-col gap-4 w-[390px]">
+        {/* 카카오 로그인 버튼 */}
         <ColorBackgroundBtn
           backgroundColor="#FEE500"
           textColor="#000"
@@ -35,6 +37,7 @@ const Login = () => {
           카카오 로그인
         </ColorBackgroundBtn>
 
+        {/* 구글 로그인 버튼 */}
         <ColorBackgroundBtn
           backgroundColor="#fff"
           textColor="#000"
@@ -49,6 +52,8 @@ const Login = () => {
           Google 계정으로 로그인
         </ColorBackgroundBtn>
         <Divider />
+
+        {/* 이메일 입력 필드 */}
         <TextInput
           label="이메일"
           placeholder="abcdefg@goorm.com"
@@ -60,6 +65,8 @@ const Login = () => {
             setEmail(e.target.value)
           }
         />
+
+        {/* 비밀번호 입력 필드 */}
         <TextInput
           label="비밀번호"
           placeholder="비밀번호를 입력해 주세요."
@@ -71,12 +78,16 @@ const Login = () => {
             setPassword(e.target.value)
           }
         />
+
         <div className="flex flex-row justify-between items-center">
+          {/* 로그인 상태 유지 체크박스 */}
           <Checkbox
             label="로그인 상태 유지"
             checked={isChecked}
             onChange={(checked) => setIsChecked(checked)}
           />
+
+          {/* 비밀번호 재설정 버튼 */}
           <BlueTextBtn
             text="비밀번호 재설정"
             type="button"
@@ -85,6 +96,8 @@ const Login = () => {
             }}
           />
         </div>
+
+        {/* 로그인 버튼 */}
         <ColorBackgroundBtn
           disabled={!email || !password}
           type="submit"
@@ -94,6 +107,8 @@ const Login = () => {
         >
           로그인
         </ColorBackgroundBtn>
+
+        {/* 이메일로 회원가입 버튼 */}
         <BlueTextBtn
           text="이메일로 회원가입 →"
           onClick={() => {
