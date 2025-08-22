@@ -19,7 +19,11 @@ const ColorBackgroundBtn = ({
 }: ColorBackgroundBtnProps) => {
   return (
     <button
-      className={`bg-[${backgroundColor}] text-[${textColor}] text-sm cursor-pointer rounded h-[52px] disabled:bg-[#EDF0F3] disabled:border-[#C0C7CE] disabled:text-[#C0C7CE] disabled:cursor-not-allowed transition-all duration-300 flex flex-row justify-center items-center gap-2 ${className}`}
+      className={`text-sm cursor-pointer rounded h-[52px] disabled:bg-[#EDF0F3] disabled:border-[#C0C7CE] disabled:text-[#C0C7CE] disabled:cursor-not-allowed transition-all duration-300 flex flex-row justify-center items-center gap-2 ${className}`}
+      style={{
+        backgroundColor: disabled ? "#EDF0F3" : backgroundColor,
+        color: disabled ? "#C0C7CE" : textColor,
+      }}
       onClick={onClick}
       disabled={disabled}
       type={type}
