@@ -32,7 +32,7 @@ const TextInput = ({
         required={required}
         value={value}
         autoComplete={autoComplete}
-        className="border border-[#7b8482] focus:border-[#3864f4] focus:outline-none p-[11px] rounded w-full"
+        className="border border-[#7b8482] focus:border-[#3864f4] focus:outline-none p-[13px] rounded w-full"
         onChange={onChange}
       />
     </div>
