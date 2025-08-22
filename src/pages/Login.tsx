@@ -1,13 +1,13 @@
 import { useState } from "react";
-import BlueBackgroundBtn from "../components/common/BlueBackgroundBtn";
 import BlueTextBtn from "../components/common/BlueTextBtn";
 import Checkbox from "../components/common/CheckBox";
 import TextInput from "../components/common/TextInput";
 import Divider from "../components/login/Divider";
-import GoogleLoginBtn from "../components/login/GoogleLoginBtn";
-import KakaoLoginBtn from "../components/login/KakaoLoginBtn";
+import kakaoLogo from "../assets/images/kakaoLogo.svg";
 import { useNavigate } from "react-router-dom";
 import useLogin from "../hooks/useLogin";
+import ColorBackgroundBtn from "../components/common/ColorBackgroundBtn";
+import googleLogo from "../assets/images/google_logo.png";
 
 const Login = () => {
   const [email, setEmail] = useState<string>("");
@@ -26,8 +26,28 @@ const Login = () => {
         로그인
       </p>
       <form onSubmit={handleLogin} className="flex flex-col gap-4 w-[390px]">
-        <KakaoLoginBtn />
-        <GoogleLoginBtn />
+        <ColorBackgroundBtn
+          backgroundColor="#FEE500"
+          textColor="#000"
+          type="button"
+        >
+          <img src={kakaoLogo} alt="kakao-logo" className="w-[18px] h-[18px]" />
+          카카오 로그인
+        </ColorBackgroundBtn>
+
+        <ColorBackgroundBtn
+          backgroundColor="#fff"
+          textColor="#000"
+          className="border border-[#747775]"
+          type="button"
+        >
+          <img
+            src={googleLogo}
+            alt="google-logo"
+            className="w-[18px] h-[18px]"
+          />
+          Google 계정으로 로그인
+        </ColorBackgroundBtn>
         <Divider />
         <TextInput
           label="이메일"
@@ -65,11 +85,15 @@ const Login = () => {
             }}
           />
         </div>
-        <BlueBackgroundBtn
-          text="로그인"
+        <ColorBackgroundBtn
           disabled={!email || !password}
           type="submit"
-        />
+          backgroundColor="#4f5fbf"
+          textColor="#fff"
+          className="my-[22px]"
+        >
+          로그인
+        </ColorBackgroundBtn>
         <BlueTextBtn
           text="이메일로 회원가입 →"
           onClick={() => {
