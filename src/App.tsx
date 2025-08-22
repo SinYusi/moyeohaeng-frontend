@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import Main from "./pages/Main";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
+import Signup from "./pages/Signup";
 
 function App() {
   const pageRoute = [
@@ -17,6 +18,10 @@ function App() {
     {
       path: "/profile",
       element: <Profile />,
+    },
+    {
+      path: "/signup",
+      element: <Signup />,
     },
     {
       path: "*",
