@@ -234,6 +234,20 @@ const SignupTextfieldSection = ({
         required
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
+        onBlur={() => setIsConfirmPasswordFocused(true)}
+        borderColor={
+          isConfirmPasswordFocused && confirmPassword !== password
+            ? "#f8536b"
+            : undefined
+        }
+        subtitle={
+          isConfirmPasswordFocused &&
+          confirmPassword !== password && (
+            <div className="text-xs text-[#f8536b]">
+              비밀번호가 일치하지 않습니다.
+            </div>
+          )
+        }
       />
     </div>
   );
