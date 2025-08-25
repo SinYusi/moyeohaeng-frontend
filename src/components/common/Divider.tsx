@@ -1,9 +1,19 @@
 const Divider = ({ label, color }: { label?: string; color?: string }) => {
   return (
-    <div className="flex items-center my-4">
-      <div className={`flex-grow border-t border-[${color}]`}></div>
-      {label && <span className={`text-sm text-[${color}] mx-4`}>{label}</span>}
-      <div className={`flex-grow border-t border-[${color}]`}></div>
+    <div className="flex items-center my-4 w-full">
+      <div
+        className={`flex-grow border-t`}
+        style={{ borderColor: color }}
+      />
+      {label && (
+        <span className={`text-sm mx-4`} style={{ color: color }}>
+          {label}
+        </span>
+      )}
+      <div
+        className={`flex-grow border-t`}
+        style={{ borderColor: color }}
+      />
     </div>
   );
 };
