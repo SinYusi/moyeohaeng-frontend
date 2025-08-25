@@ -23,5 +23,9 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
+  background: #c0c7ce;
   border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #d1d5db;
 }
