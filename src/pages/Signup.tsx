@@ -14,9 +14,34 @@ const Signup = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isAllRequiredChecked, setIsAllRequiredChecked] = useState(false);
 
+  const [validation, setValidation] = useState({
+    isNicknameValid: false,
+    isEmailValid: false,
+    isCodeConfirmed: false,
+    isPasswordValid: false,
+    isConfirmPasswordValid: false,
+  });
+
   const handleRequiredAgreementChange = (isCompleted: boolean) => {
     setIsAllRequiredChecked(isCompleted);
   };
+
+  const handleValidationChange = (newValidation: typeof validation) => {
+    setValidation(newValidation);
+  };
+
+  const handleSignup = () => {
+    console.log("회원가입");
+    // TODO: 회원가입 로직 추가
+  };
+
+  const isSignupButtonEnabled =
+    validation.isNicknameValid &&
+    validation.isEmailValid &&
+    validation.isCodeConfirmed &&
+    validation.isPasswordValid &&
+    validation.isConfirmPasswordValid &&
+    isAllRequiredChecked;
 
   return (
     <div className="w-full h-auto flex flex-col items-center justify-center py-15">
@@ -33,6 +58,7 @@ const Signup = () => {
           setPassword={setPassword}
           confirmPassword={confirmPassword}
           setConfirmPassword={setConfirmPassword}
+          onValidationChange={handleValidationChange}
         />
         {/* 서비스 정책 동의 섹션 */}
         <AgreementSection
@@ -41,10 +67,11 @@ const Signup = () => {
 
         {/* 회원가입 버튼 */}
         <ColorBackgroundBtn
-          backgroundColor={isAllRequiredChecked ? "#3864F4" : "#F3F4F6"}
-          textColor={isAllRequiredChecked ? "#FFFFFF" : "#9CA3AF"}
+          backgroundColor={isSignupButtonEnabled ? "#3864F4" : "#F3F4F6"}
+          textColor={isSignupButtonEnabled ? "#FFFFFF" : "#9CA3AF"}
           className="w-full py-4 rounded-lg"
-          disabled={!isAllRequiredChecked}
+          disabled={!isSignupButtonEnabled}
+          onClick={handleSignup}
         >
           회원가입
         </ColorBackgroundBtn>

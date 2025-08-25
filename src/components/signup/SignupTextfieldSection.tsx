@@ -14,6 +14,13 @@ interface SignupTextfieldSectionProps {
   setPassword: React.Dispatch<React.SetStateAction<string>>;
   confirmPassword: string;
   setConfirmPassword: React.Dispatch<React.SetStateAction<string>>;
+  onValidationChange: (validation: {
+    isNicknameValid: boolean;
+    isEmailValid: boolean;
+    isCodeConfirmed: boolean;
+    isPasswordValid: boolean;
+    isConfirmPasswordValid: boolean;
+  }) => void;
 }
 
 const SignupTextfieldSection = ({
@@ -27,10 +34,13 @@ const SignupTextfieldSection = ({
   setPassword,
   confirmPassword,
   setConfirmPassword,
+  onValidationChange,
 }: SignupTextfieldSectionProps) => {
   const [verificationCode, setVerificationCode] = useState("");
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+  const [isConfirmPasswordFocused, setIsConfirmPasswordFocused] =
+    useState(false);
   const [isCodeConfirmed, setIsCodeConfirmed] = useState<boolean | undefined>(
     undefined
   );
@@ -55,6 +65,26 @@ const SignupTextfieldSection = ({
 
   const isPasswordValid = validatePassword(password);
   const shouldShowError = isPasswordFocused && !isPasswordValid;
+
+  // 유효성 검사 결과를 상위 컴포넌트로 전달
+  useEffect(() => {
+    const validation = {
+      isNicknameValid: nickname.trim().length > 0,
+      isEmailValid: email.trim().length > 0,
+      isCodeConfirmed: isCodeConfirmed === true,
+      isPasswordValid: isPasswordValid,
+      isConfirmPasswordValid:
+        password === confirmPassword && password.length > 0,
+    };
+    onValidationChange(validation);
+  }, [
+    nickname,
+    email,
+    isCodeConfirmed,
+    isPasswordValid,
+    password,
+    confirmPassword,
+  ]);
 
   useEffect(() => {
     if (isCodeSent && timeLeft > 0) {
@@ -82,6 +112,7 @@ const SignupTextfieldSection = ({
   };
 
   const handleConfirmCode = () => {
+    // TODO: 인증번호 확인 로직 추가
     if (verificationCode === "123456") {
       console.log("인증번호 확인:", verificationCode);
       setIsCodeConfirmed(true);
