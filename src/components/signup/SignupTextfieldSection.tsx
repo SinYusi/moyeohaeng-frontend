@@ -116,6 +116,7 @@ const SignupTextfieldSection = ({
     if (verificationCode === "123456") {
       console.log("인증번호 확인:", verificationCode);
       setIsCodeConfirmed(true);
+      setTimeLeft(0);
     } else {
       console.log("인증번호 확인 실패:", verificationCode);
       setIsCodeConfirmed(false);
