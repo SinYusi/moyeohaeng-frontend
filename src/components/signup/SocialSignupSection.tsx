@@ -1,6 +1,6 @@
 import ColorBackgroundBtn from "../common/ColorBackgroundBtn";
 
-const SocialSignupSections = () => {
+const SocialSignupSection = () => {
   return (
     <div className="w-full space-y-3">
       {/* 카카오 로그인 버튼 */}
@@ -34,4 +34,4 @@ const SocialSignupSections = () => {
   );
 };
 
-export default SocialSignupSections;
+export default SocialSignupSection;
