@@ -1,4 +1,4 @@
-interface BlueTextBtnProps {
+interface ColorTextBtnProps {
   children: React.ReactNode;
   type?: "button" | "submit" | "reset";
   color?: string;
@@ -12,10 +12,11 @@ const ColorTextBtn = ({
   type = "button",
   color = "#3864f4",
   onClick,
-}: BlueTextBtnProps) => {
+}: ColorTextBtnProps) => {
   return (
     <button
-      className={`text-[${color}] text-sm cursor-pointer rounded-sm ${className}`}
+      className={`text-sm cursor-pointer rounded-sm ${className}`}
+      style={{ color: color }}
       onClick={onClick}
       type={type}
     >
