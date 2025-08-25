@@ -186,9 +186,9 @@ const SignupTextfieldSection = ({
                   <div className="text-xs text-[#f8536b]">
                     코드가 틀렸습니다.
                   </div>
-                ) : (
+                ) : isCodeConfirmed === true ? (
                   <div className="text-xs text-[#131416]">인증되었습니다.</div>
-                )
+                ) : undefined
               }
             />
           </div>
