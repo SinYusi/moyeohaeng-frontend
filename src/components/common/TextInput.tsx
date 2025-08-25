@@ -3,13 +3,18 @@ import eyeOpen from "../../assets/images/eye.svg";
 import eyeClosed from "../../assets/images/eye-closed.svg";
 
 interface TextInputProps {
-  label?: string;
+  label?: string | React.ReactNode;
   placeholder: string;
   type?: "text" | "email" | "password" | "number" | "tel" | "url";
   required?: boolean;
   value?: string;
   autoComplete?: string;
   maxLength?: number;
+  subtitle?: string | React.ReactNode;
+  subtitleColor?: string;
+  ariaLabel?: string;
+  onBlur?: () => void;
+  borderColor?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -21,12 +26,16 @@ const TextInput = ({
   value,
   autoComplete,
   maxLength,
+  subtitle,
+  subtitleColor,
+  ariaLabel,
+  onBlur,
+  borderColor,
   onChange,
 }: TextInputProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [inputType, setInputType] = useState(type);
 
-  // 비밀번호 타입일 때 가시성 토글 처리
   const handleTogglePassword = () => {
     if (type === "password") {
       setShowPassword(!showPassword);
@@ -46,13 +55,15 @@ const TextInput = ({
         <input
           type={inputType}
           placeholder={placeholder}
-          aria-label={label || undefined}
+          aria-label={ariaLabel || undefined}
           required={required}
           value={value}
           autoComplete={autoComplete}
           maxLength={maxLength}
           className="border border-[#7b8482] focus:border-[#3864f4] focus:outline-none p-[13px] rounded w-full pr-12"
           onChange={onChange}
+          onBlur={onBlur}
+          style={{ borderColor: borderColor }}
         />
         {type === "password" && (
           <button
@@ -66,6 +77,13 @@ const TextInput = ({
               className="w-5 h-5"
             />
           </button>
+        )}
+      </div>
+      <div className="mt-1 min-h-[20px]">
+        {subtitle && typeof subtitle === "string" ? (
+          <p className={`text-sm ${subtitleColor}`}>{subtitle}</p>
+        ) : (
+          subtitle
         )}
       </div>
     </div>
