@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Checkbox from "../common/CheckBox";
 import ColorTextBtn from "../common/ColorTextBtn";
+import TermsModal from "./TermsModal";
 
 interface AgreementSectionProps {
   onRequiredAgreementChange: (isCompleted: boolean) => void;
@@ -13,16 +14,21 @@ interface AgreementState {
   privacy: boolean;
 }
 
-const AgreementSection = ({ onRequiredAgreementChange }: AgreementSectionProps) => {
+const AgreementSection = ({
+  onRequiredAgreementChange,
+}: AgreementSectionProps) => {
   const [agreements, setAgreements] = useState<AgreementState>({
     all: false,
     age: false,
     terms: false,
     privacy: false,
   });
+  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
+  const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
 
   useEffect(() => {
-    const isAllRequiredChecked = agreements.age && agreements.terms && agreements.privacy;
+    const isAllRequiredChecked =
+      agreements.age && agreements.terms && agreements.privacy;
     onRequiredAgreementChange(isAllRequiredChecked);
   }, [agreements, onRequiredAgreementChange]);
 
@@ -36,14 +42,18 @@ const AgreementSection = ({ onRequiredAgreementChange }: AgreementSectionProps) 
     setAgreements(newAgreements);
   };
 
-  const handleIndividualAgreement = (key: keyof Omit<AgreementState, 'all'>, checked: boolean) => {
+  const handleIndividualAgreement = (
+    key: keyof Omit<AgreementState, "all">,
+    checked: boolean
+  ) => {
     const newAgreements = {
       ...agreements,
       [key]: checked,
     };
-    
-    newAgreements.all = newAgreements.age && newAgreements.terms && newAgreements.privacy;
-    
+
+    newAgreements.all =
+      newAgreements.age && newAgreements.terms && newAgreements.privacy;
+
     setAgreements(newAgreements);
   };
 
@@ -73,7 +83,11 @@ const AgreementSection = ({ onRequiredAgreementChange }: AgreementSectionProps) 
             checked={agreements.terms}
             onChange={(checked) => handleIndividualAgreement("terms", checked)}
           />
-          <ColorTextBtn color="#131416" className="underline">
+          <ColorTextBtn
+            color="#131416"
+            className="underline"
+            onClick={() => setIsTermsModalOpen(true)}
+          >
             내용보기
           </ColorTextBtn>
         </div>
@@ -86,11 +100,35 @@ const AgreementSection = ({ onRequiredAgreementChange }: AgreementSectionProps) 
               handleIndividualAgreement("privacy", checked)
             }
           />
-          <ColorTextBtn color="#131416" className="underline">
+          <ColorTextBtn
+            color="#131416"
+            className="underline"
+            onClick={() => setIsPrivacyModalOpen(true)}
+          >
             내용보기
           </ColorTextBtn>
         </div>
       </div>
+      {isTermsModalOpen && (
+        <TermsModal
+          title="서비스 이용약관"
+          content="terms"
+          onClose={() => setIsTermsModalOpen(false)}
+          onAgree={() => {
+            handleIndividualAgreement("terms", true);
+          }}
+        />
+      )}
+      {isPrivacyModalOpen && (
+        <TermsModal
+          title="개인정보 수집 및 이용 동의"
+          content="privacy"
+          onClose={() => setIsPrivacyModalOpen(false)}
+          onAgree={() => {
+            handleIndividualAgreement("privacy", true);
+          }}
+        />
+      )}
     </div>
   );
 };
