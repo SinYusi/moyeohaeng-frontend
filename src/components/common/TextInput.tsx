@@ -46,10 +46,10 @@ const TextInput = ({
   return (
     <div>
       {label && (
-        <p className="m-0 text-[#5a6572] text-sm mb-1.5">
+        <div className="m-0 text-[#5a6572] text-sm mb-1.5">
           {label}
           {required && <span className="text-[#f8536b]">*</span>}
-        </p>
+        </div>
       )}
       <div className="relative">
         <input
