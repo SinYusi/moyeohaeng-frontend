@@ -124,12 +124,19 @@ const TermsModal = ({ title, content, onClose, onAgree }: PopupProps) => {
         </div>
 
         {/* 본문 (스크롤 가능) */}
-        <div className="flex-1 overflow-y-auto px-6 py-4 text-sm text-gray-700 leading-relaxed">
-          <div className="space-y-6">{contentData.map(renderContent)}</div>
+        <div className="relative flex-1 overflow-hidden">
+          <div className="h-full overflow-y-auto px-6 py-4 text-sm text-gray-700 leading-relaxed">
+            <div className="space-y-6 pb-8">
+              {contentData.map(renderContent)}
+            </div>
+          </div>
+
+          {/* 개선된 하단 그라데이션 오버레이 */}
+          <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-14 bg-gradient-to-t from-white via-white/95 via-white/80 to-transparent" />
         </div>
 
         {/* 버튼 영역 */}
-        <div className="flex gap-3 p-4 border-t">
+        <div className="flex gap-3 p-4 relative">
           <ColorBackgroundBtn
             className="flex-1"
             onClick={() => {
