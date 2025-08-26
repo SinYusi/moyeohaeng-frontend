@@ -2,6 +2,28 @@ import { privacyPolicyContent } from "../../lib/privacyPolicy";
 import { termsOfServiceContent } from "../../lib/termsOfService";
 import ColorBackgroundBtn from "../common/ColorBackgroundBtn";
 
+// 타입 정의
+interface SectionItem {
+  label?: string;
+  content?: string;
+}
+
+interface Section {
+  subtitle: string;
+  items: (string | SectionItem)[];
+  note?: string;
+}
+
+interface ContentItem {
+  id: number;
+  title: string;
+  description?: string;
+  sections?: Section[];
+  numberedList?: string[];
+  items?: string[];
+  note?: string;
+}
+
 interface PopupProps {
   title: string;
   content: string;
@@ -10,13 +32,13 @@ interface PopupProps {
 }
 
 const TermsModal = ({ title, content, onClose, onAgree }: PopupProps) => {
-  const renderSection = (section: any) => {
+  const renderSection = (section: Section) => {
     if (section.subtitle) {
       return (
         <div key={section.subtitle}>
           <h4 className="font-medium text-gray-800 mb-2">{section.subtitle}</h4>
           <ul className="list-disc pl-5 space-y-1 text-sm">
-            {section.items.map((item: any, index: number) => (
+            {section.items.map((item: string | SectionItem, index: number) => (
               <li key={index}>
                 {typeof item === "string" ? (
                   item
@@ -37,12 +59,12 @@ const TermsModal = ({ title, content, onClose, onAgree }: PopupProps) => {
     return null;
   };
 
-  const renderContent = (item: any) => {
+  const renderContent = (item: ContentItem) => {
     if (item.sections) {
       return (
         <div key={item.id} className="space-y-4">
           <h3 className="text-lg font-semibold text-gray-900">{item.title}</h3>
-          {item.sections.map((section: any) => renderSection(section))}
+          {item.sections.map((section: Section) => renderSection(section))}
         </div>
       );
     }
@@ -90,7 +112,7 @@ const TermsModal = ({ title, content, onClose, onAgree }: PopupProps) => {
   };
 
   // content prop에 따라 어떤 약관 내용을 표시할지 결정
-  const getContentData = () => {
+  const getContentData = (): ContentItem[] => {
     if (content === "privacy") {
       return privacyPolicyContent;
     } else if (content === "terms") {
