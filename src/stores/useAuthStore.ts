@@ -3,17 +3,25 @@ import { persist } from "zustand/middleware";
 
 interface AuthState {
   isLoggedIn: boolean;
-  setIsLoggedIn: (token: string) => void;
+  accessToken: string | null;
+  setIsLoggedIn: (isLoggedIn: boolean) => void;
+  setAccessToken: (token: string) => void;
+  clearAuth: () => void;
 }
 
-export const useAuthStore = create<AuthState>()(
+const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       isLoggedIn: false,
-      setIsLoggedIn: () => set({ isLoggedIn: true }),
+      accessToken: null,
+      setIsLoggedIn: (isLoggedIn: boolean) => set({ isLoggedIn }),
+      setAccessToken: (token: string) => set({ accessToken: token, isLoggedIn: true }),
+      clearAuth: () => set({ isLoggedIn: false, accessToken: null }),
     }),
     {
       name: "auth-storage",
     }
   )
 );
+
+export default useAuthStore;
