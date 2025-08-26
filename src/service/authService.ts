@@ -23,9 +23,7 @@ type LoginRequest = {
 }
 
 type LoginResponse = {
-  data: {
-    accessToken: string;
-  };
+  data: string; // accessToken 단일로 전달
   status: number;
   message: string;
 }
@@ -72,8 +70,10 @@ class AuthService {
       );
       
       // accessToken을 Zustand 스토어에 저장
-      if (response.data.data?.accessToken) {
-        useAuthStore.getState().setAccessToken(response.data.data.accessToken);
+      if (response.data) {
+        const accessToken= response.data.data;
+        console.log(accessToken);
+        useAuthStore.getState().setAccessToken(accessToken);
       }
       
       // refreshToken은 HTTP-only 쿠키로 자동 설정되므로 별도 처리 필요 없음
@@ -116,7 +116,7 @@ class AuthService {
         { withCredentials: true }
       );
 
-      const { accessToken: newAccessToken } = response.data.data;
+      const newAccessToken = response.data;
       useAuthStore.getState().setAccessToken(newAccessToken);
       return newAccessToken;
     } catch (error) {
