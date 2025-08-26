@@ -5,14 +5,18 @@ import SignupTitleSection from "../components/signup/SignupTitleSection";
 import SignupTextfieldSection from "../components/signup/SignupTextfieldSection";
 import AgreementSection from "../components/signup/AgreementSection";
 import SocialSignupSection from "../components/signup/SocialSignupSection";
+import AuthService from "../service/authService";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
+  const navigate = useNavigate();
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
   const [timeLeft, setTimeLeft] = useState(300);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isAllRequiredChecked, setIsAllRequiredChecked] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [validation, setValidation] = useState({
     isNicknameValid: false,
@@ -30,9 +34,30 @@ const Signup = () => {
     setValidation(newValidation);
   };
 
-  const handleSignup = () => {
-    console.log("회원가입");
-    // TODO: 회원가입 로직 추가
+  const handleSignup = async () => {
+    if (!isSignupButtonEnabled) return;
+    
+    try {
+      setIsLoading(true);
+      const authService = new AuthService();
+      
+      const response = await authService.signup({
+        email,
+        password,
+        name: nickname
+      });
+
+      // 회원가입 성공 후 로그인 페이지로 이동
+      if (response.status === 200) {
+        alert("회원가입에 성공했습니다. 로그인 페이지로 이동합니다.");
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error("회원가입 실패:", error);
+      alert("회원가입에 실패했습니다. 다시 시도해 주세요.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const isSignupButtonEnabled =
@@ -70,10 +95,10 @@ const Signup = () => {
           backgroundColor={isSignupButtonEnabled ? "#3864F4" : "#F3F4F6"}
           textColor={isSignupButtonEnabled ? "#FFFFFF" : "#9CA3AF"}
           className="w-full py-4 rounded-lg"
-          disabled={!isSignupButtonEnabled}
+          disabled={!isSignupButtonEnabled || isLoading}
           onClick={handleSignup}
         >
-          회원가입
+          {isLoading ? "처리 중..." : "회원가입"}
         </ColorBackgroundBtn>
 
         {/* 구분선 */}
