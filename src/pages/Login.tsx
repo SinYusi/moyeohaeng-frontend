@@ -1,13 +1,13 @@
 import { useState } from "react";
-import BlueBackgroundBtn from "../components/common/BlueBackgroundBtn";
-import BlueTextBtn from "../components/common/BlueTextBtn";
+import BlueTextBtn from "../components/common/ColorTextBtn";
 import Checkbox from "../components/common/CheckBox";
 import TextInput from "../components/common/TextInput";
-import Divider from "../components/login/Divider";
-import GoogleLoginBtn from "../components/login/GoogleLoginBtn";
-import KakaoLoginBtn from "../components/login/KakaoLoginBtn";
+import Divider from "../components/common/Divider";
+import kakaoLogo from "../assets/images/kakaoLogo.svg";
 import { useNavigate } from "react-router-dom";
 import useLogin from "../hooks/useLogin";
+import ColorBackgroundBtn from "../components/common/ColorBackgroundBtn";
+import googleLogo from "../assets/images/google_logo.png";
 
 const Login = () => {
   const [email, setEmail] = useState<string>("");
@@ -18,6 +18,7 @@ const Login = () => {
 
   const handleLogin = async () => {
     await login(email, password);
+    // TODO: 로그인 성공 시 전역 상태 관리 및 홈 화면 이동
   };
 
   return (
@@ -26,9 +27,33 @@ const Login = () => {
         로그인
       </p>
       <form onSubmit={handleLogin} className="flex flex-col gap-4 w-[390px]">
-        <KakaoLoginBtn />
-        <GoogleLoginBtn />
-        <Divider />
+        {/* 카카오 로그인 버튼 */}
+        <ColorBackgroundBtn
+          backgroundColor="#FEE500"
+          textColor="#000"
+          type="button"
+        >
+          <img src={kakaoLogo} alt="kakao-logo" className="w-[18px] h-[18px]" />
+          카카오 로그인
+        </ColorBackgroundBtn>
+
+        {/* 구글 로그인 버튼 */}
+        <ColorBackgroundBtn
+          backgroundColor="#fff"
+          textColor="#000"
+          className="border border-[#747775]"
+          type="button"
+        >
+          <img
+            src={googleLogo}
+            alt="google-logo"
+            className="w-[18px] h-[18px]"
+          />
+          Google 계정으로 로그인
+        </ColorBackgroundBtn>
+        <Divider color="#131416" label="또는 이메일로 로그인" />
+
+        {/* 이메일 입력 필드 */}
         <TextInput
           label="이메일"
           placeholder="abcdefg@goorm.com"
@@ -40,6 +65,8 @@ const Login = () => {
             setEmail(e.target.value)
           }
         />
+
+        {/* 비밀번호 입력 필드 */}
         <TextInput
           label="비밀번호"
           placeholder="비밀번호를 입력해 주세요."
@@ -51,31 +78,47 @@ const Login = () => {
             setPassword(e.target.value)
           }
         />
+
         <div className="flex flex-row justify-between items-center">
+          {/* 로그인 상태 유지 체크박스 */}
           <Checkbox
             label="로그인 상태 유지"
             checked={isChecked}
             onChange={(checked) => setIsChecked(checked)}
           />
+
+          {/* 비밀번호 재설정 버튼 */}
           <BlueTextBtn
-            text="비밀번호 재설정"
             type="button"
+            color="#3864f4"
             onClick={() => {
               route("/forgot-password");
             }}
-          />
+          >
+            비밀번호 재설정
+          </BlueTextBtn>
         </div>
-        <BlueBackgroundBtn
-          text="로그인"
+
+        {/* 로그인 버튼 */}
+        <ColorBackgroundBtn
           disabled={!email || !password}
           type="submit"
-        />
+          backgroundColor="#4f5fbf"
+          textColor="#fff"
+          className="my-[22px]"
+        >
+          로그인
+        </ColorBackgroundBtn>
+
+        {/* 이메일로 회원가입 버튼 */}
         <BlueTextBtn
-          text="이메일로 회원가입 →"
+          color="#3864f4"
           onClick={() => {
             route("/signup");
           }}
-        />
+        >
+          이메일로 회원가입 →
+        </BlueTextBtn>
       </form>
     </div>
   );
