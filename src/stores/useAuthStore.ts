@@ -15,7 +15,7 @@ const useAuthStore = create<AuthState>()(
       isLoggedIn: false,
       accessToken: null,
       setIsLoggedIn: (isLoggedIn: boolean) => set({ isLoggedIn }),
-      setAccessToken: (token: string) => set({ accessToken: token, isLoggedIn: true }),
+      setAccessToken: (token: string) => set({ accessToken: token, isLoggedIn: !!token }),
       clearAuth: () => set({ isLoggedIn: false, accessToken: null }),
     }),
     {
