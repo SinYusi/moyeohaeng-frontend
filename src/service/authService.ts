@@ -1,9 +1,6 @@
 import baseService from './baseService';
-import axios from 'axios';
 import type { AxiosInstance } from 'axios';
 import useAuthStore from '../stores/useAuthStore';
-
-const URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
 
 // TODO requestDto에 이메일 인증 번호가 필요할지 의논
 type SignupRequest = {
@@ -40,13 +37,9 @@ class AuthService {
   // 회원가입 API
   async signup(userData: SignupRequest): Promise<SignupResponse> {
     try {
-      const baseUrl = URL.endsWith('/') ? URL.slice(0, -1) : URL;
-      const requestUrl = `${baseUrl}/v1/auth/signup`;
-      
-      const response = await axios.post(
-        requestUrl, 
-        userData, 
-        { withCredentials: true }
+      const response = await this.api.post(
+        '/v1/auth/signup', 
+        userData
       );
       
       return response.data;
@@ -60,13 +53,9 @@ class AuthService {
   // 로그인 API
   async login(credentials: LoginRequest): Promise<LoginResponse> {
     try {
-      const baseUrl = URL.endsWith('/') ? URL.slice(0, -1) : URL;
-      const requestUrl = `${baseUrl}/v1/auth/login`;
-      
-      const response = await axios.post<LoginResponse>(
-        requestUrl,
-        credentials,
-        { withCredentials: true }
+      const response = await this.api.post<LoginResponse>(
+        '/v1/auth/login',
+        credentials
       );
       
       // accessToken을 Zustand 스토어에 저장
@@ -88,10 +77,7 @@ class AuthService {
   // 로그아웃
   async logout(): Promise<void> {
     try {
-      const baseUrl = URL.endsWith('/') ? URL.slice(0, -1) : URL;
-      const requestUrl = `${baseUrl}/v1/auth/logout`;
-      
-      await axios.post(requestUrl, {}, { withCredentials: true });
+      await this.api.post('/v1/auth/logout', {});
       
       // Zustand 스토어에서 인증 정보 제거
       useAuthStore.getState().clearAuth();
@@ -107,13 +93,9 @@ class AuthService {
     try {
       const accessToken = useAuthStore.getState().accessToken;
       
-      const baseUrl = URL.endsWith('/') ? URL.slice(0, -1) : URL;
-      const requestUrl = `${baseUrl}/v1/auth/refresh`;
-      
-      const response = await axios.post(
-        requestUrl,
-        { accessToken },
-        { withCredentials: true }
+      const response = await this.api.post(
+        '/v1/auth/refresh',
+        { accessToken }
       );
 
       const newAccessToken = response.data;

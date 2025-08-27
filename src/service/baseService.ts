@@ -21,16 +21,14 @@ const nonAuthPaths = ["/v1/auth/signup", "/v1/auth/login"];
 baseService.interceptors.request.use(
   (config) => {
     const token = useAuthStore.getState().accessToken;
-    
-    // URL이 nonAuthPaths에 포함되지 않는 경우에만 토큰을 추가
-    const isAuthExempt = nonAuthPaths.some((path: string) =>
-      config?.url?.includes(path)
-    );
-
+    const url = config?.url ?? "";
+    // 경로 비교: 쿼리스트링 제거 후 끝부분 일치 여부로 판정
+    const pathname = url.split("?")[0];
+    const isAuthExempt = nonAuthPaths.some((path) => pathname.endsWith(path));
     if (token && !isAuthExempt) {
+      config.headers = config.headers || {};
       config.headers.Authorization = `Bearer ${token}`;
     }
-
     return config;
   },
   (error) => Promise.reject(error)
@@ -65,9 +63,10 @@ baseService.interceptors.response.use(
           { withCredentials: true }
         );
 
-        const { accessToken: newAccessToken } =
-          res.data.data;
-
+        const newAccessToken = res?.data?.data?.accessToken;
+        if (!newAccessToken || typeof newAccessToken !== "string") {
+          throw new Error("토큰 리프레시 응답에 accessToken이 없습니다."); // TODO Error handler 추가
+        }
         // Zustand 스토어 갱신
         useAuthStore.getState().setAccessToken(newAccessToken);
 
