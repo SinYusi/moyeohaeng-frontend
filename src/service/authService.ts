@@ -1,0 +1,112 @@
+import baseService from './baseService';
+import type { AxiosInstance } from 'axios';
+import useAuthStore from '../stores/useAuthStore';
+
+// TODO requestDto에 이메일 인증 번호가 필요할지 의논
+type SignupRequest = {
+  email: string;
+  password: string;
+  name: string;
+}
+
+type SignupResponse = {
+  status: number;
+  message: string;
+}
+
+type LoginRequest = {
+  email: string;
+  password: string;
+}
+
+type LoginResponse = {
+  data: string; // accessToken 단일로 전달
+  status: number;
+  message: string;
+}
+
+// AuthService 클래스는 baseService의 기능을 확장
+class AuthService {
+  private api: AxiosInstance;
+  
+  constructor() {
+    // baseService의 인스턴스를 사용하여 모든 설정을 상속받음
+    this.api = baseService;
+  }
+  
+  // 회원가입 API
+  async signup(userData: SignupRequest): Promise<SignupResponse> {
+    try {
+      const response = await this.api.post(
+        '/v1/auth/signup', 
+        userData
+      );
+      
+      return response.data;
+    } catch (error) {
+      console.error('회원가입 실패:', error);
+      
+      throw error;
+    }
+  }
+
+  // 로그인 API
+  async login(credentials: LoginRequest): Promise<LoginResponse> {
+    try {
+      const response = await this.api.post<LoginResponse>(
+        '/v1/auth/login',
+        credentials
+      );
+      
+      // accessToken을 Zustand 스토어에 저장
+      if (response.data) {
+        const accessToken= response.data.data;
+        console.log(accessToken);
+        useAuthStore.getState().setAccessToken(accessToken);
+      }
+      
+      // refreshToken은 HTTP-only 쿠키로 자동 설정되므로 별도 처리 필요 없음
+      return response.data;
+    } catch (error) {
+      console.error('로그인 실패:', error);
+      
+      throw error;
+    }
+  }
+  
+  // 로그아웃
+  async logout(): Promise<void> {
+    try {
+      await this.api.post('/v1/auth/logout', {});
+      
+      // Zustand 스토어에서 인증 정보 제거
+      useAuthStore.getState().clearAuth();
+    } catch (error) {
+      console.error('로그아웃 실패:', error);
+      
+      throw error;
+    }
+  }
+
+  // 토큰 리프래시 (필요한 경우 직접 호출용)
+  async refreshToken(): Promise<string | null> {
+    try {
+      const accessToken = useAuthStore.getState().accessToken;
+      
+      const response = await this.api.post(
+        '/v1/auth/refresh',
+        { accessToken }
+      );
+
+      const newAccessToken = response.data;
+      useAuthStore.getState().setAccessToken(newAccessToken);
+      return newAccessToken;
+    } catch (error) {
+      console.error('토큰 리프래시 실패:', error);
+
+      return null;
+    }
+  }
+}
+
+export default AuthService;

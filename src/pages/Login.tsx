@@ -16,9 +16,24 @@ const Login = () => {
   const route = useNavigate();
   const login = useLogin();
 
-  const handleLogin = async () => {
-    await login(email, password);
-    // TODO: 로그인 성공 시 전역 상태 관리 및 홈 화면 이동
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+    
+    try {
+      await login(email, password);
+      // 로그인 성공 시 useLogin 훅 내에서 홈으로 리다이렉트됨
+    } catch (error: any) {
+      // 로그인 실패 처리
+      setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+      console.error("로그인 에러:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -100,14 +115,18 @@ const Login = () => {
         </div>
 
         {/* 로그인 버튼 */}
+        {error && (
+          <div className="text-red-500 text-sm mt-2">{error}</div>
+        )}
+
         <ColorBackgroundBtn
-          disabled={!email || !password}
+          disabled={!email || !password || isLoading}
           type="submit"
           backgroundColor="#4f5fbf"
           textColor="#fff"
           className="my-[22px]"
         >
-          로그인
+          {isLoading ? "로그인 중..." : "로그인"}
         </ColorBackgroundBtn>
 
         {/* 이메일로 회원가입 버튼 */}
