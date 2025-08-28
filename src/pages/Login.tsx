@@ -107,7 +107,7 @@ const Login = () => {
             type="button"
             color="#3864f4"
             onClick={() => {
-              route("/forgot-password");
+              route("/reset-password");
             }}
           >
             비밀번호 재설정
