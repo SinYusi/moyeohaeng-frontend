@@ -7,7 +7,7 @@ import kakaoLogo from "../assets/images/kakaoLogo.svg";
 import { useNavigate } from "react-router-dom";
 import useLogin from "../hooks/useLogin";
 import ColorBackgroundBtn from "../components/common/ColorBackgroundBtn";
-import googleLogo from "../assets/images/google_logo.png";
+import googleLogo from "../assets/images/googleLogo.png";
 
 const Login = () => {
   const [email, setEmail] = useState<string>("");

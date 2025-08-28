@@ -1,6 +1,6 @@
 import ColorBackgroundBtn from "../common/ColorBackgroundBtn";
 import kakaoLogo from "../../assets/images/kakaoLogo.svg";
-import googleLogo from "../../assets/images/google_logo.png";
+import googleLogo from "../../assets/images/googleLogo.png";
 
 const SocialSignupSection = () => {
   return (
