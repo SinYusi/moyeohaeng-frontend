@@ -1,4 +1,6 @@
 import ColorBackgroundBtn from "../common/ColorBackgroundBtn";
+import kakaoLogo from "../../assets/images/kakaoLogo.svg";
+import googleLogo from "../../assets/images/google_logo.png";
 
 const SocialSignupSection = () => {
   return (
@@ -9,11 +11,7 @@ const SocialSignupSection = () => {
         textColor="#000000"
         className="w-full py-4 rounded-lg flex items-center justify-center gap-3"
       >
-        <img
-          src="/src/assets/images/kakaoLogo.svg"
-          alt="카카오"
-          className="w-6 h-6"
-        />
+        <img src={kakaoLogo} alt="카카오" className="w-[18px] h-[18px]" />
         카카오로 시작하기
       </ColorBackgroundBtn>
 
@@ -23,11 +21,7 @@ const SocialSignupSection = () => {
         textColor="#000000"
         className="w-full py-4 rounded-lg border border-gray-300 flex items-center justify-center gap-3"
       >
-        <img
-          src="/src/assets/images/google_logo.png"
-          alt="Google"
-          className="w-6 h-6"
-        />
+        <img src={googleLogo} alt="Google" className="w-[18px] h-[18px]" />
         Google 계정으로 가입
       </ColorBackgroundBtn>
     </div>
