@@ -7,6 +7,7 @@ import Profile from "./pages/Profile";
 import Signup from "./pages/Signup";
 import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/dashboard";
+import Plan from "./pages/Plan";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/main" element={<Main />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/plan/:id" element={<Plan />} />
 
         {/* Dashboard routes wrapped with DashboardProvider */}
         <Route
