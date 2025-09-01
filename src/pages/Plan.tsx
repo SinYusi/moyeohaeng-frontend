@@ -49,6 +49,7 @@ const Plan = () => {
 
       {/* 우측 패널 - 지도 */}
       <div className="w-[42.708%] h-full bg-white overflow-y-auto">
+        <MapSection />
       </div>
     </div>
   );
