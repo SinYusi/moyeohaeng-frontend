@@ -4,6 +4,7 @@ import Main from "./pages/Main";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
 import Signup from "./pages/Signup";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   const pageRoute = [
@@ -22,6 +23,10 @@ function App() {
     {
       path: "/signup",
       element: <Signup />,
+    },
+    {
+      path: "/reset-password",
+      element: <ResetPassword />,
     },
     {
       path: "*",

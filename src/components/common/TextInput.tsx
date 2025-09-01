@@ -63,7 +63,7 @@ const TextInput = ({
           className="border border-[#7b8482] focus:border-[#3864f4] focus:outline-none p-[13px] rounded w-full pr-12"
           onChange={onChange}
           onBlur={onBlur}
-          style={{ borderColor: borderColor }}
+          style={borderColor ? { borderColor } : undefined}
         />
         {type === "password" && (
           <button
@@ -81,7 +81,9 @@ const TextInput = ({
       </div>
       <div className="mt-1 min-h-[20px]">
         {subtitle && typeof subtitle === "string" ? (
-          <p className={`text-sm ${subtitleColor}`}>{subtitle}</p>
+          <p className="text-sm" style={{ color: subtitleColor }}>
+            {subtitle}
+          </p>
         ) : (
           subtitle
         )}
