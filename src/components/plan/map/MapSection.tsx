@@ -28,8 +28,8 @@ const MapSection = () => {
               content: `<div style="
                 width: 15px;
                 height: 15px;
-                background-color: yellow;
-                border: 2px solid black;
+                background-color: #fee500;
+                border: 1px solid black;
                 border-radius: 50%;
               "></div>`,
               map,
@@ -55,7 +55,7 @@ const MapSection = () => {
         level={3}
         onCreate={setMap}
       />
-      <div className="absolute top-4 left-4 right-4 z-10 flex justify-center">
+      <div className="absolute top-5 left-4 right-4 z-10 flex justify-center">
         <SearchBar map={map} onSubmitSearch={handleSearchSubmit} />
       </div>
     </div>
