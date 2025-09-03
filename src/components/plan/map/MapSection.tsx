@@ -1,15 +1,20 @@
-import { Map } from "react-kakao-maps-sdk";
+import { Map, CustomOverlayMap } from "react-kakao-maps-sdk";
 import { useState } from "react";
 import SearchBar from "./SearchBar";
 import getDistance from "../../../utils/getDistance";
+import BasePin from "./BasePin";
+import InfoOverlay from "./InfoOverlay";
 
 const MapSection = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
-  const [_, setSearchOverlays] = useState<kakao.maps.CustomOverlay | null>(
-    null
-  );
-  const [currentOverlay, setCurrentOverlay] =
-    useState<kakao.maps.CustomOverlay | null>(null); // 현재 오버레이 상태
+  const [clickedPlace, setClickedPlace] = useState<{
+    position: { lat: number; lng: number };
+    place: kakao.maps.services.PlacesSearchResultItem;
+    distance: number;
+  } | null>(null);
+  const [searchResults, setSearchResults] = useState<
+    kakao.maps.services.PlacesSearchResultItem[]
+  >([]);
   const categories = [
     "MT1", // 대형마트
     "CS2", // 편의점
@@ -33,6 +38,31 @@ const MapSection = () => {
 
   const ps = new kakao.maps.services.Places();
 
+  // 카테고리별 아이콘 매핑
+  const getCategoryIcon = (categoryName: string) => {
+    const category = categoryName?.split(" > ")[0] || "";
+    const iconMap: { [key: string]: string } = {
+      카페: "☕",
+      음식점: "🍽️",
+      병원: "🏥",
+      약국: "💊",
+      은행: "🏦",
+      주유소: "⛽",
+      주차장: "🅿️",
+      지하철역: "🚇",
+      학교: "🏫",
+      학원: "📚",
+      편의점: "🏪",
+      마트: "🛒",
+      문화시설: "🎭",
+      관광명소: "🏛️",
+      숙박: "🏨",
+      공공기관: "🏛️",
+      중개업소: "🏠",
+    };
+    return iconMap[category] || "📍";
+  };
+
   const handleSearchSubmit = (keyword: string) => {
     if (!map || !keyword) return;
     ps.keywordSearch(
@@ -46,21 +76,14 @@ const MapSection = () => {
               Number(place.x)
             );
             console.log(position);
-            const overlay = new kakao.maps.CustomOverlay({
-              position,
-              content:
-                '<div style=" width: 15px; height: 15px; background-color: #fee500; border: 1px solid black; border-radius: 50%; "></div>',
-              map,
-              xAnchor: 0.5,
-              yAnchor: 0.5,
-            });
             bounds.extend(position);
-            currentOverlay && currentOverlay.setMap(null);
-            setSearchOverlays(overlay);
           });
           map.setBounds(bounds);
+          // 검색 결과를 state에 저장
+          setSearchResults(data);
         } else {
           alert("검색 결과가 없습니다.");
+          setSearchResults([]);
         }
       },
       { bounds: map.getBounds() }
@@ -105,43 +128,25 @@ const MapSection = () => {
                 }
               });
 
-              showOverlay(closestPlace);
+              // 장소가 있을 때만 오버레이 표시 (가장 가까운 장소의 위치에)
+              setClickedPlace({
+                position: {
+                  lat: Number(closestPlace.y),
+                  lng: Number(closestPlace.x),
+                },
+                place: closestPlace,
+                distance: minDistance,
+              });
             }
+            // 주변에 장소가 없을 때는 아무것도 하지 않음 (오버레이 표시 안함)
           }
         },
         {
           location: new kakao.maps.LatLng(lat, lng),
-          radius: 30, // 반경을 30m로 설정
+          radius: 10, // 반경을 10m로 설정
         }
       );
     });
-  };
-
-  const showOverlay = (place: kakao.maps.services.PlacesSearchResultItem) => {
-    if (!map) return;
-
-    // 이전 오버레이 제거
-    if (currentOverlay) currentOverlay.setMap(null);
-
-    const content = `
-      <div style="padding:10px; background:white; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.3)">
-        <strong>${place.place_name}</strong><br/>
-        ${place.category_name}<br/>
-        ${place.road_address_name || place.address_name}<br/>
-        ${place.phone}
-      </div>
-    `;
-
-    const overlay = new kakao.maps.CustomOverlay({
-      position: new kakao.maps.LatLng(+place.y, +place.x),
-      content,
-      yAnchor: 1,
-    });
-
-    overlay.setMap(map);
-
-    // 새 오버레이 상태 저장
-    setCurrentOverlay(overlay);
   };
 
   return (
@@ -156,7 +161,30 @@ const MapSection = () => {
           const lng = mouseEvent.latLng.getLng();
           searchNearby(lat, lng);
         }}
-      />
+      >
+        {clickedPlace && (
+          <CustomOverlayMap
+            position={clickedPlace.position}
+            yAnchor={1.05}
+            xAnchor={0.5}
+          >
+            <InfoOverlay
+              clickedPlace={clickedPlace}
+              getCategoryIcon={getCategoryIcon}
+            />
+          </CustomOverlayMap>
+        )}
+        {searchResults.map((place, index) => (
+          <CustomOverlayMap
+            key={`${place.id || place.place_name}-${index}`}
+            position={{ lat: Number(place.y), lng: Number(place.x) }}
+            yAnchor={0.5}
+            xAnchor={0.5}
+          >
+            <BasePin />
+          </CustomOverlayMap>
+        ))}
+      </Map>
       <div className="absolute top-5 left-4 right-4 z-10 flex justify-center">
         <SearchBar map={map} onSubmitSearch={handleSearchSubmit} />
       </div>
