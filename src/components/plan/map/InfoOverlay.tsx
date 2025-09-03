@@ -58,7 +58,15 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
   };
 
   return (
-    <div className="relative">
+    <div
+      className="relative cursor-default"
+      onMouseDown={(e) => {
+        e.stopPropagation(); // 마우스 다운 이벤트도 차단
+      }}
+      onMouseUp={(e) => {
+        e.stopPropagation(); // 마우스 업 이벤트도 차단
+      }}
+    >
       {/* 말풍선 본체 */}
       <div className="bg-white rounded-lg shadow-lg p-4 min-w-[280px] max-w-[320px] font-sans">
         {/* 상단 헤더 */}
@@ -74,7 +82,7 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
             onClick={handleCloseClick}
             className="cursor-pointer hover:opacity-70 transition-opacity"
           >
-            <X color="#3b4553"/>
+            <X color="#3b4553" />
           </button>
         </div>
 
@@ -94,7 +102,7 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
           {/* 즐겨찾기 아이콘 */}
           <button
             onClick={handleFavoriteClick}
-            className="hover:opacity-80 transition-opacity"
+            className="hover:opacity-80 transition-opacity cursor-pointer"
           >
             <Star
               fill={isFavorited ? "#fee500" : "none"}
