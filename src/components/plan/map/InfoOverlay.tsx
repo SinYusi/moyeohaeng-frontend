@@ -1,4 +1,4 @@
-import { Star } from "lucide-react";
+import { Star, X } from "lucide-react";
 import ColorTextBtn from "../../common/ColorTextBtn";
 import { useFavoriteStore } from "../../../stores/useFavoriteStore";
 
@@ -8,15 +8,39 @@ interface InfoOverlayProps {
     place: kakao.maps.services.PlacesSearchResultItem;
     distance: number;
   };
-  getCategoryIcon: (categoryName: string) => string;
+  onClose: () => void;
 }
 
-const InfoOverlay = ({ clickedPlace, getCategoryIcon }: InfoOverlayProps) => {
+const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
   const { toggleFavorite, isFavorite } = useFavoriteStore();
   const placeId =
     clickedPlace.place.id ||
     `${clickedPlace.place.place_name}-${clickedPlace.place.x}-${clickedPlace.place.y}`;
   const isFavorited = isFavorite(placeId);
+
+  const getCategoryIcon = (categoryName: string) => {
+    const category = categoryName?.split(" > ")[0] || "";
+    const iconMap: { [key: string]: string } = {
+      카페: "☕",
+      음식점: "🍽️",
+      병원: "🏥",
+      약국: "💊",
+      은행: "🏦",
+      주유소: "⛽",
+      주차장: "🅿️",
+      지하철역: "🚇",
+      학교: "🏫",
+      학원: "📚",
+      편의점: "🏪",
+      마트: "🛒",
+      문화시설: "🎭",
+      관광명소: "🏛️",
+      숙박: "🏨",
+      공공기관: "🏛️",
+      중개업소: "🏠",
+    };
+    return iconMap[category] || "📍";
+  };
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -28,6 +52,11 @@ const InfoOverlay = ({ clickedPlace, getCategoryIcon }: InfoOverlayProps) => {
     window.open(kakaoMapUrl, "_blank", "noopener,noreferrer");
   };
 
+  const handleCloseClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onClose();
+  };
+
   return (
     <div className="relative">
       {/* 말풍선 본체 */}
@@ -37,20 +66,15 @@ const InfoOverlay = ({ clickedPlace, getCategoryIcon }: InfoOverlayProps) => {
           {/* 카테고리 태그 */}
           <div className="bg-[#4f5fbf] text-white px-2 py-1 rounded-md text-xs font-medium flex items-center">
             <span className="mr-1">
-              {getCategoryIcon(clickedPlace.place?.category_name || "")}
+              {getCategoryIcon(clickedPlace.place?.category_group_name || "")}
             </span>
-            {clickedPlace.place?.category_name?.split(" > ")[0] || "장소"}
+            {clickedPlace.place?.category_group_name?.split(" > ")[0] || "장소"}
           </div>
-          {/* 즐겨찾기 아이콘 */}
           <button
-            onClick={handleFavoriteClick}
-            className="hover:opacity-80 transition-opacity"
+            onClick={handleCloseClick}
+            className="cursor-pointer hover:opacity-70 transition-opacity"
           >
-            <Star
-              fill={isFavorited ? "#fee500" : "none"}
-              stroke="#111"
-              className="w-5 h-5"
-            />
+            <X color="#3b4553"/>
           </button>
         </div>
 
@@ -64,9 +88,21 @@ const InfoOverlay = ({ clickedPlace, getCategoryIcon }: InfoOverlayProps) => {
           {clickedPlace.place?.road_address_name ||
             clickedPlace.place?.address_name}
         </p>
-
-        {/* 상세보기 링크 */}
-        <ColorTextBtn onClick={handleDetailClick}>상세보기 &gt;</ColorTextBtn>
+        <div className="flex items-start justify-between mb-2 mr-1">
+          {/* 상세보기 링크 */}
+          <ColorTextBtn onClick={handleDetailClick}>상세보기 &gt;</ColorTextBtn>
+          {/* 즐겨찾기 아이콘 */}
+          <button
+            onClick={handleFavoriteClick}
+            className="hover:opacity-80 transition-opacity"
+          >
+            <Star
+              fill={isFavorited ? "#fee500" : "none"}
+              stroke="#111"
+              className="w-5 h-5"
+            />
+          </button>
+        </div>
 
         {/* 액션 버튼들 */}
         <div className="flex gap-2">

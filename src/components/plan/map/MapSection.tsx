@@ -42,29 +42,6 @@ const MapSection = () => {
   const ps = new kakao.maps.services.Places();
 
   // 카테고리별 아이콘 매핑
-  const getCategoryIcon = (categoryName: string) => {
-    const category = categoryName?.split(" > ")[0] || "";
-    const iconMap: { [key: string]: string } = {
-      카페: "☕",
-      음식점: "🍽️",
-      병원: "🏥",
-      약국: "💊",
-      은행: "🏦",
-      주유소: "⛽",
-      주차장: "🅿️",
-      지하철역: "🚇",
-      학교: "🏫",
-      학원: "📚",
-      편의점: "🏪",
-      마트: "🛒",
-      문화시설: "🎭",
-      관광명소: "🏛️",
-      숙박: "🏨",
-      공공기관: "🏛️",
-      중개업소: "🏠",
-    };
-    return iconMap[category] || "📍";
-  };
 
   const handleSearchSubmit = (keyword: string) => {
     if (!map || !keyword) return;
@@ -194,9 +171,9 @@ const MapSection = () => {
             xAnchor={0.5}
             zIndex={1002}
           >
-            <InfoOverlay
-              clickedPlace={clickedPlace}
-              getCategoryIcon={getCategoryIcon}
+            <InfoOverlay 
+              clickedPlace={clickedPlace} 
+              onClose={() => setClickedPlace(null)}
             />
           </CustomOverlayMap>
         )}
