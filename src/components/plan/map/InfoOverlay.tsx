@@ -1,5 +1,6 @@
 import { Star } from "lucide-react";
 import ColorTextBtn from "../../common/ColorTextBtn";
+import { useFavoriteStore } from "../../../stores/useFavoriteStore";
 
 interface InfoOverlayProps {
   clickedPlace: {
@@ -11,6 +12,22 @@ interface InfoOverlayProps {
 }
 
 const InfoOverlay = ({ clickedPlace, getCategoryIcon }: InfoOverlayProps) => {
+  const { toggleFavorite, isFavorite } = useFavoriteStore();
+  const placeId =
+    clickedPlace.place.id ||
+    `${clickedPlace.place.place_name}-${clickedPlace.place.x}-${clickedPlace.place.y}`;
+  const isFavorited = isFavorite(placeId);
+
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    toggleFavorite(clickedPlace.place);
+  };
+
+  const handleDetailClick = () => {
+    const kakaoMapUrl = `https://place.map.kakao.com/${placeId}`;
+    window.open(kakaoMapUrl, "_blank", "noopener,noreferrer");
+  };
+
   return (
     <div className="relative">
       {/* 말풍선 본체 */}
@@ -25,8 +42,15 @@ const InfoOverlay = ({ clickedPlace, getCategoryIcon }: InfoOverlayProps) => {
             {clickedPlace.place?.category_name?.split(" > ")[0] || "장소"}
           </div>
           {/* 즐겨찾기 아이콘 */}
-          <button>
-            <Star fill="#111" />
+          <button
+            onClick={handleFavoriteClick}
+            className="hover:opacity-80 transition-opacity"
+          >
+            <Star
+              fill={isFavorited ? "#fee500" : "none"}
+              stroke="#111"
+              className="w-5 h-5"
+            />
           </button>
         </div>
 

@@ -4,6 +4,8 @@ import SearchBar from "./SearchBar";
 import getDistance from "../../../utils/getDistance";
 import BasePin from "./BasePin";
 import InfoOverlay from "./InfoOverlay";
+import { useFavoriteStore } from "../../../stores/useFavoriteStore";
+import FavoritePin from "./FavoritePin";
 
 const MapSection = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
@@ -15,6 +17,7 @@ const MapSection = () => {
   const [searchResults, setSearchResults] = useState<
     kakao.maps.services.PlacesSearchResultItem[]
   >([]);
+  const { favorites } = useFavoriteStore();
   const categories = [
     "MT1", // 대형마트
     "CS2", // 편의점
@@ -162,11 +165,34 @@ const MapSection = () => {
           searchNearby(lat, lng);
         }}
       >
+        {searchResults.map((place, index) => (
+          <CustomOverlayMap
+            key={`search-${place.id || place.place_name}-${index}`}
+            position={{ lat: Number(place.y), lng: Number(place.x) }}
+            yAnchor={0.5}
+            xAnchor={0.5}
+            zIndex={1000}
+          >
+            <BasePin />
+          </CustomOverlayMap>
+        ))}
+        {favorites.map((favorite) => (
+          <CustomOverlayMap
+            key={`favorite-${favorite.id}`}
+            position={{ lat: favorite.latitude, lng: favorite.longitude }}
+            yAnchor={0.5}
+            xAnchor={0.5}
+            zIndex={1001}
+          >
+            <FavoritePin />
+          </CustomOverlayMap>
+        ))}
         {clickedPlace && (
           <CustomOverlayMap
             position={clickedPlace.position}
             yAnchor={1.05}
             xAnchor={0.5}
+            zIndex={1002}
           >
             <InfoOverlay
               clickedPlace={clickedPlace}
@@ -174,16 +200,6 @@ const MapSection = () => {
             />
           </CustomOverlayMap>
         )}
-        {searchResults.map((place, index) => (
-          <CustomOverlayMap
-            key={`${place.id || place.place_name}-${index}`}
-            position={{ lat: Number(place.y), lng: Number(place.x) }}
-            yAnchor={0.5}
-            xAnchor={0.5}
-          >
-            <BasePin />
-          </CustomOverlayMap>
-        ))}
       </Map>
       <div className="absolute top-5 left-4 right-4 z-10 flex justify-center">
         <SearchBar map={map} onSubmitSearch={handleSearchSubmit} />
