@@ -36,7 +36,7 @@ const CategoryFilterBtns = ({
   return (
     <Fragment>
       {sortedCategories.length > 0 && (
-        <div className="flex gap-2 justify-start w-full max-w-lg">
+        <div className="flex flex-wrap gap-2 justify-start w-full max-w-lg">
           {sortedCategories.map((category) => {
             const isSelected = selectedFilters.includes(category);
             return (
