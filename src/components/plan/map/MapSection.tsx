@@ -117,7 +117,6 @@ const MapSection = () => {
                 distance: minDistance,
               });
             }
-            // 주변에 장소가 없을 때는 아무것도 하지 않음 (오버레이 표시 안함)
           }
         },
         {
@@ -141,17 +140,23 @@ const MapSection = () => {
           searchNearby(lat, lng);
         }}
       >
-        {searchResults.map((place, index) => (
-          <CustomOverlayMap
-            key={`search-${place.id || place.place_name}-${index}`}
-            position={{ lat: Number(place.y), lng: Number(place.x) }}
-            yAnchor={0.5}
-            xAnchor={0.5}
-            zIndex={1000}
-          >
-            <BasePin />
-          </CustomOverlayMap>
-        ))}
+        {searchResults
+          .filter((place) => {
+            // 즐겨찾기에 있는 장소인지 확인
+            const placeId = place.id || `${place.place_name}-${place.x}-${place.y}`;
+            return !favorites.some(fav => fav.id === placeId);
+          })
+          .map((place, index) => (
+            <CustomOverlayMap
+              key={`search-${place.id || place.place_name}-${index}`}
+              position={{ lat: Number(place.y), lng: Number(place.x) }}
+              yAnchor={0.5}
+              xAnchor={0.5}
+              zIndex={1000}
+            >
+              <BasePin />
+            </CustomOverlayMap>
+          ))}
         {favorites.map((favorite) => {
           const isFiltered =
             selectedFilters.length === 0 ||
