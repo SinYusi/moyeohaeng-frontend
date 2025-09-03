@@ -54,7 +54,6 @@ const MapSection = () => {
               Number(place.y),
               Number(place.x)
             );
-            console.log(position);
             bounds.extend(position);
           });
           map.setBounds(bounds);
@@ -121,7 +120,7 @@ const MapSection = () => {
         },
         {
           location: new kakao.maps.LatLng(lat, lng),
-          radius: 10, // 반경을 10m로 설정
+          radius: 5, // 반경을 10m로 설정
         }
       );
     });
@@ -142,9 +141,9 @@ const MapSection = () => {
       >
         {searchResults
           .filter((place) => {
-            // 즐겨찾기에 있는 장소인지 확인
-            const placeId = place.id || `${place.place_name}-${place.x}-${place.y}`;
-            return !favorites.some(fav => fav.id === placeId);
+            const placeId =
+              place.id || `${place.place_name}-${place.x}-${place.y}`;
+            return !favorites.some((fav) => fav.id === placeId);
           })
           .map((place, index) => (
             <CustomOverlayMap
@@ -182,7 +181,7 @@ const MapSection = () => {
         {clickedPlace && (
           <CustomOverlayMap
             position={clickedPlace.position}
-            yAnchor={1.05}
+            yAnchor={1.15}
             xAnchor={0.5}
             zIndex={1002}
           >
