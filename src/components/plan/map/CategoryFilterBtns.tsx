@@ -14,6 +14,16 @@ const CategoryFilterBtns = ({
     new Set(favorites.map((fav) => fav.category))
   ).filter((category) => category && category !== "장소");
 
+  // 선택된 카테고리를 왼쪽으로 정렬
+  const sortedCategories = [...availableCategories].sort((a, b) => {
+    const aSelected = selectedFilters.includes(a);
+    const bSelected = selectedFilters.includes(b);
+
+    if (aSelected && !bSelected) return -1;
+    if (!aSelected && bSelected) return 1;
+    return 0;
+  });
+
   // 필터 토글 함수
   const toggleFilter = (category: string) => {
     setSelectedFilters((prev) =>
@@ -22,11 +32,12 @@ const CategoryFilterBtns = ({
         : [...prev, category]
     );
   };
+
   return (
     <Fragment>
-      {availableCategories.length > 0 && (
+      {sortedCategories.length > 0 && (
         <div className="flex gap-2 justify-start w-full">
-          {availableCategories.map((category) => {
+          {sortedCategories.map((category) => {
             const isSelected = selectedFilters.includes(category);
             return (
               <button
