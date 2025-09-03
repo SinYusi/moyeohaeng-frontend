@@ -36,17 +36,17 @@ const CategoryFilterBtns = ({
   return (
     <Fragment>
       {sortedCategories.length > 0 && (
-        <div className="flex gap-2 justify-start w-full">
+        <div className="flex gap-2 justify-start w-full max-w-lg">
           {sortedCategories.map((category) => {
             const isSelected = selectedFilters.includes(category);
             return (
               <button
                 key={category}
                 onClick={() => toggleFilter(category)}
-                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
+                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors border border-[#131416] ${
                   isSelected
                     ? "bg-[#131416] text-white"
-                    : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                    : "bg-white text-[#131416] hover:bg-gray-50"
                 }`}
               >
                 {category}
