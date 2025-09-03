@@ -1,4 +1,5 @@
 @import "tailwindcss";
+/* @import "figma.css"; */
 
 @font-face {
   font-family: "SUIT-Regular";
@@ -28,4 +29,17 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #d1d5db;
+}
+:root {
+  --fill-deep: #3B4553;
+  --stroke-deep: #131416;
+  --text-white: white;
+  --text-subtler: #7B848E;
+  --surface-default: white;
+}
+
+body {
+  background-color: rgb(249 250 251);
+  margin: 0;
+  font-family: 'SUIT Variable', system-ui, -apple-system, sans-serif;
 }

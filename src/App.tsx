@@ -5,12 +5,17 @@ import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
 import Signup from "./pages/Signup";
 import ResetPassword from "./pages/ResetPassword";
+import Home from "./pages/Home";
 
 function App() {
   const pageRoute = [
     {
       path: "/",
       element: <Main />,
+    },
+    {
+      path: "/home",
+      element: <Home />,
     },
     {
       path: "/login",
