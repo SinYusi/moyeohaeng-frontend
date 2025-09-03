@@ -6,6 +6,7 @@ import BasePin from "./BasePin";
 import InfoOverlay from "./InfoOverlay";
 import { useFavoriteStore } from "../../../stores/useFavoriteStore";
 import FavoritePin from "./FavoritePin";
+import CategoryFilterBtns from "./CategoryFilterBtns";
 
 const MapSection = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
@@ -18,6 +19,7 @@ const MapSection = () => {
     kakao.maps.services.PlacesSearchResultItem[]
   >([]);
   const { favorites } = useFavoriteStore();
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const categories = [
     "MT1", // 대형마트
     "CS2", // 편의점
@@ -38,10 +40,7 @@ const MapSection = () => {
     "HP8", // 병원
     "PM9", // 약국
   ] as const;
-
   const ps = new kakao.maps.services.Places();
-
-  // 카테고리별 아이콘 매핑
 
   const handleSearchSubmit = (keyword: string) => {
     if (!map || !keyword) return;
@@ -153,17 +152,28 @@ const MapSection = () => {
             <BasePin />
           </CustomOverlayMap>
         ))}
-        {favorites.map((favorite) => (
-          <CustomOverlayMap
-            key={`favorite-${favorite.id}`}
-            position={{ lat: favorite.latitude, lng: favorite.longitude }}
-            yAnchor={0.5}
-            xAnchor={0.5}
-            zIndex={1001}
-          >
-            <FavoritePin />
-          </CustomOverlayMap>
-        ))}
+        {favorites.map((favorite) => {
+          const isFiltered =
+            selectedFilters.length === 0 ||
+            selectedFilters.includes(favorite.category);
+          return (
+            <CustomOverlayMap
+              key={`favorite-${favorite.id}`}
+              position={{ lat: favorite.latitude, lng: favorite.longitude }}
+              yAnchor={0.5}
+              xAnchor={0.5}
+              zIndex={1001}
+            >
+              <div
+                className={`transition-opacity duration-200 ${
+                  isFiltered ? "opacity-100" : "opacity-50"
+                }`}
+              >
+                <FavoritePin />
+              </div>
+            </CustomOverlayMap>
+          );
+        })}
         {clickedPlace && (
           <CustomOverlayMap
             position={clickedPlace.position}
@@ -171,15 +181,21 @@ const MapSection = () => {
             xAnchor={0.5}
             zIndex={1002}
           >
-            <InfoOverlay 
-              clickedPlace={clickedPlace} 
+            <InfoOverlay
+              clickedPlace={clickedPlace}
               onClose={() => setClickedPlace(null)}
             />
           </CustomOverlayMap>
         )}
       </Map>
-      <div className="absolute top-5 left-4 right-4 z-10 flex justify-center">
+
+      {/* 맵 상단 부분 */}
+      <div className="absolute top-5 left-4 right-4 z-10 flex flex-col items-center gap-3">
         <SearchBar map={map} onSubmitSearch={handleSearchSubmit} />
+        <CategoryFilterBtns
+          selectedFilters={selectedFilters}
+          setSelectedFilters={setSelectedFilters}
+        />
       </div>
     </div>
   );
