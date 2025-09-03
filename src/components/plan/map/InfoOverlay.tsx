@@ -66,7 +66,7 @@ const InfoOverlay = ({ clickedPlace, getCategoryIcon }: InfoOverlayProps) => {
         </p>
 
         {/* 상세보기 링크 */}
-        <ColorTextBtn>상세보기 &gt;</ColorTextBtn>
+        <ColorTextBtn onClick={handleDetailClick}>상세보기 &gt;</ColorTextBtn>
 
         {/* 액션 버튼들 */}
         <div className="flex gap-2">
