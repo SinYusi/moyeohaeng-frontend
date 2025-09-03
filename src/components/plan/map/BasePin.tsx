@@ -1,6 +1,6 @@
 const BasePin = () => {
   return (
-    <div className="w-4 h-4 bg-yellow-400 border border-black rounded-full" />
+    <div className="w-4 h-4 bg-[#fee500] border border-[#3b4553] rounded-full" />
   );
 };
 
