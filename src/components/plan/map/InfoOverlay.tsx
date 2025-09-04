@@ -141,11 +141,11 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
 
         {/* 액션 버튼들 */}
         <div className="flex items-start gap-2 self-stretch">
-          <ActionBtn onClick={() => {}}>
+          <ActionBtn onClick={() => {}} disabled={!isFavorited}>
             <Plus className="w-5 h-5" color="#3b4553" />
             장소 모음 추가
           </ActionBtn>
-          <ActionBtn onClick={() => {}}>
+          <ActionBtn onClick={() => {}} disabled={!isFavorited}>
             <Calendar className="w-5 h-5" color="#3b4553" />
             일정에 추가
           </ActionBtn>
@@ -162,15 +162,18 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
 
 const ActionBtn = ({
   children,
+  disabled = false,
   onClick,
 }: {
   children: React.ReactNode;
+  disabled?: boolean;
   onClick: () => void;
 }) => {
   return (
     <button
-      className="border border-[#c0c7ce] border-[1px] bg-[#fff] text-[#131416] rounded-[6px] text-base pl-2 pr-3 font-medium flex items-center justify-center transition-colors gap-1 h-9 flex-1 hover:bg-[#f9fafb] active:bg-[#e7edf6]"
+      className="border border-[#c0c7ce] border-[1px] bg-[#fff] text-[#131416] rounded-[6px] text-base pl-2 pr-3 font-medium flex items-center justify-center transition-colors gap-1 h-9 flex-1 hover:bg-[#f9fafb] active:bg-[#e7edf6] disabled:bg-[#edf0f3] disabled:text-[#7b8482]"
       onClick={onClick}
+      disabled={disabled}
     >
       {children}
     </button>
