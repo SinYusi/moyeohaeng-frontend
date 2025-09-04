@@ -1,5 +1,6 @@
 import { useState } from "react";
 import CategoryFilterBtns from "../CategoryFilterBtns";
+import BlockListSection from "./BlockListSection";
 
 const BlockListView = () => {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
@@ -9,6 +10,7 @@ const BlockListView = () => {
         selectedFilters={selectedFilters}
         setSelectedFilters={setSelectedFilters}
       />
+      <BlockListSection />
     </div>
   );
 };
