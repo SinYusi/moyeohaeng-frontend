@@ -1,4 +1,4 @@
-const GroupSectionHeader = ({ children }: { children: React.ReactNode }) => {
+const SectionHeader = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="w-full flex items-center justify-between self-stretch">
       {children}
@@ -6,4 +6,4 @@ const GroupSectionHeader = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default GroupSectionHeader;
+export default SectionHeader;
