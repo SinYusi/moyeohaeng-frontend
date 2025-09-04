@@ -1,4 +1,6 @@
 import MainLayout from "../components/layouts/MainLayout";
+import ProjectSection from "../components/common/ProjectSection";
+import { mockProjects } from "../mockData";
 
 const Home = () => {
   return (
@@ -14,6 +16,7 @@ const Home = () => {
             </span>
           </button>
         </div>
+        <ProjectSection projects={mockProjects} />
       </div>
     </MainLayout>
   );
