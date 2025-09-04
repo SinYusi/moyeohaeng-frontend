@@ -1,22 +1,25 @@
 import DashboardHeader from "../../components/dashboard/DashboardHeader";
 import ProjectSection from "../../components/dashboard/project/ProjectSection";
-import type { Project } from "../../types/project";
+import MainLayout from "../../components/layouts/MainLayout";
+import { useDashboards } from "../../contexts/DashboardContext";
 
-interface DashboardHomeProps {
-  projects: Project[];
-  onNewProject: () => void;
-}
+const DashboardHome = () => {
+  const { projects, loading, error } = useDashboards();
 
-const DashboardHome = ({ projects, onNewProject }: DashboardHomeProps) => {
+  const handleNewProject = () => {
+    // TODO: Implement new project creation
+    console.log("New project button clicked");
+  };
+
   return (
-    <>
+    <MainLayout loading={loading} error={error}>
       <DashboardHeader
         title="내 프로젝트"
         buttonText="새 프로젝트"
-        onButtonClick={onNewProject}
+        onButtonClick={handleNewProject}
       />
       <ProjectSection projects={projects} />
-    </>
+    </MainLayout>
   );
 };
 

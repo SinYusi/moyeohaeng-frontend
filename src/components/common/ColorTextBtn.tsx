@@ -3,7 +3,7 @@ interface ColorTextBtnProps {
   type?: "button" | "submit" | "reset";
   color?: string;
   className?: string;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent) => void;
 }
 
 const ColorTextBtn = ({

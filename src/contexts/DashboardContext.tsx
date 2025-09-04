@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useCallback,
 } from "react";
+import { Outlet } from "react-router-dom";
 import type { Project } from "../types/project";
 import { mockProjects } from "../mockData"; // 임시로 mock데이터 사용
 
@@ -30,9 +31,7 @@ export const useDashboards = () => {
   return context;
 };
 
-export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const DashboardProvider: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -79,7 +78,7 @@ export const DashboardProvider: React.FC<{ children: React.ReactNode }> = ({
     <DashboardContext.Provider
       value={{ projects, teamProjects, loading, error, fetchProjects }}
     >
-      {children}
+      <Outlet />
     </DashboardContext.Provider>
   );
 };
