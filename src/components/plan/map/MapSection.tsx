@@ -1,4 +1,4 @@
-import { Map, CustomOverlayMap } from "react-kakao-maps-sdk";
+import { Map, CustomOverlayMap, useKakaoLoader } from "react-kakao-maps-sdk";
 import { useState } from "react";
 import SearchBar from "./SearchBar";
 import getDistance from "../../../utils/getDistance";
@@ -9,6 +9,10 @@ import FavoritePin from "./FavoritePin";
 import CategoryFilterBtns from "./CategoryFilterBtns";
 
 const MapSection = () => {
+  const [loading, error] = useKakaoLoader({
+    appkey: import.meta.env.VITE_KAKAO_APP_KEY,
+    libraries: ["services", "clusterer"],
+  });
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [clickedPlace, setClickedPlace] = useState<{
     position: { lat: number; lng: number };
@@ -40,6 +44,8 @@ const MapSection = () => {
     "HP8", // 병원
     "PM9", // 약국
   ] as const;
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>지도 로딩 중 오류 발생</div>;
   const ps = new kakao.maps.services.Places();
 
   const handleSearchSubmit = (keyword: string) => {
