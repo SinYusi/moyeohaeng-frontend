@@ -1,0 +1,95 @@
+import React from "react";
+import { useParams, useLocation } from "react-router-dom";
+import FilterButton from "../FilterButton";
+import ProjectCard from "./ProjectCard";
+import type { Project } from "../../../types/project";
+
+interface ProjectSectionProps {
+  projects: Project[];
+}
+
+const ProjectSection: React.FC<ProjectSectionProps> = ({ projects }) => {
+  const location = useLocation();
+  const { teamId } = useParams();
+
+  const [sortBy, setSortBy] = React.useState("최근 수정한 순");
+  const [selectedTeam, setSelectedTeam] = React.useState("모든 팀");
+
+  const sortOptions = ["최근 수정한 순", "최근 생성한 순", "이름순"];
+  const teamOptions = [
+    "모든 팀",
+    ...Array.from(new Set(projects.map((p) => p.team.name))).sort(),
+  ];
+
+  // 경로나 팀 ID가 변경될 때 필터 상태 업데이트
+  React.useEffect(() => {
+    if (
+      location.pathname === "/dashboard/home" ||
+      location.pathname === "/dashboard"
+    ) {
+      setSortBy("최근 수정한 순");
+      setSelectedTeam("모든 팀");
+      return;
+    }
+
+    if (teamId) {
+      const team = projects.find((p) => p.team.id.toString() === teamId)?.team;
+      if (team) {
+        setSelectedTeam(team.name);
+      }
+    } else if (location.pathname === "/dashboard/all-team") {
+      setSelectedTeam("모든 팀");
+    }
+  }, [teamId, location.pathname, projects]);
+
+  // 선택된 팀과 정렬 기준에 따라 프로젝트 필터링 및 정렬
+  const filteredProjects = React.useMemo(() => {
+    const filtered = projects.filter(
+      (project) =>
+        selectedTeam === "모든 팀" || project.team.name === selectedTeam
+    );
+
+    return filtered.sort((a: Project, b: Project) => {
+      switch (sortBy) {
+        case "최근 수정한 순":
+          return (
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+          );
+        case "최근 생성한 순":
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+        case "이름순":
+          return a.title.localeCompare(b.title);
+        default:
+          return (
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+          );
+      }
+    });
+  }, [projects, selectedTeam, sortBy]);
+
+  return (
+    <section className="flex flex-col gap-6">
+      <div className="flex items-center gap-2">
+        <FilterButton
+          options={sortOptions}
+          selected={sortBy}
+          onSelect={setSortBy}
+        />
+        <FilterButton
+          options={teamOptions}
+          selected={selectedTeam}
+          onSelect={setSelectedTeam}
+        />
+      </div>
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(350px,1fr))] gap-6">
+        {filteredProjects.map((project) => (
+          <ProjectCard key={project.id} {...project} />
+        ))}
+      </div>
+    </section>
+  );
+};
+
+export default ProjectSection;

@@ -1,37 +1,27 @@
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, ArrowRight } from "lucide-react";
 
-interface ProjectCardProps {
-  days: number;
-  title: string;
-  date: string;
-  people: number;
-  modifiedTime: string;
-}
+import type { Project } from "../../../types/project";
+import { getTimeAgo } from "../../../utils/timeUtils";
+
+type ProjectCardProps = Project;
 
 const ProjectCard = ({
   days,
   title,
-  date,
   people,
-  modifiedTime,
+  updatedAt,
+  startDate,
 }: ProjectCardProps) => {
-  // Helper: compute a simple, readable "time ago" from minutes string
-  const getTimeAgo = (input: string) => {
-    const minutes = Number(input);
-    const isNumeric = !Number.isNaN(minutes);
-    if (!isNumeric) return { value: input, unit: "시간" };
-    if (minutes < 60) return { value: minutes, unit: "분" };
-    return { value: Math.floor(minutes / 60), unit: "시간" };
-  };
+  // 시간을 '~분 전'과 같은 읽기 쉬운 형식으로 변환
 
-  const { value: timeValue, unit: timeUnit } = getTimeAgo(modifiedTime);
+  const { value: timeValue, unit: timeUnit } = getTimeAgo(updatedAt);
 
-  // Reusable class tokens for readability
+  // 재사용 가능한 스타일 클래스
   const border = "border-[1.5px] border-[var(--stroke-deep,#131416)]";
   const textWhite = "text-[var(--text-white,white)]";
   const bgSurface = "bg-[var(--surface-inverse,#F9FAFB)]";
 
-  // Helper: insert a line break before the last word to avoid awkward wrapping
+  // 마지막 단어 앞에 줄바꿈을 추가하여 자연스러운 줄바꿈 처리
   const formatTitle = (t: string) => {
     const parts = t.trim().split(/\s+/);
     if (parts.length < 2) return t;
@@ -48,7 +38,7 @@ const ProjectCard = ({
 
   return (
     <article
-      className="w-full relative overflow-hidden aspect-[350/230]"
+      className="w-full relative overflow-hidden aspect-[350/230] group"
       aria-label="여행 프로젝트 카드"
     >
       {/* Visual cutouts (top & bottom) */}
@@ -90,7 +80,7 @@ const ProjectCard = ({
               <div
                 className={`${textWhite} text-base font-medium leading-[22px]`}
               >
-                {date}
+                {startDate}
               </div>
               <div className="flex">
                 <div
@@ -116,7 +106,7 @@ const ProjectCard = ({
             <MoreHorizontal className="text-[var(--fill-deep,#3B4553)]" />
           </div>
           <footer className="flex flex-col items-end">
-            <div className="flex items-center justify-center gap-0.5">
+            <div className="flex items-center justify-center gap-0.5 group-hover:opacity-0 transition-opacity duration-200">
               <div className="flex items-center justify-center">
                 <div className="text-[var(--text-subtler,#7B848E)] text-sm font-medium leading-5">
                   {timeValue}
@@ -129,8 +119,13 @@ const ProjectCard = ({
                 전
               </div>
             </div>
-            <div className="text-[var(--text-subtler,#7B848E)] text-sm font-medium leading-5 text-right">
+            <div className="text-[var(--text-subtler,#7B848E)] text-sm font-medium leading-5 text-right group-hover:opacity-0 transition-opacity duration-200">
               수정됨
+            </div>
+            <div className="absolute bottom-[11%] right-[7%] opacity-0 group-hover:opacity-100 transition-all duration-200">
+              <div className="w-10 h-10 rounded-full bg-[var(--fill-deep,#3B4553)] flex items-center justify-center">
+                <ArrowRight className="w-5 h-5 text-white" />
+              </div>
             </div>
           </footer>
         </aside>
