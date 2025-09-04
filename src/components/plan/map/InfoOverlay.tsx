@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import ColorTextBtn from "../../common/ColorTextBtn";
 import { useFavoriteStore } from "../../../stores/useFavoriteStore";
+import { useSpotCollectionStore } from "../../../stores/useSpotCollectionStore";
 
 interface InfoOverlayProps {
   clickedPlace: {
@@ -35,10 +36,13 @@ interface InfoOverlayProps {
 
 const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
   const { toggleFavorite, isFavorite } = useFavoriteStore();
+  const { addToCollection, isInCollection } = useSpotCollectionStore();
+
   const placeId =
     clickedPlace.place.id ||
     `${clickedPlace.place.place_name}-${clickedPlace.place.x}-${clickedPlace.place.y}`;
   const isFavorited = isFavorite(placeId);
+  const isCollected = isInCollection(placeId);
 
   const getCategoryIcon = (categoryName: string) => {
     const category = categoryName?.split(" > ")[0] || "";
@@ -77,6 +81,29 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
   const handleCloseClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onClose();
+  };
+
+  const handleAddToCollection = (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    if (isCollected) {
+      console.log("이미 장소 모음에 추가된 장소입니다.");
+      return;
+    }
+
+    const collectionData = {
+      category: clickedPlace.place.category_group_name || "기타",
+      placeName: clickedPlace.place.place_name || "",
+      address:
+        clickedPlace.place.road_address_name ||
+        clickedPlace.place.address_name ||
+        "",
+      placeId: placeId,
+      latitude: Number(clickedPlace.place.y),
+      longitude: Number(clickedPlace.place.x),
+    };
+
+    addToCollection(collectionData);
   };
 
   return (
@@ -141,11 +168,19 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
 
         {/* 액션 버튼들 */}
         <div className="flex items-start gap-2 self-stretch">
-          <ActionBtn onClick={() => {}} disabled={!isFavorited}>
-            <Plus className="w-5 h-5" color="#3b4553" />
+          <ActionBtn onClick={handleAddToCollection} disabled={isCollected || !isFavorited}>
+            <Plus
+              className="w-5 h-5"
+              color={isCollected ? "#7b8482" : "#3b4553"}
+            />
             장소 모음 추가
           </ActionBtn>
-          <ActionBtn onClick={() => {}} disabled={!isFavorited}>
+          <ActionBtn
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            disabled={!isFavorited}
+          >
             <Calendar className="w-5 h-5" color="#3b4553" />
             일정에 추가
           </ActionBtn>
@@ -167,7 +202,7 @@ const ActionBtn = ({
 }: {
   children: React.ReactNode;
   disabled?: boolean;
-  onClick: () => void;
+  onClick: (e: React.MouseEvent) => void;
 }) => {
   return (
     <button
