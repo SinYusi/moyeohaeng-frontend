@@ -1,6 +1,7 @@
 import { ChevronDown } from "lucide-react";
 import GrayBgTextBtn from "../../common/GrayBgTextBtn";
 import SectionHeader from "./SectionHeader";
+import BlockListView from "./BlockListView";
 
 const AllBlockSection = () => {
   return (
@@ -13,6 +14,7 @@ const AllBlockSection = () => {
           <p className="text-lg font-medium text-[#131416]">전체 장소</p>
         </div>
       </SectionHeader>
+      <BlockListView />
     </div>
   );
 };
