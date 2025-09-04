@@ -1,31 +1,39 @@
 import Navigation from "../global/Navigation";
 import Header from "../global/Header";
+import type { ReactNode } from "react";
+import AsyncBoundary from "../common/AsyncBoundary";
 
 interface MainLayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
+  loading?: boolean;
+  error?: string | null;
+  className?: string;
 }
 
-import { useState } from "react";
-
-export default function MainLayout({ children }: MainLayoutProps) {
-  const [isNavCollapsed, setIsNavCollapsed] = useState(false);
-
+const MainLayout = ({
+  children,
+  loading = false,
+  error = null,
+}: MainLayoutProps) => {
   return (
     <div className="min-h-screen bg-[var(--surface-inverse,#F9FAFB)] flex">
-      <Navigation
-        isCollapsed={isNavCollapsed}
-        onToggle={() => setIsNavCollapsed(!isNavCollapsed)}
-      />
-      <div
-        className={`flex-1 transition-all duration-300 ${
-          isNavCollapsed ? "ml-[80px]" : "ml-[300px]"
-        }`}
-      >
+      <Navigation />
+      <div className="flex-1 ml-[300px]">
         <Header />
         <main className="py-[clamp(40px,5vw,70px)] px-[clamp(20px,4vw,62px)] w-full max-w-[1920px] mx-auto overflow-x-hidden">
-          {children}
+          {loading || error ? (
+            <div className="flex flex-col gap-[clamp(24px,4vw,48px)]">
+              <AsyncBoundary loading={loading} error={error}>
+                {children}
+              </AsyncBoundary>
+            </div>
+          ) : (
+            children
+          )}
         </main>
       </div>
     </div>
   );
-}
+};
+
+export default MainLayout;
