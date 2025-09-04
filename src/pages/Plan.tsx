@@ -1,4 +1,5 @@
 import MapSection from "../components/plan/map/MapSection";
+import SpotCollectionBoard from "../components/plan/spotCollection/SpotCollectionBoard";
 
 const Plan = () => {
   return (
@@ -27,12 +28,7 @@ const Plan = () => {
         <div className="flex flex-1">
           {/* 좌측 패널 - 셀렉션 및 스크랩북 */}
           <div className="w-[70.833%] h-full bg-white border-r border-gray-200 overflow-y-auto">
-            <div className="p-5">
-              <h2 className="text-lg font-medium text-gray-800 mb-2">
-                좌측 패널
-              </h2>
-              <p className="text-sm text-gray-600">셀렉션 및 스크랩북 영역</p>
-            </div>
+            <SpotCollectionBoard />
           </div>
 
           {/* 중간 패널 - 여행 일정 */}
