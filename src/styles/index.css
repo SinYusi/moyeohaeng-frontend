@@ -1,4 +1,5 @@
 @import "tailwindcss";
+/* @import "figma.css"; */
 
 @font-face {
   font-family: "SUIT-Regular";
@@ -11,6 +12,7 @@
 html,
 body {
   height: 100%;
+  background-color: rgb(249 250 251);
   font-family: "SUIT-Regular", -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, sans-serif;
   overflow: overlay;
@@ -28,4 +30,11 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #d1d5db;
+}
+:root {
+  --fill-deep: #3b4553;
+  --stroke-deep: #131416;
+  --text-white: white;
+  --text-subtler: #7b848e;
+  --surface-default: white;
 }
