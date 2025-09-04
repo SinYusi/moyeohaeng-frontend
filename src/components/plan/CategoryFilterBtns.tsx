@@ -1,5 +1,5 @@
 import { Fragment } from "react/jsx-runtime";
-import { useFavoriteStore } from "../../../stores/useFavoriteStore";
+import { useFavoriteStore } from "../../stores/useFavoriteStore";
 
 const CategoryFilterBtns = ({
   selectedFilters,
