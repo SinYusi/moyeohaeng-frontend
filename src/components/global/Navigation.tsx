@@ -1,6 +1,5 @@
 import {
   Home,
-  Users,
   LayoutGrid,
   LogOut,
   Folder,
@@ -115,21 +114,6 @@ const Navigation = ({ isCollapsed, onToggle }: NavigationProps) => {
         </div>
       </div>
     </nav>
-  );
-};
-
-const NavItem = ({ icon, label, isActive = false }: NavItemProps) => {
-  return (
-    <button
-      className={`w-full h-[42px] px-4 flex items-center gap-2 rounded-full ${
-        isActive ? "outline-1 outline-[var(--stroke-deep,#131416)]" : ""
-      }`}
-    >
-      <div className="w-5 h-5 text-[var(--fill-deep,#3B4553)]">{icon}</div>
-      <span className="text-[var(--text-default,#131416)] text-sm font-medium">
-        {label}
-      </span>
-    </button>
   );
 };
 

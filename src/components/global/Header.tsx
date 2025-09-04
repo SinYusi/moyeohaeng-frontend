@@ -1,5 +1,3 @@
-import { Bell, Search, Settings } from "lucide-react";
-
 const Header = () => {
   return (
     <header className="w-full h-[60px] px-6 py-[10px] bg-[var(--surface-inverse,#F9FAFB)] border-b-[1.5px] border-[var(--stroke-deep,#131416)] flex justify-end items-center gap-3">

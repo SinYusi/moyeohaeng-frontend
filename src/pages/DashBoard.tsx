@@ -1,8 +1,8 @@
 import MainLayout from "../components/layouts/MainLayout";
-import ProjectSection from "../components/common/ProjectSection";
+import ProjectSection from "../components/dashboard/ProjectSection";
 import { mockProjects } from "../mockData";
 
-const Home = () => {
+const DashBoard = () => {
   return (
     <MainLayout>
       <div className="flex flex-col gap-[clamp(24px,4vw,48px)]">
@@ -22,4 +22,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default DashBoard;

@@ -5,7 +5,7 @@ import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
 import Signup from "./pages/Signup";
 import ResetPassword from "./pages/ResetPassword";
-import Home from "./pages/Home";
+import DashBoard from "./pages/DashBoard";
 
 function App() {
   const pageRoute = [
@@ -14,8 +14,8 @@ function App() {
       element: <Main />,
     },
     {
-      path: "/home",
-      element: <Home />,
+      path: "/dashboard",
+      element: <DashBoard />,
     },
     {
       path: "/login",
