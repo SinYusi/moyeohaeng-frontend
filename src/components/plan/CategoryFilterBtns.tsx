@@ -1,5 +1,6 @@
 import { Fragment } from "react/jsx-runtime";
 import { useFavoriteStore } from "../../stores/useFavoriteStore";
+import { getCategoryIcon } from "../../utils/categoryUtils";
 
 const CategoryFilterBtns = ({
   selectedFilters,
@@ -44,12 +45,13 @@ const CategoryFilterBtns = ({
               <button
                 key={category}
                 onClick={() => toggleFilter(category)}
-                className={`px-3 py-1 rounded-full text-sm font-medium transition-colors border border-[#131416] ${
+                className={`flex items-center gap-[2px] px-3 py-1 rounded-full text-sm font-medium transition-colors border border-[#131416] ${
                   isSelected
                     ? "bg-[#131416] text-white"
                     : "bg-white text-[#131416] hover:bg-gray-50"
                 }`}
               >
+                {getCategoryIcon(category, 16)}
                 {category}
               </button>
             );
