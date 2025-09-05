@@ -1,4 +1,3 @@
-// 기본 장소 정보 (상단 카드 부분)
 export interface PlaceInfo {
   id: string;
   placeName: string;
@@ -8,11 +7,10 @@ export interface PlaceInfo {
   placeId: string;
   category: string;
   detailLink?: string;
+  memo: string;
 }
 
-// 사용자 상호작용 정보 (하단 코멘트/좋아요 부분)
 export interface UserInteraction {
-  memo: string;
   likeSummary: {
     totalCount: number;
     liked: boolean;
