@@ -5,6 +5,7 @@ interface SpotCollectionState {
   collections: SpotCollectionItem[];
   addToCollection: (item: Omit<SpotCollectionItem, "id" | "addedAt">) => void;
   removeFromCollection: (id: string) => void;
+  updateCollection: (id: string, updates: Partial<SpotCollectionItem>) => void;
   isInCollection: (placeId: string) => boolean;
   getCollectionByCategory: (category: string) => SpotCollectionItem[];
 }
@@ -30,6 +31,14 @@ export const useSpotCollectionStore = create<SpotCollectionState>()(
     removeFromCollection: (id) => {
       set((state) => ({
         collections: state.collections.filter((item) => item.id !== id),
+      }));
+    },
+
+    updateCollection: (id, updates) => {
+      set((state) => ({
+        collections: state.collections.map((item) =>
+          item.id === id ? { ...item, ...updates } : item
+        ),
       }));
     },
 
