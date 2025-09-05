@@ -20,7 +20,7 @@ const ScheduleBlock = ({ place }: { place: PlaceInfo }) => {
       {/* CategorySection */}
       <div className="flex justify-between items-center self-stretch">
         <div className="flex items-center gap-1 ">
-          {getCategoryIcon(place.category, 16, "#7b8482")}
+          {getCategoryIcon(place.category, 16)}
           <p className="text-xs font-medium text-[#5a6572]">{place.category}</p>
         </div>
         <Ellipsis size={16} color="#3b4553" />

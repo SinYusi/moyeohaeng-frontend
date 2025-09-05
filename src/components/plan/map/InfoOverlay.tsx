@@ -92,9 +92,12 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
         <div className="flex flex-col gap-[6px]">
           {/* 상단 - 카테고리, 닫기 버튼*/}
           <div className="flex items-start justify-between">
-            <div className="text-[#5a6572] px-[6px] rounded-sm text-sm font-medium flex items-center justify-center py-1">
+            <div className="text-[#5a6572] rounded-sm text-sm font-medium flex items-center justify-center py-1">
               <span className="mr-1">
-                {getCategoryIcon(clickedPlace.place?.category_group_name || "", 20, "#3b4553")}
+                {getCategoryIcon(
+                  clickedPlace.place?.category_group_name || "",
+                  20
+                )}
               </span>
               {clickedPlace.place?.category_group_name || "장소"}
             </div>
