@@ -23,7 +23,7 @@ const Login = () => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
-    
+
     try {
       await login(email, password);
       // 로그인 성공 시 useLogin 훅 내에서 홈으로 리다이렉트됨
@@ -66,7 +66,11 @@ const Login = () => {
           />
           Google 계정으로 로그인
         </ColorBackgroundBtn>
-        <Divider color="#131416" label="또는 이메일로 로그인" />
+        <Divider
+          color="#131416"
+          label="또는 이메일로 로그인"
+          className="my-4"
+        />
 
         {/* 이메일 입력 필드 */}
         <TextInput
@@ -115,9 +119,7 @@ const Login = () => {
         </div>
 
         {/* 로그인 버튼 */}
-        {error && (
-          <div className="text-red-500 text-sm mt-2">{error}</div>
-        )}
+        {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
 
         <ColorBackgroundBtn
           disabled={!email || !password || isLoading}
