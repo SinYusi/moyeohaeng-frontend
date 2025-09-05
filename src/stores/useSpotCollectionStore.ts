@@ -20,7 +20,6 @@ export const useSpotCollectionStore = create<SpotCollectionState>()(
         id: `collection_${Date.now()}_${Math.random()
           .toString(36)
           .substr(2, 9)}`,
-        addedAt: new Date().toISOString(),
       };
 
       set((state) => ({

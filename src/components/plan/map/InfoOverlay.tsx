@@ -86,10 +86,7 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
   const handleAddToCollection = (e: React.MouseEvent) => {
     e.stopPropagation();
 
-    if (isCollected) {
-      console.log("이미 장소 모음에 추가된 장소입니다.");
-      return;
-    }
+    // TODO: API 연결
 
     const collectionData = {
       category: clickedPlace.place.category_group_name || "기타",
@@ -101,6 +98,20 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
       placeId: placeId,
       latitude: Number(clickedPlace.place.y),
       longitude: Number(clickedPlace.place.x),
+      memo: "",
+      createAt: new Date().toISOString(),
+      likeSummary: {
+        totalCount: 0,
+        liked: false,
+        likedMembers: [],
+      },
+      commentSummary: {
+        totalCount: 0,
+        lastComment: {
+          content: "",
+          author: "",
+        },
+      },
     };
 
     addToCollection(collectionData);
