@@ -38,10 +38,10 @@ const ProjectCard = ({
 
   return (
     <article
-      className="w-full relative overflow-hidden aspect-[350/230] group"
+      className="w-full max-w-[350px] max-h-[230px] relative overflow-hidden aspect-[350/230] group"
       aria-label="여행 프로젝트 카드"
     >
-      {/* Visual cutouts (top & bottom) */}
+      {/* 시각적 컷아웃 (상단 및 하단) */} 
       <div
         className={`absolute z-10 w-[14%] aspect-square rounded-full ${bgSurface} ${border} left-[63.5%] -top-[10%] pointer-events-none`}
         aria-hidden
@@ -51,12 +51,12 @@ const ProjectCard = ({
         aria-hidden
       />
       <div className="flex w-full h-full">
-        {/* Left: 메인 정보 */}
+        {/* 왼쪽: 메인 정보 */} 
         <section
           className={`w-[71%] h-full py-[8%] pl-[8%] pr-[4%] bg-[var(--fill-deep,#3B4553)] rounded-l-[24px] ${border} border-r-0 flex flex-col justify-center items-start`}
         >
           <div className="flex-1 flex flex-col justify-between w-full">
-            {/* Header: 일수 + 제목 */}
+            {/* 헤더: 일수 + 제목 */} 
             <header className="flex flex-col gap-1.5">
               <div className="flex gap-0.5">
                 <div
@@ -98,7 +98,7 @@ const ProjectCard = ({
           </div>
         </section>
 
-        {/* Right: 메타 패널 (메뉴 + 마지막 수정 시간) */}
+        {/* 오른쪽: 메타 패널 (메뉴 + 마지막 수정 시간) */} 
         <aside
           className={`w-[29%] h-full pl-[2%] pr-[7%] py-[9%] bg-[var(--surface-default,white)] rounded-r-[24px] ${border} border-l-0 flex flex-col justify-between items-end`}
         >

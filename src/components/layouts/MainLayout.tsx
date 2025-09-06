@@ -20,7 +20,7 @@ const MainLayout = ({
       <Navigation />
       <div className="flex-1 ml-[300px]">
         <Header />
-        <main className="py-[clamp(40px,5vw,70px)] px-[clamp(20px,4vw,62px)] w-full max-w-[1920px] mx-auto overflow-x-hidden">
+        <main className="py-[clamp(40px,5vw,70px)] px-[clamp(20px,4vw,62px)] w-full h-full max-w-[1920px] mx-auto overflow-x-hidden">
           {loading || error ? (
             <div className="flex flex-col gap-[clamp(24px,4vw,48px)]">
               <AsyncBoundary loading={loading} error={error}>
