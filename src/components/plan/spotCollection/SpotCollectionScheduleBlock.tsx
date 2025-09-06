@@ -6,7 +6,7 @@ const SelectionScheduleBlock = ({ place }: { place: SpotCollectionItem }) => {
   return (
     <div className="flex flex-col items-center gap-[6px]">
       <ScheduleBlock place={place} />
-      <BlockCommentSection userInteraction={place} />
+      <BlockCommentSection userInteraction={place} placeId={place.id} />
     </div>
   );
 };

@@ -6,6 +6,7 @@ interface SpotCollectionState {
   addToCollection: (item: Omit<SpotCollectionItem, "id" | "addedAt">) => void;
   removeFromCollection: (id: string) => void;
   updateCollection: (id: string, updates: Partial<SpotCollectionItem>) => void;
+  toggleLike: (id: string) => void;
   isInCollection: (placeId: string) => boolean;
   getCollectionByCategory: (category: string) => SpotCollectionItem[];
 }
@@ -39,6 +40,29 @@ export const useSpotCollectionStore = create<SpotCollectionState>()(
         collections: state.collections.map((item) =>
           item.id === id ? { ...item, ...updates } : item
         ),
+      }));
+    },
+
+    toggleLike: (id) => {
+      set((state) => ({
+        collections: state.collections.map((item) => {
+          if (item.id === id) {
+            const newLiked = !item.likeSummary.liked;
+            const newTotalCount = newLiked 
+              ? item.likeSummary.totalCount + 1 
+              : item.likeSummary.totalCount - 1;
+            
+            return {
+              ...item,
+              likeSummary: {
+                ...item.likeSummary,
+                liked: newLiked,
+                totalCount: newTotalCount,
+              },
+            };
+          }
+          return item;
+        }),
       }));
     },
 
