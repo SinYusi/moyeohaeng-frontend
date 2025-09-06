@@ -1,21 +1,24 @@
-import React, { useState } from 'react';
-import BaseModal from './BaseModal';
-import ModalButton from './ModalButton';
-import { Link, Copy } from 'lucide-react';
+import React, { useState } from "react";
+import BaseModal from "../../common/modal/BaseModal";
+import ModalButton from "../../common/modal/ModalButton";
+import { Link } from "lucide-react";
 
 interface TeamCreateModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const TeamCreateModal: React.FC<TeamCreateModalProps> = ({ isOpen, onClose }) => {
+const TeamCreateModal: React.FC<TeamCreateModalProps> = ({
+  isOpen,
+  onClose,
+}) => {
   const [step, setStep] = useState(1);
-  const [teamName, setTeamName] = useState('');
+  const [teamName, setTeamName] = useState("");
   const [copied, setCopied] = useState(false);
-  const inviteLink = 'https://moyeohaeng.com/invite/123456'; // This should be generated based on your backend
+  const inviteLink = "https://moyeohaeng.com/invite/123456"; // 이 링크는 백엔드에서 생성되어야 합니다.
 
   const handleNext = () => {
-    if (teamName.trim() === '') return;
+    if (teamName.trim() === "") return;
     setStep(2);
   };
 
@@ -29,7 +32,7 @@ const TeamCreateModal: React.FC<TeamCreateModalProps> = ({ isOpen, onClose }) =>
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      console.error('Failed to copy:', err);
+      console.error("Failed to copy:", err);
     }
   };
 
@@ -57,8 +60,7 @@ const TeamCreateModal: React.FC<TeamCreateModalProps> = ({ isOpen, onClose }) =>
       <div className="self-stretch inline-flex justify-start items-center gap-4">
         <div className="flex-1 flex justify-start items-center gap-2">
           <div className="w-8 h-8 bg-fill-white rounded-md outline-[#4f5fbf] outline-[1.2px] outline-stroke-primary-default flex justify-center items-center">
-           <Link className="w-4 h-4 text-[#4f5fbf]" />
-
+            <Link className="w-4 h-4 text-[#4f5fbf]" />
           </div>
           <div className="flex-1 inline-flex flex-col justify-center items-start gap-1">
             <div className="text-text-default text-base font-medium font-['SUIT_Variable'] leading-snug">
@@ -71,7 +73,7 @@ const TeamCreateModal: React.FC<TeamCreateModalProps> = ({ isOpen, onClose }) =>
           className="w-22 h-10 px-3 bg-surface-default rounded-md  outline-[1.5px] outline-[#3864f4] flex justify-center items-center hover:bg-fill-primary-subtle transition-colors"
         >
           <span className=" text-text-primary-active text-[#3864f4] font-semibold font-['SUIT_Variable'] leading-snug flex items-center gap-1">
-            {copied ? '복사됨' : '링크 복사'}
+            {copied ? "복사됨" : "링크 복사"}
           </span>
         </button>
       </div>
@@ -87,31 +89,31 @@ const TeamCreateModal: React.FC<TeamCreateModalProps> = ({ isOpen, onClose }) =>
         {step === 1 ? (
           <>
             <div className="w-16">
-            <ModalButton variant="secondary" onClick={onClose}>
-              취소
-            </ModalButton>
+              <ModalButton variant="secondary" onClick={onClose}>
+                취소
+              </ModalButton>
             </div>
             <div className="w-16">
-            <ModalButton 
-              variant="primary" 
-              onClick={handleNext}
-              disabled={!teamName.trim()}
+              <ModalButton
+                variant="primary"
+                onClick={handleNext}
+                disabled={!teamName.trim()}
               >
-              다음
-            </ModalButton>
-              </div>
+                다음
+              </ModalButton>
+            </div>
           </>
         ) : (
           <>
             <div className="w-16">
-            <ModalButton variant="secondary" onClick={handlePrevious}>
-              이전
-            </ModalButton>
+              <ModalButton variant="secondary" onClick={handlePrevious}>
+                이전
+              </ModalButton>
             </div>
             <div className="w-18">
-            <ModalButton variant="primary" onClick={onClose}>
-              만들기
-            </ModalButton>
+              <ModalButton variant="primary" onClick={onClose}>
+                만들기
+              </ModalButton>
             </div>
           </>
         )}
