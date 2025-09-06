@@ -1,4 +1,8 @@
 import { MoreHorizontal, ArrowRight } from "lucide-react";
+import ContextMenu, { type ContextMenuItem } from "../../common/menu/ContextMenu";
+import { useState } from "react";
+import NewProjectModal from "../modals/NewProjectModal";
+import DeleteProjectModal from "../modals/DeleteProjectModal";
 
 import type { Project } from "../../../types/project";
 import { getTimeAgo } from "../../../utils/timeUtils";
@@ -21,6 +25,27 @@ const ProjectCard = ({
   const textWhite = "text-[var(--text-white,white)]";
   const bgSurface = "bg-[var(--surface-inverse,#F9FAFB)]";
 
+  // 컨텍스트 메뉴는 공통 컴포넌트 사용
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const menuItems: ContextMenuItem[] = [
+    {
+      id: "edit",
+      label: "편집",
+      onSelect: () => {
+        setIsEditOpen(true);
+      },
+      dividerBelow: true,
+    },
+    {
+      id: "delete",
+      label: "삭제",
+      onSelect: () => {
+        setIsDeleteOpen(true);
+      },
+    },
+  ];
+
   // 마지막 단어 앞에 줄바꿈을 추가하여 자연스러운 줄바꿈 처리
   const formatTitle = (t: string) => {
     const parts = t.trim().split(/\s+/);
@@ -37,11 +62,12 @@ const ProjectCard = ({
   };
 
   return (
-    <article
-      className="w-full max-w-[350px] max-h-[230px] relative overflow-hidden aspect-[350/230] group"
-      aria-label="여행 프로젝트 카드"
-    >
-      {/* 시각적 컷아웃 (상단 및 하단) */} 
+    <>
+      <article
+        className="w-full max-w-[350px] max-h-[230px] relative overflow-hidden aspect-[350/230] group"
+        aria-label="여행 프로젝트 카드"
+      >
+      {/* 시각적 컷아웃 (상단 및 하단) */}
       <div
         className={`absolute z-10 w-[14%] aspect-square rounded-full ${bgSurface} ${border} left-[63.5%] -top-[10%] pointer-events-none`}
         aria-hidden
@@ -51,12 +77,12 @@ const ProjectCard = ({
         aria-hidden
       />
       <div className="flex w-full h-full">
-        {/* 왼쪽: 메인 정보 */} 
+        {/* 왼쪽: 메인 정보 */}
         <section
           className={`w-[71%] h-full py-[8%] pl-[8%] pr-[4%] bg-[var(--fill-deep,#3B4553)] rounded-l-[24px] ${border} border-r-0 flex flex-col justify-center items-start`}
         >
           <div className="flex-1 flex flex-col justify-between w-full">
-            {/* 헤더: 일수 + 제목 */} 
+            {/* 헤더: 일수 + 제목 */}
             <header className="flex flex-col gap-1.5">
               <div className="flex gap-0.5">
                 <div
@@ -98,12 +124,18 @@ const ProjectCard = ({
           </div>
         </section>
 
-        {/* 오른쪽: 메타 패널 (메뉴 + 마지막 수정 시간) */} 
+        {/* 오른쪽: 메타 패널 (메뉴 + 마지막 수정 시간) */}
         <aside
-          className={`w-[29%] h-full pl-[2%] pr-[7%] py-[9%] bg-[var(--surface-default,white)] rounded-r-[24px] ${border} border-l-0 flex flex-col justify-between items-end`}
+          className={`w-[29%] h-full pl-[2%] pr-[7%] py-[9%] bg-[var(--surface-default,white)] rounded-r-[24px] ${border} border-l-0 flex flex-col justify-between items-end relative`}
         >
-          <div className="w-7 h-7 relative overflow-hidden">
-            <MoreHorizontal className="text-[var(--fill-deep,#3B4553)]" />
+          <div className="w-7 h-7 relative overflow-visible">
+            <ContextMenu
+              trigger={
+                <MoreHorizontal className="text-[var(--fill-deep,#3B4553)]" />
+              }
+              align="right"
+              items={menuItems}
+            />
           </div>
           <footer className="flex flex-col items-end">
             <div className="flex items-center justify-center gap-0.5 group-hover:opacity-0 transition-opacity duration-200">
@@ -130,7 +162,29 @@ const ProjectCard = ({
           </footer>
         </aside>
       </div>
-    </article>
+      </article>
+
+      {/* Modals */}
+      <NewProjectModal
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        onSubmit={(projectName, color) => {
+          // TODO: 편집 저장 로직 연동
+          console.log("프로젝트 편집:", { projectName, color });
+        }}
+      />
+
+      <DeleteProjectModal
+        isOpen={isDeleteOpen}
+        onClose={() => setIsDeleteOpen(false)}
+        onDelete={() => {
+          // TODO: 삭제 로직 연동
+          console.log("프로젝트 삭제:", { title });
+          setIsDeleteOpen(false);
+        }}
+        projectName={title}
+      />
+    </>
   );
 };
 
