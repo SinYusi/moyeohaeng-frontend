@@ -8,11 +8,16 @@ interface ActionButtonProps {
   className?: string;
 }
 
-const ActionButton = ({ onClick, children, showIcon = true, className = '' }: ActionButtonProps) => {
+const ActionButton = ({
+  onClick,
+  children,
+  showIcon = true,
+  className = "",
+}: ActionButtonProps) => {
   return (
     <button
       onClick={onClick}
-      className={`h-[44px] px-3 bg-[#4F5FBF] rounded-md flex items-center hover:bg-[#3A4999] transition-colors ${className}`}
+      className={`h-[44px] px-3 rounded-md flex items-center bg-[#5D6FEE] hover:bg-[#4D5FDE] text-white transition-colors ${className}`}
     >
       <span className="text-white text-[clamp(0.875rem,1.5vw,1rem)] font-semibold whitespace-nowrap flex items-center gap-2">
         {showIcon && <Plus size={20} />}
