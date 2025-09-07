@@ -3,25 +3,31 @@ import type { UserInteraction } from "../../../types/spotCollectionItem";
 import GrayBgTextBtn from "../../common/GrayBgTextBtn";
 import { useSpotCollectionStore } from "../../../stores/useSpotCollectionStore";
 import FilledThumbsUp from "../../../assets/images/FilledThumbsUp.svg";
+import { useModalStore } from "../../../stores/useModalStore";
 
 const BlockCommentSection = ({
   userInteraction,
   placeId,
 }: {
   userInteraction: UserInteraction;
-  placeId: string;
+  placeId: number;
 }) => {
   const { toggleLike } = useSpotCollectionStore();
+  const { openCommentModal } = useModalStore();
 
   const handleLikeClick = () => {
     toggleLike(placeId);
+  };
+
+  const handleCommentClick = () => {
+    openCommentModal(placeId);
   };
 
   return (
     <div className="flex flex-col px-[2px] items-start gap-1 self-stretch">
       {/* CommentHeader */}
       <div className="flex justify-between items-center self-stretch">
-        <GrayBgTextBtn>
+        <GrayBgTextBtn onClick={handleCommentClick}>
           <Plus size={16} color="#3b4553" />
           <p className="text-sm font-bold text-[#131416]">코멘트 추가</p>
         </GrayBgTextBtn>

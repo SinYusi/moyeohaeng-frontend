@@ -1,7 +1,10 @@
 import MapSection from "../components/plan/map/MapSection";
 import SpotCollectionBoard from "../components/plan/spotCollection/SpotCollectionBoard";
+import CommentSlideModal from "../components/plan/modal/CommentSlideModal";
+import { useModalStore } from "../stores/useModalStore";
 
 const Plan = () => {
+  const { activeModal } = useModalStore();
   return (
     <div className="flex w-full h-screen bg-gray-100">
       {/* 좌측 영역 (헤더 + 좌측 패널 + 중간 패널) */}
@@ -32,12 +35,13 @@ const Plan = () => {
           </div>
 
           {/* 중간 패널 - 여행 일정 */}
-          <div className="w-[29.167%] h-full bg-white border-r border-gray-200 overflow-y-auto">
+          <div className="relative w-[29.167%] h-full bg-white border-r border-gray-200 overflow-y-auto">
             <div className="p-5">
               <h2 className="text-lg font-medium text-gray-800 mb-2">
                 중간 패널
               </h2>
               <p className="text-sm text-gray-600">여행 일정 영역</p>
+              {activeModal === "comment" && <CommentSlideModal />}
             </div>
           </div>
         </div>
