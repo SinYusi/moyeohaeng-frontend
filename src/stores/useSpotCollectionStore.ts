@@ -4,11 +4,12 @@ import type { SpotCollectionItem } from "../types/spotCollectionItem";
 interface SpotCollectionState {
   collections: SpotCollectionItem[];
   addToCollection: (item: Omit<SpotCollectionItem, "id" | "addedAt">) => void;
-  removeFromCollection: (id: string) => void;
-  updateCollection: (id: string, updates: Partial<SpotCollectionItem>) => void;
-  toggleLike: (id: string) => void;
-  isInCollection: (placeId: string) => boolean;
+  removeFromCollection: (id: number) => void;
+  updateCollection: (id: number, updates: Partial<SpotCollectionItem>) => void;
+  toggleLike: (id: number) => void;
+  isInCollection: (placeId: number) => boolean;
   getCollectionByCategory: (category: string) => SpotCollectionItem[];
+  getPlaceById: (placeId: number) => SpotCollectionItem | undefined;
 }
 
 export const useSpotCollectionStore = create<SpotCollectionState>()(
@@ -19,9 +20,7 @@ export const useSpotCollectionStore = create<SpotCollectionState>()(
       const newItem: SpotCollectionItem = {
         ...item,
         // TODO: id, addedAt api 연결
-        id: `collection_${Date.now()}_${Math.random()
-          .toString(36)
-          .substr(2, 9)}`,
+        id: Date.now() + Math.random(),
       };
 
       set((state) => ({
@@ -48,10 +47,10 @@ export const useSpotCollectionStore = create<SpotCollectionState>()(
         collections: state.collections.map((item) => {
           if (item.id === id) {
             const newLiked = !item.likeSummary.liked;
-            const newTotalCount = newLiked 
-              ? item.likeSummary.totalCount + 1 
+            const newTotalCount = newLiked
+              ? item.likeSummary.totalCount + 1
               : item.likeSummary.totalCount - 1;
-            
+
             return {
               ...item,
               likeSummary: {
@@ -74,6 +73,11 @@ export const useSpotCollectionStore = create<SpotCollectionState>()(
     getCollectionByCategory: (category) => {
       const { collections } = get();
       return collections.filter((item) => item.category === category);
+    },
+
+    getPlaceById: (placeId) => {
+      const { collections } = get();
+      return collections.find((item) => item.placeId === placeId);
     },
   })
 );

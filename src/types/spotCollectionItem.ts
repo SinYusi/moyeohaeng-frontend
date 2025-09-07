@@ -1,10 +1,10 @@
 export interface PlaceInfo {
-  id: string;
+  id: number;
   placeName: string;
   address: string;
   latitude: number;
   longitude: number;
-  placeId: string;
+  placeId: number;
   category: string;
   detailLink?: string;
   memo: string;
