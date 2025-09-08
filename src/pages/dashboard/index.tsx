@@ -15,8 +15,12 @@ const Dashboard = () => {
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
   const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
 
-  // 팀 ID가 유효하지 않으면 /dashboard/home으로 리디렉션
-  if (teamId && !projects.some((p) => p.team.id.toString() === teamId)) {
+  // 팀 ID가 유효하지 않으면 /dashboard/home으로 리디렉션 (로딩 완료 후에만 검사)
+  if (
+    teamId &&
+    !loading &&
+    !projects.some((p) => p.team.id.toString() === teamId)
+  ) {
     return <Navigate to="/dashboard/home" replace />;
   }
 
