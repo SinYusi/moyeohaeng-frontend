@@ -9,7 +9,7 @@ const AllBlockList = () => {
   return (
     <div className="grid gap-x-3 gap-y-4 grid-cols-1 xl:grid-cols-2 3xl:grid-cols-3">
       {collections.map((collection) => (
-        <SelectionScheduleBlock key={collection.placeId} place={collection} />
+        <SelectionScheduleBlock key={collection.id} place={collection} />
       ))}
     </div>
   );

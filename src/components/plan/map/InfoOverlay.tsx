@@ -17,9 +17,7 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
   const { toggleFavorite, isFavorite } = useFavoriteStore();
   const { addToCollection, isInCollection } = useSpotCollectionStore();
 
-  const placeId =
-    clickedPlace.place.id ||
-    `${clickedPlace.place.place_name}-${clickedPlace.place.x}-${clickedPlace.place.y}`;
+  const placeId = clickedPlace.place.id;
   const isFavorited = isFavorite(placeId);
   const isCollected = isInCollection(placeId);
 
@@ -44,16 +42,16 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
     // TODO: API 연결
 
     const collectionData = {
-      category: clickedPlace.place.category_group_name || "기타",
-      placeName: clickedPlace.place.place_name || "",
+      name: clickedPlace.place.place_name || "",
       address:
         clickedPlace.place.road_address_name ||
         clickedPlace.place.address_name ||
         "",
-      placeId: placeId,
       latitude: Number(clickedPlace.place.y),
       longitude: Number(clickedPlace.place.x),
       memo: "",
+      detailLink: `https://place.map.kakao.com/${placeId}`,
+      category: clickedPlace.place.category_group_name || "기타",
       createAt: new Date().toISOString(),
       likeSummary: {
         totalCount: 0,

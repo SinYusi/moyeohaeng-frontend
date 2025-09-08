@@ -1,15 +1,15 @@
 import { create } from "zustand";
-import type { SpotCollectionItem } from "../types/spotCollectionItem";
+import type { PlaceBlock } from "../types/planTypes";
 
 interface SpotCollectionState {
-  collections: SpotCollectionItem[];
-  addToCollection: (item: Omit<SpotCollectionItem, "id" | "addedAt">) => void;
-  removeFromCollection: (id: number) => void;
-  updateCollection: (id: number, updates: Partial<SpotCollectionItem>) => void;
-  toggleLike: (id: number) => void;
-  isInCollection: (placeId: number) => boolean;
-  getCollectionByCategory: (category: string) => SpotCollectionItem[];
-  getPlaceById: (placeId: number) => SpotCollectionItem | undefined;
+  collections: PlaceBlock[];
+  addToCollection: (item: Omit<PlaceBlock, "id" | "createdAt">) => void;
+  removeFromCollection: (id: string) => void;
+  updateCollection: (id: string, updates: Partial<PlaceBlock>) => void;
+  toggleLike: (id: string) => void;
+  isInCollection: (placeId: string) => boolean;
+  getCollectionByCategory: (category: string) => PlaceBlock[];
+  getPlaceById: (placeId: string) => PlaceBlock | undefined;
 }
 
 export const useSpotCollectionStore = create<SpotCollectionState>()(
@@ -17,10 +17,10 @@ export const useSpotCollectionStore = create<SpotCollectionState>()(
     collections: [],
 
     addToCollection: (item) => {
-      const newItem: SpotCollectionItem = {
+      const newItem: PlaceBlock = {
         ...item,
         // TODO: id, addedAt api 연결
-        id: Date.now() + Math.random(),
+        id: Date.now() + Math.random().toString(),
       };
 
       set((state) => ({
@@ -30,7 +30,7 @@ export const useSpotCollectionStore = create<SpotCollectionState>()(
 
     removeFromCollection: (id) => {
       set((state) => ({
-        collections: state.collections.filter((item) => item.id !== id),
+        collections: state.collections.filter((item) => item.id !== id.toString()),
       }));
     },
 
@@ -68,7 +68,7 @@ export const useSpotCollectionStore = create<SpotCollectionState>()(
 
     isInCollection: (placeId) => {
       const { collections } = get();
-      return collections.some((item) => item.placeId === placeId);
+      return collections.some((item) => item.id === placeId);
     },
 
     getCollectionByCategory: (category) => {
@@ -76,9 +76,9 @@ export const useSpotCollectionStore = create<SpotCollectionState>()(
       return collections.filter((item) => item.category === category);
     },
 
-    getPlaceById: (placeId) => {
+    getPlaceById: (id) => {
       const { collections } = get();
-      return collections.find((item) => item.placeId === placeId);
+      return collections.find((item) => item.id === id);
     },
   })
 );

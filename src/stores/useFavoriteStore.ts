@@ -1,18 +1,9 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
-export interface FavoritePlace {
-  id: string;
-  address: string;
-  latitude: number;
-  longitude: number;
-  detailLink: string;
-  category: string;
-  addedAt: number;
-}
+import type { MapPin } from "../types/planTypes";
 
 interface FavoriteStore {
-  favorites: FavoritePlace[];
+  favorites: MapPin[];
   addFavorite: (place: kakao.maps.services.PlacesSearchResultItem) => void;
   removeFavorite: (placeId: string) => void;
   isFavorite: (placeId: string) => boolean;
@@ -25,14 +16,14 @@ export const useFavoriteStore = create<FavoriteStore>()(
       favorites: [],
 
       addFavorite: (place) => {
-        const favoritePlace: FavoritePlace = {
-          id: place.id || `${place.place_name}-${place.x}-${place.y}`,
+        const favoritePlace: MapPin = {
+          id: place.id || Date.now() + Math.random().toString(),
           address: place.road_address_name || place.address_name || "",
           latitude: Number(place.y),
           longitude: Number(place.x),
-          detailLink: `https://example.com/pin/${place.id || "unknown"}`,
+          detailLink: `https://place.map.kakao.com/${place.id}`,
+          author: "unknown",
           category: place.category_group_name || "장소",
-          addedAt: Date.now(),
         };
 
         set((state) => ({
@@ -47,15 +38,15 @@ export const useFavoriteStore = create<FavoriteStore>()(
       },
 
       isFavorite: (placeId) => {
-        return get().favorites.some((fav) => fav.id === placeId);
+        return get().favorites.some((fav) => fav.id === placeId.toString());
       },
 
       toggleFavorite: (place) => {
-        const placeId = place.id || `${place.place_name}-${place.x}-${place.y}`;
+        const placeId = place.id || Date.now() + Math.random().toString();
         const { isFavorite, addFavorite, removeFavorite } = get();
 
-        if (isFavorite(placeId)) {
-          removeFavorite(placeId);
+        if (isFavorite(placeId.toString())) {
+          removeFavorite(placeId.toString());
         } else {
           addFavorite(place);
         }

@@ -1,11 +1,11 @@
 import { ChevronRight, Ellipsis, Pencil } from "lucide-react";
-import type { PlaceInfo } from "../../../types/spotCollectionItem";
 import { getCategoryIcon } from "../../../utils/categoryUtils";
 import Divider from "../../common/Divider";
 import { useSpotCollectionStore } from "../../../stores/useSpotCollectionStore";
 import { useState } from "react";
+import type { PlaceBlock } from "../../../types/planTypes";
 
-const ScheduleBlock = ({ place }: { place: PlaceInfo }) => {
+const ScheduleBlock = ({ place }: { place: PlaceBlock }) => {
   const { updateCollection } = useSpotCollectionStore();
   const [memo, setMemo] = useState(place.memo);
 
@@ -32,7 +32,7 @@ const ScheduleBlock = ({ place }: { place: PlaceInfo }) => {
           {/* LocationName */}
           <div className="flex items-center gap-1">
             <p className="text-base font-bold text-[#131416] truncate">
-              {place.placeName}
+              {place.name}
             </p>
             <ChevronRight size={16} color="#c0c7ce" className="flex-shrink-0" />
           </div>

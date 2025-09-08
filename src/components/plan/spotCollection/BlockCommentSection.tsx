@@ -1,5 +1,5 @@
 import { Plus, ThumbsUp } from "lucide-react";
-import type { UserInteraction } from "../../../types/spotCollectionItem";
+import type { PlaceBlock } from "../../../types/planTypes";
 import GrayBgTextBtn from "../../common/GrayBgTextBtn";
 import { useSpotCollectionStore } from "../../../stores/useSpotCollectionStore";
 import FilledThumbsUp from "../../../assets/images/FilledThumbsUp.svg";
@@ -7,20 +7,20 @@ import { useModalStore } from "../../../stores/useModalStore";
 
 const BlockCommentSection = ({
   userInteraction,
-  placeId,
+  id,
 }: {
-  userInteraction: UserInteraction;
-  placeId: number;
+  userInteraction: PlaceBlock;
+  id: string;
 }) => {
   const { toggleLike } = useSpotCollectionStore();
   const { openCommentModal } = useModalStore();
 
   const handleLikeClick = () => {
-    toggleLike(placeId);
+    toggleLike(id);
   };
 
   const handleCommentClick = () => {
-    openCommentModal(placeId);
+    openCommentModal(id);
   };
 
   return (
