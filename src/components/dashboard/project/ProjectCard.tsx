@@ -8,7 +8,7 @@ import DeleteProjectModal from "../modals/DeleteProjectModal";
 
 import type { Project } from "../../../types/project";
 import { getTimeAgo } from "../../../utils/timeUtils";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 type ProjectCardProps = Project;
 
@@ -32,7 +32,6 @@ const ProjectCard = ({
   // 컨텍스트 메뉴는 공통 컴포넌트 사용
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const navigate = useNavigate();
   const menuItems: ContextMenuItem[] = [
     {
       id: "edit",
@@ -160,12 +159,12 @@ const ProjectCard = ({
                 수정됨
               </div>
               <div className="absolute bottom-[11%] right-[7%] opacity-0 group-hover:opacity-100 transition-all duration-200">
-                <div
+                <Link
                   className="w-10 h-10 rounded-full bg-[var(--fill-deep,#3B4553)] flex items-center justify-center cursor-pointer"
-                  onClick={() => navigate(`/plan/${id}`)}
+                  to={`/plan/${id}`}
                 >
                   <ArrowRight className="w-5 h-5 text-white" />
-                </div>
+                </Link>
               </div>
             </footer>
           </aside>
