@@ -20,10 +20,16 @@ const NewProjectModal: React.FC<NewProjectModalProps> = ({
   const [projectName, setProjectName] = useState(initialName ?? "");
   const [selectedColor, setSelectedColor] = useState("coral");
 
+  const handleClose = () => {
+    setProjectName(initialName ?? "");
+    setSelectedColor("coral");
+    onClose();
+  };
+
   const handleSubmit = () => {
     if (projectName.trim()) {
       onSubmit(projectName, selectedColor);
-      onClose();
+      handleClose();
     }
   };
 
@@ -41,7 +47,7 @@ const NewProjectModal: React.FC<NewProjectModalProps> = ({
   const modalFooter = (
     <div className="flex justify-end items-center gap-2">
       <div className="w-16">
-        <ModalButton onClick={onClose}>닫기</ModalButton>
+        <ModalButton onClick={handleClose}>닫기</ModalButton>
       </div>
       <div className="w-20">
         <ModalButton
@@ -58,7 +64,7 @@ const NewProjectModal: React.FC<NewProjectModalProps> = ({
   return (
     <BaseModal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
       title={modalTitle ?? "새 프로젝트 만들기"}
       width={600}
       footer={modalFooter}

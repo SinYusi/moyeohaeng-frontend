@@ -15,11 +15,14 @@ const DeleteProjectModal: React.FC<DeleteProjectModalProps> = ({
   onDelete,
   projectName,
 }) => {
+  const handleClose = () => {
+    onClose();
+  };
   const modalFooter = (
     <div className="self-stretch inline-flex justify-end items-center">
       <div className="flex justify-start items-center gap-2">
         <div className="w-16 h-9">
-          <ModalButton onClick={onClose} variant="secondary">
+          <ModalButton onClick={handleClose} variant="secondary">
             취소
           </ModalButton>
         </div>
@@ -35,7 +38,7 @@ const DeleteProjectModal: React.FC<DeleteProjectModalProps> = ({
   return (
     <BaseModal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
       title="프로젝트를 삭제하시겠습니까?"
       width={384}
       footer={modalFooter}

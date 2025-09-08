@@ -22,6 +22,12 @@ const DeleteTeamModal: React.FC<DeleteTeamModalProps> = ({
   const [showError, setShowError] = React.useState(false);
   const isTeamNameMatch = inputTeamName === teamName;
 
+  const handleClose = () => {
+    setInputTeamName("");
+    setShowError(false);
+    onClose();
+  };
+
   const handleDelete = () => {
     if (!inputTeamName) {
       setShowError(true);
@@ -43,7 +49,7 @@ const DeleteTeamModal: React.FC<DeleteTeamModalProps> = ({
     <div className="self-stretch inline-flex justify-end items-center">
       <div className="flex justify-start items-center gap-2">
         <div className="w-16 h-9">
-          <ModalButton onClick={onClose} variant="secondary">
+          <ModalButton onClick={handleClose} variant="secondary">
             취소
           </ModalButton>
         </div>
@@ -64,7 +70,7 @@ const DeleteTeamModal: React.FC<DeleteTeamModalProps> = ({
   return (
     <BaseModal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
       title="팀을 삭제하시겠습니까?"
       width={400}
       footer={modalFooter}

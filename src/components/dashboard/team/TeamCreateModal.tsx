@@ -26,6 +26,13 @@ const TeamCreateModal: React.FC<TeamCreateModalProps> = ({
     setStep(1);
   };
 
+  const handleClose = () => {
+    setStep(1);
+    setTeamName("");
+    setCopied(false);
+    onClose();
+  };
+
   const handleCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(inviteLink);
@@ -89,7 +96,7 @@ const TeamCreateModal: React.FC<TeamCreateModalProps> = ({
         {step === 1 ? (
           <>
             <div className="w-16">
-              <ModalButton variant="secondary" onClick={onClose}>
+              <ModalButton variant="secondary" onClick={handleClose}>
                 취소
               </ModalButton>
             </div>
@@ -111,7 +118,7 @@ const TeamCreateModal: React.FC<TeamCreateModalProps> = ({
               </ModalButton>
             </div>
             <div className="w-18">
-              <ModalButton variant="primary" onClick={onClose}>
+              <ModalButton variant="primary" onClick={handleClose}>
                 만들기
               </ModalButton>
             </div>
@@ -124,7 +131,7 @@ const TeamCreateModal: React.FC<TeamCreateModalProps> = ({
   return (
     <BaseModal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
       title="새 팀 만들기"
       width={600}
       footer={renderFooter()}
