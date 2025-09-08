@@ -34,8 +34,7 @@ export const DashboardAllTeam = ({
       }
       headerRight={
         <ActionButton onClick={onNewTeam} showIcon={false}>
-          <span className="text-xl mr-1">+</span>
-          새팀 만들기
+          <span className="text-xl mr-1">+</span>새 팀 만들기
         </ActionButton>
       }
       className="w-full h-full flex flex-col gap-6"
