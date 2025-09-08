@@ -6,7 +6,7 @@ import BasePin from "./BasePin";
 import InfoOverlay from "./InfoOverlay";
 import { useFavoriteStore } from "../../../stores/useFavoriteStore";
 import FavoritePin from "./FavoritePin";
-import CategoryFilterBtns from "./CategoryFilterBtns";
+import CategoryFilterBtns from "../CategoryFilterBtns";
 
 const MapSection = () => {
   const [loading, error] = useKakaoLoader({

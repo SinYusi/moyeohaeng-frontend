@@ -36,15 +36,15 @@ const Signup = () => {
 
   const handleSignup = async () => {
     if (!isSignupButtonEnabled) return;
-    
+
     try {
       setIsLoading(true);
       const authService = new AuthService();
-      
+
       const response = await authService.signup({
         email,
         password,
-        name: nickname
+        name: nickname,
       });
 
       // 회원가입 성공 후 로그인 페이지로 이동
@@ -102,7 +102,7 @@ const Signup = () => {
         </ColorBackgroundBtn>
 
         {/* 구분선 */}
-        <Divider label="또는 간편 회원가입" color="#131416" />
+        <Divider label="또는 간편 회원가입" color="#131416" className="my-4" />
 
         {/* 소셜 로그인 섹션 */}
         <SocialSignupSection />

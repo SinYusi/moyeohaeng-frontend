@@ -1,28 +1,8 @@
-import {
-  Bed,
-  Calendar,
-  Coffee,
-  CreditCard,
-  Drama,
-  Fuel,
-  Hospital,
-  House,
-  Landmark,
-  LibraryBig,
-  Pill,
-  Plus,
-  Pyramid,
-  School,
-  ShoppingCart,
-  SquareParking,
-  Star,
-  Store,
-  TramFront,
-  Utensils,
-  X,
-} from "lucide-react";
+import { Calendar, Plus, Star, X } from "lucide-react";
 import ColorTextBtn from "../../common/ColorTextBtn";
 import { useFavoriteStore } from "../../../stores/useFavoriteStore";
+import { useSpotCollectionStore } from "../../../stores/useSpotCollectionStore";
+import { getCategoryIcon } from "../../../utils/categoryUtils";
 
 interface InfoOverlayProps {
   clickedPlace: {
@@ -35,34 +15,11 @@ interface InfoOverlayProps {
 
 const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
   const { toggleFavorite, isFavorite } = useFavoriteStore();
-  const placeId =
-    clickedPlace.place.id ||
-    `${clickedPlace.place.place_name}-${clickedPlace.place.x}-${clickedPlace.place.y}`;
-  const isFavorited = isFavorite(placeId);
+  const { addToCollection, isInCollection } = useSpotCollectionStore();
 
-  const getCategoryIcon = (categoryName: string) => {
-    const category = categoryName?.split(" > ")[0] || "";
-    const iconMap: { [key: string]: React.ReactNode } = {
-      카페: <Coffee size={16} />,
-      음식점: <Utensils size={16} />,
-      병원: <Hospital size={16} />,
-      약국: <Pill size={16} />,
-      은행: <CreditCard size={16} />,
-      "주유소,충전소": <Fuel size={16} />,
-      주차장: <SquareParking size={16} />,
-      지하철역: <TramFront size={16} />,
-      학교: <School size={16} />,
-      학원: <LibraryBig size={16} />,
-      편의점: <Store size={16} />,
-      대형마트: <ShoppingCart size={16} />,
-      문화시설: <Drama size={16} />,
-      관광명소: <Pyramid size={16} />,
-      숙박: <Bed size={16} />,
-      공공기관: <Landmark size={16} />,
-      중개업소: <House size={16} />,
-    };
-    return iconMap[category] || "📍";
-  };
+  const placeId = clickedPlace.place.id;
+  const isFavorited = isFavorite(placeId);
+  const isCollected = isInCollection(placeId);
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -77,6 +34,40 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
   const handleCloseClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onClose();
+  };
+
+  const handleAddToCollection = (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    // TODO: API 연결
+
+    const collectionData = {
+      name: clickedPlace.place.place_name || "",
+      address:
+        clickedPlace.place.road_address_name ||
+        clickedPlace.place.address_name ||
+        "",
+      latitude: Number(clickedPlace.place.y),
+      longitude: Number(clickedPlace.place.x),
+      memo: "",
+      detailLink: `https://place.map.kakao.com/${placeId}`,
+      category: clickedPlace.place.category_group_name || "기타",
+      createAt: new Date().toISOString(),
+      likeSummary: {
+        totalCount: 0,
+        liked: false,
+        likedMembers: [],
+      },
+      commentSummary: {
+        totalCount: 0,
+        lastComment: {
+          content: "",
+          author: "",
+        },
+      },
+    };
+
+    addToCollection(collectionData);
   };
 
   return (
@@ -99,9 +90,12 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
         <div className="flex flex-col gap-[6px]">
           {/* 상단 - 카테고리, 닫기 버튼*/}
           <div className="flex items-start justify-between">
-            <div className="bg-[#4f5fbf] text-[#fff] px-[6px] rounded-sm text-xs font-medium flex items-center justify-center py-1">
+            <div className="text-[#5a6572] rounded-sm text-sm font-medium flex items-center justify-center py-1">
               <span className="mr-1">
-                {getCategoryIcon(clickedPlace.place?.category_group_name || "")}
+                {getCategoryIcon(
+                  clickedPlace.place?.category_group_name || "",
+                  20
+                )}
               </span>
               {clickedPlace.place?.category_group_name || "장소"}
             </div>
@@ -141,11 +135,22 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
 
         {/* 액션 버튼들 */}
         <div className="flex items-start gap-2 self-stretch">
-          <ActionBtn onClick={() => {}} disabled={!isFavorited}>
-            <Plus className="w-5 h-5" color="#3b4553" />
+          <ActionBtn
+            onClick={handleAddToCollection}
+            disabled={isCollected || !isFavorited}
+          >
+            <Plus
+              className="w-5 h-5"
+              color={isCollected ? "#7b8482" : "#3b4553"}
+            />
             장소 모음 추가
           </ActionBtn>
-          <ActionBtn onClick={() => {}} disabled={!isFavorited}>
+          <ActionBtn
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            disabled={!isFavorited}
+          >
             <Calendar className="w-5 h-5" color="#3b4553" />
             일정에 추가
           </ActionBtn>
@@ -167,7 +172,7 @@ const ActionBtn = ({
 }: {
   children: React.ReactNode;
   disabled?: boolean;
-  onClick: () => void;
+  onClick: (e: React.MouseEvent) => void;
 }) => {
   return (
     <button

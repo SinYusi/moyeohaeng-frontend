@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@theme {
+  --breakpoint-3xl: 115rem;
+}
 /* @import "figma.css"; */
 
 @font-face {
