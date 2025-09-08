@@ -30,7 +30,9 @@ export const useSpotCollectionStore = create<SpotCollectionState>()(
 
     removeFromCollection: (id) => {
       set((state) => ({
-        collections: state.collections.filter((item) => item.id !== id.toString()),
+        collections: state.collections.filter(
+          (item) => item.id !== id.toString()
+        ),
       }));
     },
 
@@ -68,7 +70,9 @@ export const useSpotCollectionStore = create<SpotCollectionState>()(
 
     isInCollection: (placeId) => {
       const { collections } = get();
-      return collections.some((item) => item.id === placeId);
+      return collections.some((item) => {
+        return item.detailLink.split("/").pop() === placeId;
+      });
     },
 
     getCollectionByCategory: (category) => {
