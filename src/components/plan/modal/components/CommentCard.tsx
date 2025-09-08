@@ -34,7 +34,6 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
       id: "delete",
       label: "삭제",
       icon: <Trash2 className="w-4 h-4" />,
-      danger: true,
       onSelect: () => {},
     },
   ];
@@ -69,8 +68,6 @@ const CommentCard: React.FC<CommentCardProps> = ({ comment }) => {
             align="right"
             items={menuItems}
           />
-          {/* <button className="w-4 h-4 flex items-center justify-center" aria-label="댓글 옵션">
-          </button> */}
         </nav>
       )}
     </article>

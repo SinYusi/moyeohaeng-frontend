@@ -21,14 +21,32 @@ const CommentSlideModal = () => {
   const [newComment, setNewComment] = useState("");
 
   if (!placeId) return <p>placeId를 불러올 수 없습니다.</p>;
-  // const place = getPlaceById(placeId); // TODO: Use actual place data instead of mock
-  const comments: Comment[] = (commentsByPlace as Record<number, Comment[]>)[
-    placeId
-  ] ?? [];
+  // const place = getPlaceById(placeId); // TODO: 실제 데이터로 교체 예정 (현재는 목업 사용)
+  const defaultComments: Comment[] = [
+    {
+      id: "d1",
+      author: "8비트",
+      content: "테스트 코멘트입니다. UI 확인용",
+      timestamp: "방금 전",
+      userColor: "yellow",
+      isOwn: true,
+    },
+    {
+      id: "d2",
+      author: "졸리지연",
+      content: "예약 가능 여부 확인해볼게요",
+      timestamp: "5분 전",
+      userColor: "red",
+      isOwn: false,
+    },
+  ];
+
+  const comments: Comment[] =
+    (commentsByPlace as Record<number, Comment[]>)[placeId] ?? defaultComments;
 
   const handleSendComment = () => {
     if (newComment.trim()) {
-      // TODO: Add comment to list
+      // TODO: 코멘트를 목록에 추가하는 로직 연결
       console.log("Sending comment:", newComment);
       setNewComment("");
     }
@@ -37,7 +55,7 @@ const CommentSlideModal = () => {
   return (
     <SlideModal title="코멘트">
       <main className="px-4 pb-4 pt-1 flex flex-col gap-6 h-full">
-        {/* Place Card Display */}
+        {/* 장소 카드 영역 */}
         <section className="h-44 bg-[#F9FAFB] rounded-lg flex flex-col justify-center items-center">
           <SelectedPlaceCard
             title="흰다정"
@@ -48,7 +66,7 @@ const CommentSlideModal = () => {
           />
         </section>
 
-        {/* Comments List */}
+        {/* 코멘트 목록 */}
         <section className="flex-1 rounded-xl flex flex-col gap-8">
           <ul className="flex flex-col gap-8">
             {comments.map((comment) => (
@@ -58,7 +76,7 @@ const CommentSlideModal = () => {
             ))}
           </ul>
 
-          {/* Comment Input */}
+          {/* 코멘트 입력 */}
           <footer>
             <CommentInput
               value={newComment}

@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
+import ModalCTAButton from "./components/ModalCTAButton";
 import SlideModal from "../SlideModal";
 import { useModalStore } from "../../../stores/useModalStore";
 import type { ColorOption } from "../../common/ColorPicker";
@@ -6,6 +7,7 @@ import ColorPicker, { DEFAULT_COLORS } from "../../common/ColorPicker";
 import SelectedPlaceCard from "../SelectedPlaceCard";
 import { placeBlocksMock } from "../../../mocks/placeBlocks";
 import { toPlaceCardVM } from "../../../types/placeblock";
+import ScrollableListSection from "./components/ScrollableListSection";
 
 // Using common SelectedPlaceCard component
 
@@ -17,20 +19,6 @@ const CreateGroupSlideModal: React.FC = () => {
   );
   // Manage places locally (mocked) so memo can be edited
   const [places, setPlaces] = useState(placeBlocksMock);
-
-  // Responsive scale based on 1940x1080 design
-  const [scale, setScale] = useState(1);
-  useEffect(() => {
-    const compute = () => {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      const s = Math.min(w / 1940, h / 1080, 1);
-      setScale(s);
-    };
-    compute();
-    window.addEventListener("resize", compute);
-    return () => window.removeEventListener("resize", compute);
-  }, []);
 
   // Use SlideModal's built-in header via title prop
 
@@ -53,10 +41,7 @@ const CreateGroupSlideModal: React.FC = () => {
   const nameLength = groupName.length;
   const placeVMs = useMemo(() => places.map(toPlaceCardVM), [places]);
 
-  // Base max height for the selected places panel at 1080h design
-  const BASE_PANEL_MAX_H = 548; // px
-  const MIN_PANEL_H = 300; // px, 최소 보장 높이
-  const scaledPanelMaxH = Math.floor(BASE_PANEL_MAX_H * scale);
+  // 스크롤 영역 스케일은 ScrollableListSection에서 처리합니다
 
   return (
     <SlideModal title="새 그룹 만들기">
@@ -92,25 +77,8 @@ const CreateGroupSlideModal: React.FC = () => {
           />
         </div>
 
-        {/* Selected places title */}
-        <div className="flex items-start gap-1 text-xs">
-          <span className="text-[#6B7280] font-medium">선택된 장소</span>
-          <span className="text-[#111827] font-medium">
-            ({placeVMs.length})
-          </span>
-        </div>
-
         {/* Selected places scroll area */}
-        <div
-          className="w-full bg-[#F9FAFB] rounded-lg outline outline-[#E5E7EB] px-4 py-4 overflow-y-auto flex flex-col items-center gap-4"
-          style={{
-            maxHeight: `${scaledPanelMaxH}px`,
-            minHeight: `${MIN_PANEL_H}px`,
-          }}
-        >
-          {/* Scroll indicator bar at right (decorative) */}
-          <div className="absolute right-4 top-4 w-1 h-60 bg-[#E5E7EB] rounded-full hidden" />
-          {/* Render mock places */}
+        <ScrollableListSection title="선택된 장소" count={placeVMs.length}>
           {placeVMs.map((vm, idx) => (
             <SelectedPlaceCard
               key={vm.id}
@@ -126,20 +94,15 @@ const CreateGroupSlideModal: React.FC = () => {
               }
             />
           ))}
-        </div>
+        </ScrollableListSection>
 
         {/* Create button - centered and close to the list */}
-        <button
+        <ModalCTAButton
           onClick={onCreate}
           disabled={isCreateDisabled}
-          className={`w-full h-12 rounded-md text-base font-semibold flex items-center justify-center gap-1 ${
-            isCreateDisabled
-              ? "bg-gray-300 text-white cursor-not-allowed"
-              : "bg-black text-white"
-          }`}
-        >
-          <span className="text-lg">＋</span> 그룹 만들기
-        </button>
+          leadingSymbol="＋"
+          label="그룹 만들기"
+        />
       </div>
     </SlideModal>
   );
