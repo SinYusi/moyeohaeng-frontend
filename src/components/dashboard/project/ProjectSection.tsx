@@ -83,7 +83,7 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ projects }) => {
           onSelect={setSelectedTeam}
         />
       </div>
-      <div className="grid grid-cols-[repeat(auto-fill,minmax(350px,1fr))] gap-6">
+      <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-6">
         {filteredProjects.map((project) => (
           <ProjectCard key={project.id} {...project} />
         ))}
