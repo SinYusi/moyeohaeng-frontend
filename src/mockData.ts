@@ -1,4 +1,6 @@
-const mockAllMembers = [
+import type { Team, TeamMember } from "./types/team";
+
+const mockAllMembers: TeamMember[] = [
   { id: 1, name: '김철수' },
   { id: 2, name: '이영희' },
   { id: 3, name: '박지성' },
@@ -13,7 +15,7 @@ const mockAllMembers = [
   { id: 12, name: '허준' },
 ];
 
-const teamsData: Record<number, { id: number; name: string; owner: any; members: any[] }> = {
+const teamsData: Record<number, Team> = {
   1: {
     id: 1,
     name: 'A',
