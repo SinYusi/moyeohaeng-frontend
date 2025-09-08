@@ -1,4 +1,5 @@
 import type { Project } from "../../types/project";
+import { useMemo } from "react";
 import ActionButton from "../../components/common/ActionButton";
 import TeamCard from "../../components/dashboard/team/TeamCard";
 import DashboardLayout from "../../components/dashboard/DashboardLayout";
@@ -13,12 +14,15 @@ export const DashboardAllTeam = ({
   projects,
   onNewTeam,
 }: DashboardAllTeamProps) => {
-  const teams = Array.from(new Set(projects.map((p) => p.team.id)))
-    .map((teamId) => {
-      const project = projects.find((p) => p.team.id === teamId);
-      return project?.team;
-    })
-    .filter((team): team is NonNullable<typeof team> => team != null);
+  const teamsWithCounts = useMemo(() => {
+    const m = new Map<number, { team: Project["team"]; count: number }>();
+    for (const p of projects) {
+      const entry = m.get(p.team.id);
+      if (entry) entry.count += 1;
+      else m.set(p.team.id, { team: p.team, count: 1 });
+    }
+    return Array.from(m.values());
+  }, [projects]);
 
   return (
     <DashboardLayout
@@ -37,16 +41,9 @@ export const DashboardAllTeam = ({
       className="w-full h-full flex flex-col gap-6"
     >
       <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-6">
-        {teams.map((team) => {
-          const teamProjects = projects.filter((p) => p.team.id === team.id);
-          return (
-            <TeamCard
-              key={team.id}
-              team={team}
-              scheduleCount={teamProjects.length}
-            />
-          );
-        })}
+        {teamsWithCounts.map(({ team, count }) => (
+          <TeamCard key={team.id} team={team} projectCount={count} />
+        ))}
       </div>
     </DashboardLayout>
   );
