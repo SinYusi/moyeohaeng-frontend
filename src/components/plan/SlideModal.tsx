@@ -22,8 +22,11 @@ const SlideModal: React.FC<SlideModalProps> = ({ children, title, header }) => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
-          // 오버레이 클릭으로 닫기 원하면 아래 주석 해제
-          onClick={closeModal}
+          // 배경(오버레이) 자체를 클릭했을 때만 닫히도록 가드
+          onClick={(e) => {
+            if (e.target !== e.currentTarget) return;
+            closeModal();
+          }}
         >
           <motion.div
             key="slide-modal"
