@@ -6,9 +6,7 @@ import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
 import Signup from "./pages/Signup";
 import ResetPassword from "./pages/ResetPassword";
-import DashboardHome from "./pages/dashboard/DashboardHome";
-import DashboardAllTeam from "./pages/dashboard/DashboardAllTeam";
-import DashboardTeam from "./pages/dashboard/DashboardTeam";
+import Dashboard from "./pages/dashboard";
 import Plan from "./pages/Plan";
 
 function App() {
@@ -25,10 +23,11 @@ function App() {
 
         {/* Dashboard routes wrapped with DashboardProvider */}
         <Route path="/dashboard" element={<DashboardProvider />}>
-          <Route path="home" element={<DashboardHome />} />
-          <Route path="all-team" element={<DashboardAllTeam />} />
-          <Route path="shared-projects" element={<DashboardHome />} />
-          <Route path="team/:teamId" element={<DashboardTeam />} />
+          <Route index element={<Navigate to="home" replace />} />
+          <Route path="home" element={<Dashboard />} />
+          <Route path="all-team" element={<Dashboard />} />
+          <Route path="shared-projects" element={<Dashboard />} />
+          <Route path="team/:teamId" element={<Dashboard />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />
