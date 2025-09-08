@@ -47,9 +47,10 @@ export const useSpotCollectionStore = create<SpotCollectionState>()(
         collections: state.collections.map((item) => {
           if (item.id === id) {
             const newLiked = !item.likeSummary.liked;
-            const newTotalCount = newLiked
-              ? item.likeSummary.totalCount + 1
-              : item.likeSummary.totalCount - 1;
+            const newTotalCount = Math.max(
+              0,
+              item.likeSummary.totalCount + (newLiked ? 1 : -1)
+            );
 
             return {
               ...item,
