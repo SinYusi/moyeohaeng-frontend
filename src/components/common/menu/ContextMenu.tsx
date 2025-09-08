@@ -7,14 +7,15 @@ export type ContextMenuItem = {
   danger?: boolean;
   dividerBelow?: boolean;
   disabled?: boolean;
+  icon?: React.ReactNode; // 선택적으로 앞에 표시할 아이콘
 };
 
 export type ContextMenuProps = {
   trigger: React.ReactNode;
   items: ContextMenuItem[];
   align?: "right" | "left";
-  className?: string; // extra class for the menu container
-  onOpenChange?: (open: boolean) => void; // optional controlled callback
+  className?: string; // 메뉴 컨테이너에 추가로 적용할 클래스
+  onOpenChange?: (open: boolean) => void; // 열림 상태가 변경될 때 알리는 선택적 콜백
   defaultOpen?: boolean;
 };
 
@@ -73,7 +74,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
         <div
           className={`${
             align === "right" ? "right-0" : "left-0"
-          } absolute mt-2 min-w-[93px] max-w-[120px] p-[1.5px] bg-white rounded-lg outline-[1.5px] outline-offset-[-1.5px] outline-stroke-subtle inline-flex flex-col justify-start items-start overflow-hidden z-50 ${className}`}
+          } absolute mt-2 min-w-[93px] max-w-[140px] p-[1.5px] bg-white rounded-lg outline-[1.5px] outline-offset-[-1.5px] outline-stroke-subtle inline-flex flex-col justify-start items-start overflow-hidden z-50 ${className}`}
           role="menu"
         >
           {items.map((item) => (
@@ -93,14 +94,23 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
                   : "bg-white hover:bg-[var(--surface-primary,#e7edf6)]"
               }`}
             >
-              <div className="self-stretch px-3 py-1.5 inline-flex justify-start items-center gap-1">
-                <div
+              <div className="self-stretch px-3 py-1.5 inline-flex justify-start items-center gap-2">
+                {item.icon && (
+                  <span
+                    className={`shrink-0 w-4 h-4 ${
+                      item.danger ? "text-red-500" : "text-text-default"
+                    }`}
+                  >
+                    {item.icon}
+                  </span>
+                )}
+                <span
                   className={`w-full whitespace-nowrap overflow-hidden text-ellipsis text-left text-base font-medium leading-snug ${
                     item.danger ? "text-red-500" : "text-text-default"
                   }`}
                 >
                   {item.label}
-                </div>
+                </span>
               </div>
               {item.dividerBelow && (
                 <div className="self-stretch h-px bg-[var(--surface-primary,#e7edf6)]" />
