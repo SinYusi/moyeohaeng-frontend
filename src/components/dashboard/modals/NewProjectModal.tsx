@@ -6,14 +6,18 @@ interface NewProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (projectName: string, color: string) => void;
+  modalTitle?: string;
+  initialName?: string;
 }
 
 const NewProjectModal: React.FC<NewProjectModalProps> = ({
   isOpen,
   onClose,
   onSubmit,
+  modalTitle,
+  initialName,
 }) => {
-  const [projectName, setProjectName] = useState("");
+  const [projectName, setProjectName] = useState(initialName ?? "");
   const [selectedColor, setSelectedColor] = useState("coral");
 
   const handleSubmit = () => {
@@ -55,7 +59,7 @@ const NewProjectModal: React.FC<NewProjectModalProps> = ({
     <BaseModal
       isOpen={isOpen}
       onClose={onClose}
-      title="새 프로젝트 만들기"
+      title={modalTitle ?? "새 프로젝트 만들기"}
       width={600}
       footer={modalFooter}
     >

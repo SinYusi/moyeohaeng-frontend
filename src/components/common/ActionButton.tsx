@@ -16,6 +16,7 @@ const ActionButton = ({
 }: ActionButtonProps) => {
   return (
     <button
+      type="button"
       onClick={onClick}
       className={`h-[44px] px-3 rounded-md flex items-center bg-[#5D6FEE] hover:bg-[#4D5FDE] text-white transition-colors ${className}`}
     >

@@ -10,10 +10,10 @@ import DeleteTeamModal from "../modals/DeleteTeamModal";
 
 interface TeamCardProps {
   team: Team;
-  scheduleCount: number;
+  projectCount: number;
 }
 
-const TeamCard = ({ team, scheduleCount }: TeamCardProps) => {
+const TeamCard = ({ team, projectCount }: TeamCardProps) => {
   const memberCount = team.members?.length ?? 0;
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
@@ -71,7 +71,7 @@ const TeamCard = ({ team, scheduleCount }: TeamCardProps) => {
               />
             </div>
             <p className="text-[1em] text-gray-600">
-              {team.owner?.name || "리더 미지정"} · {scheduleCount}개 일정
+              {team.owner?.name || "리더 미지정"} · {projectCount}개 일정
             </p>
           </div>
 
@@ -94,7 +94,7 @@ const TeamCard = ({ team, scheduleCount }: TeamCardProps) => {
           setIsDeleteOpen(false);
         }}
         teamName={team.name}
-        projectCount={scheduleCount}
+        projectCount={projectCount}
       />
     </>
   );

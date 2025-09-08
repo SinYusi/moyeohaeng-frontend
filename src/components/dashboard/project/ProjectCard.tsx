@@ -168,6 +168,8 @@ const ProjectCard = ({
       <NewProjectModal
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
+        modalTitle="프로젝트 편집"
+        initialName={title}
         onSubmit={(projectName, color) => {
           // TODO: 편집 저장 로직 연동
           console.log("프로젝트 편집:", { projectName, color });
