@@ -3,8 +3,8 @@ import { useParams } from "react-router-dom";
 import type {
   CreateMapPinRequest,
   MapPinResponse,
-} from "../../types/planTypes";
-import baseService from "../../service/baseService";
+} from "../../../types/planTypes";
+import baseService from "../../../service/baseService";
 
 interface PinResponseType {
   status: number;

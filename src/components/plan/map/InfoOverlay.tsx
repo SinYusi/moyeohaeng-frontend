@@ -4,8 +4,8 @@ import { useFavoriteStore } from "../../../stores/useFavoriteStore";
 import { useSpotCollectionStore } from "../../../stores/useSpotCollectionStore";
 import { getCategoryIcon } from "../../../utils/categoryUtils";
 import useAuthStore from "../../../stores/useAuthStore";
-import usePostPin from "../../../hooks/plan/usePostPin";
-import useDeletePin from "../../../hooks/plan/useDeletePin";
+import usePostPin from "../../../hooks/plan/pin/usePostPin";
+import useDeletePin from "../../../hooks/plan/pin/useDeletePin";
 
 interface InfoOverlayProps {
   clickedPlace: {

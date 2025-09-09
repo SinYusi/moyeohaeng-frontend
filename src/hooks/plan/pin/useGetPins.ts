@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
-import type { MapPin, MapPinResponse } from "../../types/planTypes";
+import type { MapPin, MapPinResponse } from "../../../types/planTypes";
 import { useParams } from "react-router-dom";
-import baseService from "../../service/baseService";
+import baseService from "../../../service/baseService";
 
 interface GetPinsResponse {
   data: MapPinResponse[];

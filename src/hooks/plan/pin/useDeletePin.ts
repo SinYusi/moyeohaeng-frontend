@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import baseService from "../../service/baseService";
+import baseService from "../../../service/baseService";
 
 const useDeletePin = () => {
   const projectId = useParams().id;
