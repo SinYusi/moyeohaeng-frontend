@@ -186,11 +186,11 @@ const MapSection = () => {
         {favorites.map((favorite) => {
           const isFiltered =
             selectedFilters.length === 0 ||
-            selectedFilters.includes(favorite.category);
+            selectedFilters.includes(favorite.place.category);
           return (
             <CustomOverlayMap
               key={`favorite-${favorite.id}`}
-              position={{ lat: favorite.latitude, lng: favorite.longitude }}
+              position={{ lat: favorite.place.latitude, lng: favorite.place.longitude }}
               yAnchor={0.5}
               xAnchor={0.5}
               zIndex={1001}

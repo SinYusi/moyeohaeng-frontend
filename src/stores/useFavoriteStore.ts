@@ -6,7 +6,8 @@ interface FavoriteStore {
   favorites: MapPin[];
   addFavorite: (
     place: kakao.maps.services.PlacesSearchResultItem,
-    postPinId: string
+    postPinId: string,
+    serverPlaceId: string
   ) => void;
   addAllFavorites: (places: MapPin[]) => void;
   removeFavorite: (placeId: string) => void;
@@ -17,17 +18,21 @@ interface FavoriteStore {
 export const useFavoriteStore = create<FavoriteStore>()((set, get) => ({
   favorites: [],
 
-  addFavorite: (place, postPinId) => {
+  addFavorite: (place, postPinId, serverPlaceId) => {
     const email = useAuthStore.getState().email;
     const favoritePlace: MapPin = {
-      id: postPinId,
-      address: place.road_address_name || place.address_name || "",
-      latitude: Number(place.y),
-      longitude: Number(place.x),
-      detailLink: `https://place.map.kakao.com/${place.id}`,
       author: email || "",
-      category: place.category_group_name || "장소",
-      name: place.place_name || "",
+      id: postPinId,
+      place: {
+        id: serverPlaceId,
+        name: place.place_name || "",
+        address: place.road_address_name || place.address_name || "",
+        latitude: Number(place.y),
+        longitude: Number(place.x),
+        detailLink: `https://place.map.kakao.com/${place.id}`,
+        category: place.category_group_name || "기타",
+        author: email || "",
+      },
     };
 
     set((state) => ({
@@ -35,27 +40,27 @@ export const useFavoriteStore = create<FavoriteStore>()((set, get) => ({
     }));
   },
 
-  addAllFavorites: (places) => {
+  addAllFavorites: (pins) => {
     set(() => ({
-      favorites: [...places],
+      favorites: [...pins],
     }));
   },
 
-  removeFavorite: (placeId) => {
+  removeFavorite: (serverId) => {
     set((state) => ({
-      favorites: state.favorites.filter((fav) => fav.id !== placeId),
+      favorites: state.favorites.filter((fav) => fav.id !== serverId),
     }));
   },
 
   isFavorite: (placeId) => {
     return get().favorites.some(
-      (fav) => fav.detailLink.split("/").pop() === placeId.toString()
+      (fav) => fav.place.detailLink.split("/").pop() === placeId.toString()
     );
   },
 
   getFavorite: (placeId) => {
     return get().favorites.find(
-      (fav) => fav.detailLink.split("/").pop() === placeId.toString()
+      (fav) => fav.place.detailLink.split("/").pop() === placeId.toString()
     );
   },
 }));

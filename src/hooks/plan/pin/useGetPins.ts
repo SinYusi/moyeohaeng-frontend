@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
-import type { MapPin, MapPinResponse } from "../../../types/planTypes";
 import { useParams } from "react-router-dom";
 import baseService from "../../../service/baseService";
+import type { MapPin } from "../../../types/planTypes";
 
 interface GetPinsResponse {
-  data: MapPinResponse[];
+  data: MapPin[];
   message: string;
   status: number;
 }
@@ -24,7 +24,8 @@ const useGetPins = () => {
       setError(null);
       const response = await baseService.get(`/v1/projects/${projectId}/pins`);
       const pinData = response.data as GetPinsResponse;
-      setPins(pinData.data.map((item) => item.place));
+      setPins(pinData.data);
+      console.log(response.data);
     } catch (error) {
       console.error("핀 데이터 로딩 실패:", error);
       setError(error as string);

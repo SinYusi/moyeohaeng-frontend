@@ -13,7 +13,7 @@ const CategoryFilterBtns = ({
   // 즐겨찾기에서 카테고리 목록 추출
   // TODO: 즐겨찾기와 장소 블록에서 카테고리 목록 조건 추출
   const availableCategories = Array.from(
-    new Set(favorites.map((fav) => fav.category))
+    new Set(favorites.map((fav) => fav.place.category))
   ).filter((category) => category && category !== "장소");
 
   // 선택된 카테고리를 왼쪽으로 정렬
