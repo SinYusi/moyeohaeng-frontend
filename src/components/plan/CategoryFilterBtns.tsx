@@ -1,19 +1,23 @@
 import { Fragment } from "react/jsx-runtime";
 import { useFavoriteStore } from "../../stores/useFavoriteStore";
 import { getCategoryIcon } from "../../utils/categoryUtils";
+import { useSpotCollectionStore } from "../../stores/useSpotCollectionStore";
 
 const CategoryFilterBtns = ({
   selectedFilters,
   setSelectedFilters,
+  mode,
 }: {
   selectedFilters: string[];
   setSelectedFilters: React.Dispatch<React.SetStateAction<string[]>>;
+  mode: "favorite" | "collection";
 }) => {
   const { favorites } = useFavoriteStore();
+  const { collections } = useSpotCollectionStore();
   // 즐겨찾기에서 카테고리 목록 추출
   // TODO: 즐겨찾기와 장소 블록에서 카테고리 목록 조건 추출
   const availableCategories = Array.from(
-    new Set(favorites.map((fav) => fav.place.category))
+    new Set(mode === "favorite" ? favorites.map((fav) => fav.place.category) : collections.map((col) => col.category))
   ).filter((category) => category && category !== "장소");
 
   // 선택된 카테고리를 왼쪽으로 정렬

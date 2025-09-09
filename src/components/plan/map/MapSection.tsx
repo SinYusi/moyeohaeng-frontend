@@ -190,7 +190,10 @@ const MapSection = () => {
           return (
             <CustomOverlayMap
               key={`favorite-${favorite.id}`}
-              position={{ lat: favorite.place.latitude, lng: favorite.place.longitude }}
+              position={{
+                lat: favorite.place.latitude,
+                lng: favorite.place.longitude,
+              }}
               yAnchor={0.5}
               xAnchor={0.5}
               zIndex={1001}
@@ -230,6 +233,7 @@ const MapSection = () => {
         <CategoryFilterBtns
           selectedFilters={selectedFilters}
           setSelectedFilters={setSelectedFilters}
+          mode="favorite"
         />
       </div>
     </div>

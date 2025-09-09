@@ -21,14 +21,14 @@ export type CreateMapPinRequest = Omit<Place, "id">;
 
 // 장소 블록
 export interface PlaceBlock {
-  serverPlaceId: string;
+  id: string;
   name: string;
   address: string;
   latitude: number;
   longitude: number;
-  memo?: string;
   detailLink: string;
   category: string;
+  memo?: string;
   createAt: string;
   likeSummary: {
     totalCount: number;
