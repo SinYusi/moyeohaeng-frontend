@@ -54,9 +54,8 @@ baseService.interceptors.response.use(
 
         // HTTP-only 쿠키의 refreshToken을 사용하므로 body는 비움
         const res = await axios.post(refreshUrl, {}, { withCredentials: true });
-        console.log("리프레시 응답:", res);
 
-        const newAccessToken = res?.data;
+        const newAccessToken = res?.data?.data;
         if (!newAccessToken || typeof newAccessToken !== "string") {
           throw new Error("토큰 리프레시 응답에 accessToken이 없습니다."); // TODO Error handler 추가
         }

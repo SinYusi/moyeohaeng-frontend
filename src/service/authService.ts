@@ -65,7 +65,6 @@ class AuthService {
       // accessToken을 Zustand 스토어에 저장
       if (response.data) {
         const accessToken = response.data.data;
-        console.log(accessToken);
         useAuthStore.getState().setAccessToken(accessToken);
       }
 
