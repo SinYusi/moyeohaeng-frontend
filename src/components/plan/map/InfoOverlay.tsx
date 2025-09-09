@@ -3,6 +3,8 @@ import ColorTextBtn from "../../common/ColorTextBtn";
 import { useFavoriteStore } from "../../../stores/useFavoriteStore";
 import { useSpotCollectionStore } from "../../../stores/useSpotCollectionStore";
 import { getCategoryIcon } from "../../../utils/categoryUtils";
+import usePostPin from "../../../hooks/usePostPin";
+import useAuthStore from "../../../stores/useAuthStore";
 
 interface InfoOverlayProps {
   clickedPlace: {
@@ -16,13 +18,27 @@ interface InfoOverlayProps {
 const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
   const { toggleFavorite, isFavorite } = useFavoriteStore();
   const { addToCollection, isInCollection } = useSpotCollectionStore();
+  const { postPin } = usePostPin();
 
   const placeId = clickedPlace.place.id;
   const isFavorited = isFavorite(placeId);
   const isCollected = isInCollection(placeId);
+  const email = useAuthStore.getState().email;
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+    postPin({
+      name: clickedPlace.place.place_name || "",
+      address:
+        clickedPlace.place.road_address_name ||
+        clickedPlace.place.address_name ||
+        "",
+      latitude: Number(clickedPlace.place.y),
+      longitude: Number(clickedPlace.place.x),
+      detailLink: `https://place.map.kakao.com/${placeId}`,
+      category: clickedPlace.place.category_group_name || "기타",
+      author: email || "",
+    });
     toggleFavorite(clickedPlace.place);
   };
 

@@ -21,6 +21,7 @@ export const useFavoriteStore = create<FavoriteStore>()((set, get) => ({
       detailLink: `https://place.map.kakao.com/${place.id}`,
       author: "unknown",
       category: place.category_group_name || "장소",
+      name: place.place_name || "",
     };
 
     set((state) => ({
