@@ -20,7 +20,7 @@ const BlockCommentSection = ({
   };
 
   const handleCommentClick = () => {
-    openCommentModal(id);
+    openCommentModal(Number(id));
   };
 
   return (

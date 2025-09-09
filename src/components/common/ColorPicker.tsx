@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 
-export type ColorOption = { id: string; value: string; };
+export type ColorOption = { id: string; value: string };
 
 interface ColorPickerProps {
   value: string;
@@ -10,7 +10,6 @@ interface ColorPickerProps {
   withOutline?: boolean;
 }
 
-// Default brand colors aligned with NewProjectModal
 export const DEFAULT_COLORS: ColorOption[] = [
   { id: "coral", value: "#FB7354" },
   { id: "lemon", value: "#FFE74C" },
@@ -28,32 +27,73 @@ const ColorPicker: React.FC<ColorPickerProps> = ({
   options = DEFAULT_COLORS,
   withOutline = true,
 }) => {
+  // 가용 너비가 임계값보다 작으면 가로 스크롤 모드로 전환합니다
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [scrollable, setScrollable] = useState(false);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const w = entry.contentRect.width;
+        setScrollable(w < 210);
+      }
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div
-      className={[
-        "h-[52px] px-12 rounded-md flex justify-between items-center",
-        withOutline ? "border border-stroke-subtler" : "",
-        className,
-      ].join(" ")}
-    >
-      {options.map((color) => (
-        <button
-          key={color.id}
-          onClick={() => onChange(color.id)}
-          type="button"
-          aria-label={`select-${color.id}`}
-          className="w-7 h-7 rounded-full p-1 bg-transparent cursor-pointer"
-        >
-          <div
-            className={[
-              "w-5 h-5 rounded-full",
-              value === color.id ? "border-2 border-fill-primary-default" : "",
-            ].join(" ")}
-            style={{ backgroundColor: color.value }}
-          />
-        </button>
-      ))}
-    </div>
+    <>
+      {/* 스크롤 모드일 때만 얇은 스크롤바 스타일 적용 */}
+      {scrollable && (
+        <style>
+          {`
+          .cp-scroll::-webkit-scrollbar { height: 4px; }
+          .cp-scroll::-webkit-scrollbar-track { background: transparent; }
+          .cp-scroll::-webkit-scrollbar-thumb { background-color: #E5E7EB; border-radius: 9999px; }
+          .cp-scroll::-webkit-scrollbar-thumb:hover { background-color: #D1D5DB; }
+          `}
+        </style>
+      )}
+      <div
+        ref={containerRef}
+        className={[
+          "h-[52px] w-full px-4 rounded-md flex items-center",
+          scrollable
+            ? "justify-start gap-2 overflow-x-auto overflow-y-hidden flex-nowrap cp-scroll"
+            : "justify-center gap-2 overflow-visible",
+          withOutline ? "border border-stroke-subtler" : "",
+          className,
+        ].join(" ")}
+        style={
+          scrollable
+            ? ({ scrollbarWidth: "thin" } as React.CSSProperties)
+            : undefined
+        }
+      >
+        {options.map((color) => (
+          <button
+            key={color.id}
+            onClick={() => onChange(color.id)}
+            type="button"
+            aria-label={`select-${color.id}`}
+            className="w-7 h-7 rounded-full p-1 bg-transparent cursor-pointer shrink-0"
+          >
+            <div
+              className={[
+                "w-5 h-5 rounded-full",
+                value === color.id
+                  ? "border-2 border-fill-primary-default"
+                  : "",
+              ].join(" ")}
+              style={{ backgroundColor: color.value }}
+            />
+          </button>
+        ))}
+      </div>
+    </>
   );
 };
 
