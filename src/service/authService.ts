@@ -25,6 +25,12 @@ type LoginResponse = {
   message: string;
 }
 
+type LogoutResponse = {
+  status: number;
+  message: string;
+  data: null;
+}
+
 // AuthService 클래스는 baseService의 기능을 확장
 class AuthService {
   private api: AxiosInstance;
@@ -74,16 +80,22 @@ class AuthService {
     }
   }
   
-  // 로그아웃
-  async logout(): Promise<void> {
+  /**
+   * 로그아웃 API
+   * refresh token 쿠키를 제거하고 access token을 블랙리스트에 추가
+   * 클라이언트의 accessToken도 제거
+   */
+  async logout(): Promise<LogoutResponse> {
     try {
-      await this.api.post('/v1/auth/logout', {});
+      // 로그아웃 요청 (서버에서 refreshToken 쿠키 제거 및 accessToken 블랙리스트 추가)
+      const response = await this.api.post<LogoutResponse>('/v1/auth/logout', {});
       
-      // Zustand 스토어에서 인증 정보 제거
+      // Zustand 스토어에서 인증 정보 제거 (accessToken 제거)
       useAuthStore.getState().clearAuth();
+
+      return response.data;
     } catch (error) {
       console.error('로그아웃 실패:', error);
-      
       throw error;
     }
   }
