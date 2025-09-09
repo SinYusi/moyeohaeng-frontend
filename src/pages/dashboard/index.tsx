@@ -25,12 +25,7 @@ const Dashboard = () => {
     const path = location.pathname;
 
     if (path.startsWith("/dashboard/team/") && teamId) {
-      return (
-        <DashboardTeam
-          teamId={teamId}
-          onNewProject={handleNewProject}
-        />
-      );
+      return <DashboardTeam onNewProject={handleNewProject} />;
     }
 
     if (path === "/dashboard/all-team") {

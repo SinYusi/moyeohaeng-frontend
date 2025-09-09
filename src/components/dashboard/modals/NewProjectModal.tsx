@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import BaseModal from "../../common/modal/BaseModal";
 import ModalButton from "../../common/modal/ModalButton";
-import ProjectService from "../../../service/projectService";
+import usePostProject from "../../../hooks/project/usePostProject";
 import useMemberStore from "../../../stores/useMemberStore";
 import { getTeamId } from "../../../utils/teamUtils";
 
@@ -22,13 +22,13 @@ const NewProjectModal: React.FC<NewProjectModalProps> = ({
   onSuccess,
 }) => {
   const [projectName, setProjectName] = useState(initialName ?? "");
-  const [selectedColor, setSelectedColor] = useState("coral");
-  const [isLoading, setIsLoading] = useState(false);
+  const [selectedColor, setSelectedColor] = useState("");
   const { member } = useMemberStore();
+  const { createProject, isLoading, error } = usePostProject();
 
   const handleClose = () => {
     setProjectName(initialName ?? "");
-    setSelectedColor("coral");
+    setSelectedColor("");
     onClose();
   };
 
@@ -38,27 +38,23 @@ const NewProjectModal: React.FC<NewProjectModalProps> = ({
     if (!projectName.trim() || isLoading) return;
 
     try {
-      setIsLoading(true);
       const teamId = await getTeamId(urlTeamId, member?.email);
 
       if (!teamId) {
-        console.error("팀을 찾을 수 없습니다.");
+        alert("팀을 찾을 수 없습니다.");
         return;
       }
 
-      const projectService = new ProjectService();
-      await projectService.createProject({
-        teamId,
+      await createProject({
         title: projectName.trim(),
         color: selectedColor,
+        teamId: teamId,
       });
 
       handleClose();
       onSuccess?.();
-    } catch (error) {
-      console.error("프로젝트 생성 실패:", error);
-    } finally {
-      setIsLoading(false);
+    } catch (err) {
+      alert(error || `프로젝트 생성에 실패했습니다. 다시 시도해주세요.`);
     }
   };
 

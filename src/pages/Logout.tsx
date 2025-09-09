@@ -1,20 +1,19 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import AuthService from '../service/authService';
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import useLogout from "../hooks/usetLogout";
 
 const Logout = () => {
   const navigate = useNavigate();
+  const { logout } = useLogout();
 
   useEffect(() => {
     const doLogout = async () => {
       try {
-        const authService = new AuthService();
-        await authService.logout();
+        await logout();
+        navigate("/login", { replace: true });
       } catch (e) {
-        // 에러는 콘솔에만 남기고, 사용자 흐름은 유지
-        console.error('로그아웃 처리 중 오류:', e);
-      } finally {
-        navigate('/login', { replace: true });
+        console.error("로그아웃 처리 중 오류:", e);
+        navigate("/login", { replace: true });
       }
     };
 

@@ -1,8 +1,15 @@
-import { Home, LayoutGrid, LogOut, LogIn, Folder, FolderOpen } from "lucide-react";
+import {
+  Home,
+  LayoutGrid,
+  LogOut,
+  LogIn,
+  Folder,
+  FolderOpen,
+} from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
 import useAuthStore from "../../stores/useAuthStore";
-import TeamService from "../../service/teamService";
+import useGetMyTeams from "../../hooks/team/useGetMyTeams";
+import type { Team } from "../../types/team";
 
 interface NavItemProps {
   icon: React.ReactNode;
@@ -49,28 +56,9 @@ const NavItem = ({ icon, label, to }: NavItemProps) => {
 };
 
 const TeamList = () => {
-  const [teams, setTeams] = useState<{ teamId: number; teamName: string }[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { teams, isLoading } = useGetMyTeams();
 
-  useEffect(() => {
-    const fetchTeams = async () => {
-      try {
-        const teamService = new TeamService();
-        const response = await teamService.getMyTeams();
-        if (response?.teams) {
-          setTeams(response.teams);
-        }
-      } catch (error) {
-        console.error('팀 목록 조회 실패:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTeams();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="px-4 py-2 text-sm text-gray-500">
         팀 목록을 불러오는 중...
@@ -81,7 +69,7 @@ const TeamList = () => {
   return (
     <>
       {teams?.length > 0 ? (
-        teams.map((team) => (
+        teams.map((team: Team) => (
           <NavItem
             key={team.teamId}
             icon={<Folder size={20} />}
@@ -99,7 +87,6 @@ const TeamList = () => {
 };
 
 const Navigation = ({}: NavigationProps) => {
-
   return (
     <nav className="fixed left-0 h-[calc(100vh)] w-[300px] bg-[var(--surface-inverse,#F9FAFB)] border-r-[1.5px] border-[var(--stroke-deep,#131416)]">
       <div className="flex flex-col h-full px-4">
@@ -125,15 +112,17 @@ const Navigation = ({}: NavigationProps) => {
 
         {/* Teams */}
         <div className="flex-1 py-4 space-y-0.5">
-          {useAuthStore.getState().accessToken && (
-            <TeamList />
-          )}
+          {useAuthStore.getState().accessToken && <TeamList />}
         </div>
 
         {/* Footer */}
         <div className="py-4">
           {useAuthStore.getState().accessToken ? (
-            <NavItem icon={<LogOut size={20} />} label="로그아웃" to="/logout" />
+            <NavItem
+              icon={<LogOut size={20} />}
+              label="로그아웃"
+              to="/logout"
+            />
           ) : (
             <NavItem icon={<LogIn size={20} />} label="로그인" to="/login" />
           )}

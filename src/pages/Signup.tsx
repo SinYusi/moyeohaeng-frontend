@@ -5,8 +5,8 @@ import SignupTitleSection from "../components/signup/SignupTitleSection";
 import SignupTextfieldSection from "../components/signup/SignupTextfieldSection";
 import AgreementSection from "../components/signup/AgreementSection";
 import SocialSignupSection from "../components/signup/SocialSignupSection";
-import AuthService from "../service/authService";
 import { useNavigate } from "react-router-dom";
+import useSignup from "../hooks/useSignup";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isAllRequiredChecked, setIsAllRequiredChecked] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const { signup, isLoading, error } = useSignup();
 
   const [validation, setValidation] = useState({
     isNicknameValid: false,
@@ -38,25 +38,18 @@ const Signup = () => {
     if (!isSignupButtonEnabled) return;
 
     try {
-      setIsLoading(true);
-      const authService = new AuthService();
-
-      const response = await authService.signup({
+      const success = await signup({
         email,
         password,
         name: nickname,
       });
 
-      // 회원가입 성공 후 로그인 페이지로 이동
-      if (response.status === 200) {
+      if (success) {
         alert("회원가입에 성공했습니다. 로그인 페이지로 이동합니다.");
         navigate("/login");
       }
-    } catch (error) {
-      console.error("회원가입 실패:", error);
-      alert("회원가입에 실패했습니다. 다시 시도해 주세요.");
-    } finally {
-      setIsLoading(false);
+    } catch (err) {
+      alert(error || "회원가입에 실패했습니다. 다시 시도해 주세요.");
     }
   };
 

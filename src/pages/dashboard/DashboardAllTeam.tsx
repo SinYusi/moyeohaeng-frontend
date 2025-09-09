@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
-import TeamService from "../../service/teamService";
 import ActionButton from "../../components/common/ActionButton";
 import TeamCard from "../../components/dashboard/team/TeamCard";
 import DashboardLayout from "../../components/dashboard/DashboardLayout";
+import useGetMyTeams from "../../hooks/team/useGetMyTeams";
 
 // 전체 팀 목록 페이지: 사용자가 속한 모든 팀을 보여주고 팀별 대시보드로 이동할 수 있는 링크 제공
 interface DashboardAllTeamProps {
@@ -10,33 +9,7 @@ interface DashboardAllTeamProps {
 }
 
 export const DashboardAllTeam = ({ onNewTeam }: DashboardAllTeamProps) => {
-  const [teams, setTeams] = useState<{ teamId: number; teamName: string }[]>(
-    []
-  );
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchTeams = async () => {
-      try {
-        const teamService = new TeamService();
-        const response = await teamService.getMyTeams();
-        if (response && response.teams) {
-          setTeams(response.teams);
-        } else {
-          setTeams([]);
-          console.error("Unexpected response structure:", response);
-        }
-      } catch (err) {
-        setError("팀 목록을 불러오는데 실패했습니다.");
-        console.error("팀 목록 조회 실패:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTeams();
-  }, []);
+  const { teams, isLoading: loading, error } = useGetMyTeams();
 
   return (
     <DashboardLayout

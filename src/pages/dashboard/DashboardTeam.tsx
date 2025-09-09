@@ -1,52 +1,53 @@
-import { useEffect, useState } from "react";
 import ActionButton from "../../components/common/ActionButton";
 import DashboardLayout from "../../components/dashboard/DashboardLayout";
-import TeamService from "../../service/teamService";
-import ProjectService from "../../service/projectService";
-import type { Project } from "../../types/project";
 import ProjectSection from "../../components/dashboard/project/ProjectSection";
+import useGetTeam from "../../hooks/team/useGetTeam";
+import useGetMyProjects from "../../hooks/project/useGetMyProjects";
+import { useParams } from "react-router-dom";
 
 // 팀 대시보드 페이지: 특정 팀의 프로젝트만 필터링하여 보여주고 해당 팀에서 새 프로젝트 생성 기능 제공
 interface DashboardTeamProps {
-  teamId: string;
   onNewProject: () => void;
 }
 
-const DashboardTeam = ({ teamId, onNewProject }: DashboardTeamProps) => {
-  const [team, setTeam] = useState<{ teamId: number; teamName: string } | null>(null);
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+const DashboardTeam = ({ onNewProject }: DashboardTeamProps) => {
+  const { teamId } = useParams<{ teamId: string }>();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const teamService = new TeamService();
-        const projectService = new ProjectService();
+  if (!teamId) {
+    return (
+      <DashboardLayout
+        headerLeft={
+          <h1 className="text-[clamp(1.25rem,2vw,1.5rem)] font-semibold leading-normal">
+            팀 정보
+          </h1>
+        }
+      >
+        <div className="flex justify-center items-center h-32">
+          <p>잘못된 팀 ID입니다.</p>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
-        // 팀 정보 및 프로젝트 동시 조회
-        const [teamResponse, projectsResponse] = await Promise.all([
-          teamService.getTeam(parseInt(teamId)),
-          projectService.getMyProjects(parseInt(teamId))
-        ]);
+  const { team, isLoading: teamLoading, error: teamError } = useGetTeam(teamId);
+  const {
+    projects,
+    isLoading: projectsLoading,
+    error: projectsError,
+  } = useGetMyProjects();
 
-        setTeam(teamResponse);
-        setProjects(projectsResponse.data.projects);
-      } catch (err) {
-        setError('데이터를 불러오는데 실패했습니다.');
-        console.error('데이터 조회 실패:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [teamId]);
+  const loading = teamLoading || projectsLoading;
+  const error = teamError || projectsError;
 
   if (loading) {
     return (
       <DashboardLayout
-        headerLeft={<h1 className="text-[clamp(1.25rem,2vw,1.5rem)] font-semibold leading-normal">팀 정보</h1>}>
+        headerLeft={
+          <h1 className="text-[clamp(1.25rem,2vw,1.5rem)] font-semibold leading-normal">
+            팀 정보
+          </h1>
+        }
+      >
         <div className="flex justify-center items-center h-32">
           <p>팀 정보를 불러오는 중...</p>
         </div>
@@ -57,13 +58,24 @@ const DashboardTeam = ({ teamId, onNewProject }: DashboardTeamProps) => {
   if (error || !team) {
     return (
       <DashboardLayout
-        headerLeft={<h1 className="text-[clamp(1.25rem,2vw,1.5rem)] font-semibold leading-normal">팀 정보</h1>}>
+        headerLeft={
+          <h1 className="text-[clamp(1.25rem,2vw,1.5rem)] font-semibold leading-normal">
+            팀 정보
+          </h1>
+        }
+      >
         <div className="flex justify-center items-center h-32 text-red-500">
-          <p>{error || '팀을 찾을 수 없습니다.'}</p>
+          <p>{error || "팀을 찾을 수 없습니다."}</p>
         </div>
       </DashboardLayout>
     );
   }
+
+  const currentTeamId = parseInt(teamId);
+  const teamProjects = projects.filter((project) => {
+    const projectTeamId = Number(project.team?.teamId);
+    return !isNaN(projectTeamId) && projectTeamId === currentTeamId;
+  });
 
   return (
     <DashboardLayout
@@ -76,7 +88,7 @@ const DashboardTeam = ({ teamId, onNewProject }: DashboardTeamProps) => {
         <ActionButton onClick={onNewProject}>새 프로젝트</ActionButton>
       }
     >
-      <ProjectSection projects={projects} />
+      <ProjectSection projects={teamProjects} />
     </DashboardLayout>
   );
 };

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import BaseModal from "../../common/modal/BaseModal";
 import ModalButton from "../../common/modal/ModalButton";
 import { Link } from "lucide-react";
-import TeamService from "../../../service/teamService";
+import usePostTeam from "../../../hooks/team/usePostTeam";
 
 interface TeamCreateModalProps {
   isOpen: boolean;
@@ -13,12 +13,11 @@ const TeamCreateModal: React.FC<TeamCreateModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  const teamService = new TeamService();
   const [step, setStep] = useState(1);
   const [teamName, setTeamName] = useState("");
   const [copied, setCopied] = useState(false);
   const [inviteLink, setInviteLink] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const { createTeam, isLoading, error } = usePostTeam();
 
   const handleNext = () => {
     if (teamName.trim() === "") return;
@@ -124,22 +123,22 @@ const TeamCreateModal: React.FC<TeamCreateModalProps> = ({
               <ModalButton
                 variant="primary"
                 onClick={async () => {
-                  setIsLoading(true);
                   try {
-                    const team = await teamService.createTeam({
-                      newTeamName: teamName,
+                    const team = await createTeam({
+                      name: teamName,
                     });
-                    // TODO: 초대 링크 생성 로직 추가 필요
-                    setInviteLink(
-                      `https://moyeohaeng.com/invite/${team.teamId}`
+                    if (team) {
+                      // TODO: 초대 링크 생성 로직 추가 필요
+                      setInviteLink(
+                        `https://moyeohaeng.com/invite/${team.teamId}`
+                      );
+                      alert("팀이 성공적으로 생성되었습니다!");
+                      handleClose();
+                    }
+                  } catch (err) {
+                    alert(
+                      error || "팀 생성에 실패했습니다. 다시 시도해주세요."
                     );
-                    alert('팀이 성공적으로 생성되었습니다!');
-                    handleClose();
-                  } catch (error) {
-                    console.error("팀 생성 실패:", error);
-                    alert('팀 생성에 실패했습니다. 다시 시도해주세요.');
-                  } finally {
-                    setIsLoading(false);
                   }
                 }}
                 disabled={isLoading}
