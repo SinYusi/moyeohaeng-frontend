@@ -1,6 +1,7 @@
 // 지도 핀
 export interface MapPin {
   id: string;
+  name: string;
   address: string;
   latitude: number;
   longitude: number;
@@ -8,6 +9,16 @@ export interface MapPin {
   category: string;
   author: string;
 }
+
+export interface MapPinResponse {
+  author: string;
+  id: string;
+  place: MapPin;
+  projectId: string;
+}
+
+// 지도 핀 생성 API 요청용
+export type CreateMapPinRequest = Omit<MapPin, "id">;
 
 // 장소 블록
 export interface PlaceBlock {

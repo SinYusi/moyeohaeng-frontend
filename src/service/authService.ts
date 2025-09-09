@@ -66,6 +66,7 @@ class AuthService {
       if (response.data) {
         const accessToken = response.data.data;
         useAuthStore.getState().setAccessToken(accessToken);
+        useAuthStore.getState().setEmail(credentials.email);
       }
 
       // refreshToken은 HTTP-only 쿠키로 자동 설정되므로 별도 처리 필요 없음

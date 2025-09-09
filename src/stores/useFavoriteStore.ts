@@ -1,59 +1,61 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import type { MapPin } from "../types/planTypes";
+import useAuthStore from "./useAuthStore";
 
 interface FavoriteStore {
   favorites: MapPin[];
-  addFavorite: (place: kakao.maps.services.PlacesSearchResultItem) => void;
+  addFavorite: (
+    place: kakao.maps.services.PlacesSearchResultItem,
+    postPinId: string
+  ) => void;
+  addAllFavorites: (places: MapPin[]) => void;
   removeFavorite: (placeId: string) => void;
   isFavorite: (placeId: string) => boolean;
-  toggleFavorite: (place: kakao.maps.services.PlacesSearchResultItem) => void;
+  getFavorite: (placeId: string) => MapPin | undefined;
 }
 
-export const useFavoriteStore = create<FavoriteStore>()(
-  persist(
-    (set, get) => ({
-      favorites: [],
+export const useFavoriteStore = create<FavoriteStore>()((set, get) => ({
+  favorites: [],
 
-      addFavorite: (place) => {
-        const favoritePlace: MapPin = {
-          id: place.id || Date.now() + Math.random().toString(),
-          address: place.road_address_name || place.address_name || "",
-          latitude: Number(place.y),
-          longitude: Number(place.x),
-          detailLink: `https://place.map.kakao.com/${place.id}`,
-          author: "unknown",
-          category: place.category_group_name || "장소",
-        };
+  addFavorite: (place, postPinId) => {
+    const email = useAuthStore.getState().email;
+    const favoritePlace: MapPin = {
+      id: postPinId,
+      address: place.road_address_name || place.address_name || "",
+      latitude: Number(place.y),
+      longitude: Number(place.x),
+      detailLink: `https://place.map.kakao.com/${place.id}`,
+      author: email || "",
+      category: place.category_group_name || "장소",
+      name: place.place_name || "",
+    };
 
-        set((state) => ({
-          favorites: [...state.favorites, favoritePlace],
-        }));
-      },
+    set((state) => ({
+      favorites: [...state.favorites, favoritePlace],
+    }));
+  },
 
-      removeFavorite: (placeId) => {
-        set((state) => ({
-          favorites: state.favorites.filter((fav) => fav.id !== placeId),
-        }));
-      },
+  addAllFavorites: (places) => {
+    set(() => ({
+      favorites: [...places],
+    }));
+  },
 
-      isFavorite: (placeId) => {
-        return get().favorites.some((fav) => fav.id === placeId.toString());
-      },
+  removeFavorite: (placeId) => {
+    set((state) => ({
+      favorites: state.favorites.filter((fav) => fav.id !== placeId),
+    }));
+  },
 
-      toggleFavorite: (place) => {
-        const placeId = place.id || Date.now() + Math.random().toString();
-        const { isFavorite, addFavorite, removeFavorite } = get();
+  isFavorite: (placeId) => {
+    return get().favorites.some(
+      (fav) => fav.detailLink.split("/").pop() === placeId.toString()
+    );
+  },
 
-        if (isFavorite(placeId.toString())) {
-          removeFavorite(placeId.toString());
-        } else {
-          addFavorite(place);
-        }
-      },
-    }),
-    {
-      name: "favorite-places",
-    }
-  )
-);
+  getFavorite: (placeId) => {
+    return get().favorites.find(
+      (fav) => fav.detailLink.split("/").pop() === placeId.toString()
+    );
+  },
+}));

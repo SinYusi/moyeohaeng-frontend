@@ -3,6 +3,9 @@ import ColorTextBtn from "../../common/ColorTextBtn";
 import { useFavoriteStore } from "../../../stores/useFavoriteStore";
 import { useSpotCollectionStore } from "../../../stores/useSpotCollectionStore";
 import { getCategoryIcon } from "../../../utils/categoryUtils";
+import useAuthStore from "../../../stores/useAuthStore";
+import usePostPin from "../../../hooks/plan/usePostPin";
+import useDeletePin from "../../../hooks/plan/useDeletePin";
 
 interface InfoOverlayProps {
   clickedPlace: {
@@ -14,16 +17,41 @@ interface InfoOverlayProps {
 }
 
 const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
-  const { toggleFavorite, isFavorite } = useFavoriteStore();
+  const { isFavorite, addFavorite, removeFavorite, getFavorite } =
+    useFavoriteStore();
   const { addToCollection, isInCollection } = useSpotCollectionStore();
+  const { postPin } = usePostPin();
+  // TODO: postPin 에러 처리
 
   const placeId = clickedPlace.place.id;
   const isFavorited = isFavorite(placeId);
   const isCollected = isInCollection(placeId);
+  const email = useAuthStore.getState().email;
+  const { deletePin } = useDeletePin();
 
-  const handleFavoriteClick = (e: React.MouseEvent) => {
+  const handleFavoriteClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    toggleFavorite(clickedPlace.place);
+    if (isFavorited) {
+      const favorite = getFavorite(placeId);
+      if (favorite) {
+        await deletePin(favorite.id);
+        removeFavorite(favorite.id);
+      }
+    } else {
+      const postPinId = await postPin({
+        name: clickedPlace.place.place_name || "",
+        address:
+          clickedPlace.place.road_address_name ||
+          clickedPlace.place.address_name ||
+          "",
+        latitude: Number(clickedPlace.place.y),
+        longitude: Number(clickedPlace.place.x),
+        detailLink: `https://place.map.kakao.com/${placeId}`,
+        category: clickedPlace.place.category_group_name || "기타",
+        author: email || "",
+      });
+      postPinId && addFavorite(clickedPlace.place, postPinId);
+    }
   };
 
   const handleDetailClick = () => {
