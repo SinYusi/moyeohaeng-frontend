@@ -5,7 +5,7 @@ import TextInput from "../components/common/TextInput";
 import Divider from "../components/common/Divider";
 import kakaoLogo from "../assets/images/kakaoLogo.svg";
 import { useNavigate } from "react-router-dom";
-import useLogin from "../hooks/useLogin";
+import usePostLogin from "../hooks/useLogin";
 import ColorBackgroundBtn from "../components/common/ColorBackgroundBtn";
 import googleLogo from "../assets/images/googleLogo.png";
 
@@ -14,25 +14,14 @@ const Login = () => {
   const [password, setPassword] = useState<string>("");
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const route = useNavigate();
-  const login = useLogin();
-
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+  const { login, isLoading, error } = usePostLogin();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setIsLoading(true);
-
     try {
       await login(email, password);
-      // 로그인 성공 시 useLogin 훅 내에서 홈으로 리다이렉트됨
-    } catch (error: any) {
-      // 로그인 실패 처리
-      setError("이메일 또는 비밀번호가 올바르지 않습니다.");
+    } catch (error) {
       console.error("로그인 에러:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 

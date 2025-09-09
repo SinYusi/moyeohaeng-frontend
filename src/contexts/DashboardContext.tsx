@@ -7,7 +7,6 @@ import React, {
 } from "react";
 import { Outlet } from "react-router-dom";
 import type { Project } from "../types/project";
-import { mockProjects } from "../mockData"; // 임시로 mock데이터 사용
 
 interface DashboardContextType {
   projects: Project[];
@@ -36,10 +35,12 @@ export const DashboardProvider: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // 로그인 이벤트 리스너 사용
+
   const teamProjects = React.useMemo(() => {
     const map = new Map<string, Project[]>();
     projects.forEach((project) => {
-      const teamName = project.team.name;
+      const teamName = project.team.teamName; // team.name -> team.teamName으로 변경
       const teamProjects = map.get(teamName) || [];
       teamProjects.push(project);
       map.set(teamName, teamProjects);
@@ -52,13 +53,8 @@ export const DashboardProvider: React.FC = () => {
     setError(null);
 
     try {
-      // TODO: 실제 API 호출로 변경
-      // const response = await fetch('API_ENDPOINT');
-      // const data = await response.json();
-
-      // 임시로 mock 데이터 사용
-      await new Promise((resolve) => setTimeout(resolve, 500)); // API 호출 시간 시뮬레이션
-      setProjects(mockProjects);
+      // TODO: API 구현 후 연동 예정
+      setProjects([]);
     } catch (err) {
       setError(
         err instanceof Error

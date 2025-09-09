@@ -1,35 +1,60 @@
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
 import BaseModal from "../../common/modal/BaseModal";
 import ModalButton from "../../common/modal/ModalButton";
+import usePostProject from "../../../hooks/project/usePostProject";
+import useMemberStore from "../../../stores/useMemberStore";
+import { getTeamId } from "../../../utils/teamUtils";
 
 interface NewProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (projectName: string, color: string) => void;
   modalTitle?: string;
   initialName?: string;
+  onSuccess?: () => void;
 }
 
 const NewProjectModal: React.FC<NewProjectModalProps> = ({
   isOpen,
   onClose,
-  onSubmit,
   modalTitle,
   initialName,
+  onSuccess,
 }) => {
   const [projectName, setProjectName] = useState(initialName ?? "");
-  const [selectedColor, setSelectedColor] = useState("coral");
+  const [selectedColor, setSelectedColor] = useState("");
+  const { member } = useMemberStore();
+  const { createProject, isLoading, error } = usePostProject();
 
   const handleClose = () => {
     setProjectName(initialName ?? "");
-    setSelectedColor("coral");
+    setSelectedColor("");
     onClose();
   };
 
-  const handleSubmit = () => {
-    if (projectName.trim()) {
-      onSubmit(projectName, selectedColor);
+  const { teamId: urlTeamId } = useParams();
+
+  const handleSubmit = async () => {
+    if (!projectName.trim() || isLoading) return;
+
+    try {
+      const teamId = await getTeamId(urlTeamId, member?.email);
+
+      if (!teamId) {
+        alert("팀을 찾을 수 없습니다.");
+        return;
+      }
+
+      await createProject({
+        title: projectName.trim(),
+        color: selectedColor,
+        teamId: teamId,
+      });
+
       handleClose();
+      onSuccess?.();
+    } catch (err) {
+      alert(error || `프로젝트 생성에 실패했습니다. 다시 시도해주세요.`);
     }
   };
 
@@ -53,9 +78,9 @@ const NewProjectModal: React.FC<NewProjectModalProps> = ({
         <ModalButton
           onClick={handleSubmit}
           variant="primary"
-          disabled={!projectName.trim()}
+          disabled={!projectName.trim() || isLoading}
         >
-          만들기
+          {isLoading ? "생성 중..." : "만들기"}
         </ModalButton>
       </div>
     </div>

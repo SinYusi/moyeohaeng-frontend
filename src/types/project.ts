@@ -1,5 +1,7 @@
+import type { Team } from "./team";
+
 export interface Project {
-  id: number;
+  externalId: string;
   title: string;
   description: string;
   days: number;
@@ -9,8 +11,15 @@ export interface Project {
   endDate: string;
   updatedAt: string;
   createdAt: number;
-  team: {
-    id: number;
-    name: string;
-  };
+  active: boolean;
+  color: string;
+  durationDays: number;
+  finished: boolean;
+  isAllowGuest: boolean;
+  isAllowViewer: boolean;
+  projectAccess: string;
+  public: boolean;
+  remainingDays: number;
+  travelDays: number;
+  team: Team;
 }

@@ -18,7 +18,7 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ projects }) => {
   const sortOptions = ["최근 수정한 순", "최근 생성한 순", "이름순"];
   const teamOptions = [
     "모든 팀",
-    ...Array.from(new Set(projects.map((p) => p.team.name))).sort(),
+    ...(projects ? Array.from(new Set(projects.filter(p => p.team).map((p) => p.team.teamName))).sort() : []),
   ];
 
   // 경로나 팀 ID가 변경될 때 필터 상태 업데이트
@@ -32,10 +32,12 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ projects }) => {
       return;
     }
 
-    if (teamId) {
-      const team = projects.find((p) => p.team.id.toString() === teamId)?.team;
+    if (teamId && projects) {
+      const team = projects.find(
+        (p) => p.team?.teamId.toString() === teamId
+      )?.team;
       if (team) {
-        setSelectedTeam(team.name);
+        setSelectedTeam(team.teamName);
       }
     } else if (location.pathname === "/dashboard/all-team") {
       setSelectedTeam("모든 팀");
@@ -44,10 +46,10 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ projects }) => {
 
   // 선택된 팀과 정렬 기준에 따라 프로젝트 필터링 및 정렬
   const filteredProjects = React.useMemo(() => {
-    const filtered = projects.filter(
+    const filtered = projects ? projects.filter(
       (project) =>
-        selectedTeam === "모든 팀" || project.team.name === selectedTeam
-    );
+        selectedTeam === "모든 팀" || (project.team && project.team.teamName === selectedTeam)
+    ) : [];
 
     return filtered.sort((a: Project, b: Project) => {
       switch (sortBy) {
@@ -85,7 +87,7 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ projects }) => {
       </div>
       <div className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-6">
         {filteredProjects.map((project) => (
-          <ProjectCard key={project.id} {...project} />
+          <ProjectCard key={project.externalId} {...project} />
         ))}
       </div>
     </section>
