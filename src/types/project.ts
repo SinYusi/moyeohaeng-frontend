@@ -1,6 +1,7 @@
 import type { Team } from "./team";
 
 export interface Project {
+  id: string;
   externalId: string;
   title: string;
   description: string;
