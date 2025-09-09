@@ -1,24 +1,30 @@
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
 import BaseModal from "../../common/modal/BaseModal";
 import ModalButton from "../../common/modal/ModalButton";
+import ProjectService from "../../../service/projectService";
+import useMemberStore from "../../../stores/useMemberStore";
+import { getTeamId } from "../../../utils/teamUtils";
 
 interface NewProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (projectName: string, color: string) => void;
   modalTitle?: string;
   initialName?: string;
+  onSuccess?: () => void;
 }
 
 const NewProjectModal: React.FC<NewProjectModalProps> = ({
   isOpen,
   onClose,
-  onSubmit,
   modalTitle,
   initialName,
+  onSuccess,
 }) => {
   const [projectName, setProjectName] = useState(initialName ?? "");
   const [selectedColor, setSelectedColor] = useState("coral");
+  const [isLoading, setIsLoading] = useState(false);
+  const { member } = useMemberStore();
 
   const handleClose = () => {
     setProjectName(initialName ?? "");
@@ -26,10 +32,33 @@ const NewProjectModal: React.FC<NewProjectModalProps> = ({
     onClose();
   };
 
-  const handleSubmit = () => {
-    if (projectName.trim()) {
-      onSubmit(projectName, selectedColor);
+  const { teamId: urlTeamId } = useParams();
+
+  const handleSubmit = async () => {
+    if (!projectName.trim() || isLoading) return;
+
+    try {
+      setIsLoading(true);
+      const teamId = await getTeamId(urlTeamId, member?.email);
+
+      if (!teamId) {
+        console.error("팀을 찾을 수 없습니다.");
+        return;
+      }
+
+      const projectService = new ProjectService();
+      await projectService.createProject({
+        teamId,
+        title: projectName.trim(),
+        color: selectedColor,
+      });
+
       handleClose();
+      onSuccess?.();
+    } catch (error) {
+      console.error("프로젝트 생성 실패:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -53,9 +82,9 @@ const NewProjectModal: React.FC<NewProjectModalProps> = ({
         <ModalButton
           onClick={handleSubmit}
           variant="primary"
-          disabled={!projectName.trim()}
+          disabled={!projectName.trim() || isLoading}
         >
-          만들기
+          {isLoading ? "생성 중..." : "만들기"}
         </ModalButton>
       </div>
     </div>
