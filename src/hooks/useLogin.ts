@@ -1,5 +1,6 @@
 import AuthService from '../service/authService';
 import { useNavigate } from 'react-router-dom';
+import TeamService from '../service/teamService';
 
 const useLogin = () => {
   const navigate = useNavigate();
@@ -10,9 +11,11 @@ const useLogin = () => {
       const authService = new AuthService();
       const response = await authService.login({ email, password });
       
-      // 로그인 성공 시 홈 화면으로 이동
+      // 로그인 성공 시 팀 데이터를 가져오고 대시보드로 이동
       if (response.status === 200) {
-        navigate('/');
+        const teamService = new TeamService();
+        await teamService.getMyTeams(); // 팀 데이터 미리 가져오기
+        navigate('/dashboard');
       }
       
       return response;
