@@ -4,20 +4,23 @@ import useAuthStore from "./useAuthStore";
 
 interface FavoriteStore {
   favorites: MapPin[];
-  addFavorite: (place: kakao.maps.services.PlacesSearchResultItem) => void;
+  addFavorite: (
+    place: kakao.maps.services.PlacesSearchResultItem,
+    postPinId: string
+  ) => void;
   addAllFavorites: (places: MapPin[]) => void;
   removeFavorite: (placeId: string) => void;
   isFavorite: (placeId: string) => boolean;
-  toggleFavorite: (place: kakao.maps.services.PlacesSearchResultItem) => void;
+  getFavorite: (placeId: string) => MapPin | undefined;
 }
 
 export const useFavoriteStore = create<FavoriteStore>()((set, get) => ({
   favorites: [],
 
-  addFavorite: (place) => {
+  addFavorite: (place, postPinId) => {
     const email = useAuthStore.getState().email;
     const favoritePlace: MapPin = {
-      id: place.id || Date.now() + Math.random().toString(),
+      id: postPinId,
       address: place.road_address_name || place.address_name || "",
       latitude: Number(place.y),
       longitude: Number(place.x),
@@ -45,17 +48,14 @@ export const useFavoriteStore = create<FavoriteStore>()((set, get) => ({
   },
 
   isFavorite: (placeId) => {
-    return get().favorites.some((fav) => fav.id === placeId.toString());
+    return get().favorites.some(
+      (fav) => fav.detailLink.split("/").pop() === placeId.toString()
+    );
   },
 
-  toggleFavorite: (place) => {
-    const placeId = place.id || Date.now() + Math.random().toString();
-    const { isFavorite, addFavorite, removeFavorite } = get();
-
-    if (isFavorite(placeId.toString())) {
-      removeFavorite(placeId.toString());
-    } else {
-      addFavorite(place);
-    }
+  getFavorite: (placeId) => {
+    return get().favorites.find(
+      (fav) => fav.detailLink.split("/").pop() === placeId.toString()
+    );
   },
 }));
