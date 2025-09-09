@@ -3,8 +3,8 @@ import ColorTextBtn from "../../common/ColorTextBtn";
 import { useFavoriteStore } from "../../../stores/useFavoriteStore";
 import { useSpotCollectionStore } from "../../../stores/useSpotCollectionStore";
 import { getCategoryIcon } from "../../../utils/categoryUtils";
-import usePostPin from "../../../hooks/usePostPin";
 import useAuthStore from "../../../stores/useAuthStore";
+import usePostPin from "../../../hooks/plan/usePostPin";
 
 interface InfoOverlayProps {
   clickedPlace: {

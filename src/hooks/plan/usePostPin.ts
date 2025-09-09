@@ -1,7 +1,7 @@
 import { useState } from "react";
-import type { CreateMapPinRequest } from "../types/planTypes";
-import baseService from "../service/baseService";
 import { useParams } from "react-router-dom";
+import type { CreateMapPinRequest } from "../../types/planTypes";
+import baseService from "../../service/baseService";
 
 interface PinResponseType {
   status: number;
