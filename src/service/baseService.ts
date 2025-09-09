@@ -2,15 +2,17 @@ import axios from "axios";
 import useAuthStore from "../stores/useAuthStore";
 
 // 개발 환경에서의 기본값 설정
-const URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const URL = (import.meta.env.VITE_API_URL || "http://localhost:8080").replace(
+  /\/$/,
+  ""
+);
 
 // TypeScript와 Axios 호환성 문제 피하기 위해 일반 객체로 생성
 const baseService = axios.create({
+  baseURL: URL,
   withCredentials: true,
+  timeout: 15000, // 네트워크 hang 방지
 });
-
-// URL 직접 설정 (이렇게 하면 TypeScript 오류를 피할 수 있음)
-(baseService.defaults as any).baseURL = URL;
 
 // 인증이 필요없는 경로들 (토큰을 첨부하지 않아야 함)
 const nonAuthPaths = ["/v1/auth/signup", "/v1/auth/login", "/v1/auth/refresh"];
