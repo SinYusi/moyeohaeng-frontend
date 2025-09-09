@@ -16,6 +16,7 @@ const usePostPin = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const projectId = useParams().id;
+  // TODO: projectId 없을 시 에러 처리
   const postPin = async (pin: CreateMapPinRequest) => {
     try {
       setLoading(true);

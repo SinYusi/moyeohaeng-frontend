@@ -14,6 +14,7 @@ const useGetPins = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { id: projectId } = useParams<{ id: string }>();
+  // TODO: projectId 없을 시 에러 처리
 
   const fetchPins = useCallback(async () => {
     if (!projectId) return;
