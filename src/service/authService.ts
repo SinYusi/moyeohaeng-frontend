@@ -2,7 +2,6 @@ import baseService from "./baseService";
 import type { AxiosInstance } from "axios";
 import useAuthStore from "../stores/useAuthStore";
 import useMemberStore from "../stores/useMemberStore";
-import { eventManager, AUTH_EVENTS } from "../utils/eventManager";
 
 // TODO requestDto에 이메일 인증 번호가 필요할지 의논
 type SignupRequest = {
@@ -68,15 +67,12 @@ class AuthService {
         const accessToken = response.data.data;
         console.log(accessToken);
         useAuthStore.getState().setAccessToken(accessToken);
-
-        // 로그인 성공 이벤트 발생
-        eventManager.emit(AUTH_EVENTS.LOGIN_SUCCESS);
       }
 
       // refreshToken은 HTTP-only 쿠키로 자동 설정되므로 별도 처리 필요 없음
       return response.data;
     } catch (error) {
-      console.error("로그인 실패:", error);
+      console.error("AuthService 로그인 실패:", error);
 
       throw error;
     }

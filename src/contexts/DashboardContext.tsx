@@ -7,7 +7,6 @@ import React, {
 } from "react";
 import { Outlet } from "react-router-dom";
 import type { Project } from "../types/project";
-import { useAuthEventListener } from "../hooks/useAuthEventListener";
 
 interface DashboardContextType {
   projects: Project[];
@@ -37,7 +36,6 @@ export const DashboardProvider: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   // 로그인 이벤트 리스너 사용
-  useAuthEventListener();
 
   const teamProjects = React.useMemo(() => {
     const map = new Map<string, Project[]>();
