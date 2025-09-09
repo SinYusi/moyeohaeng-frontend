@@ -10,6 +10,13 @@ export interface MapPin {
   author: string;
 }
 
+export interface MapPinResponse {
+  author: string;
+  id: string;
+  place: MapPin;
+  projectId: string;
+}
+
 // 지도 핀 생성 API 요청용
 export type CreateMapPinRequest = Omit<MapPin, "id">;
 

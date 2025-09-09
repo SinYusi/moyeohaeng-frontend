@@ -1,5 +1,5 @@
 import { Map, CustomOverlayMap, useKakaoLoader } from "react-kakao-maps-sdk";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SearchBar from "./SearchBar";
 import getDistance from "../../../utils/getDistance";
 import BasePin from "./BasePin";
@@ -7,6 +7,7 @@ import InfoOverlay from "./InfoOverlay";
 import { useFavoriteStore } from "../../../stores/useFavoriteStore";
 import FavoritePin from "./FavoritePin";
 import CategoryFilterBtns from "../CategoryFilterBtns";
+import useGetPins from "../../../hooks/plan/useGetPins";
 
 const MapSection = () => {
   const [loading, error] = useKakaoLoader({
@@ -22,7 +23,7 @@ const MapSection = () => {
   const [searchResults, setSearchResults] = useState<
     kakao.maps.services.PlacesSearchResultItem[]
   >([]);
-  const { favorites } = useFavoriteStore();
+  const { favorites, addAllFavorites } = useFavoriteStore();
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const categories = [
     "MT1", // 대형마트
@@ -44,8 +45,14 @@ const MapSection = () => {
     "HP8", // 병원
     "PM9", // 약국
   ] as const;
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>지도 로딩 중 오류 발생</div>;
+  const { pins, loading: pinsLoading, error: pinsError } = useGetPins();
+
+  useEffect(() => {
+    addAllFavorites(pins);
+  }, [pins]);
+
+  if (loading || pinsLoading) return <div>Loading...</div>;
+  if (error || pinsError) return <div>지도 로딩 중 오류 발생</div>;
   const ps = new kakao.maps.services.Places();
 
   const handleSearchSubmit = (keyword: string) => {
