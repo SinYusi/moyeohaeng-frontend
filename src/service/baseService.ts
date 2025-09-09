@@ -2,7 +2,7 @@ import axios from "axios";
 import useAuthStore from "../stores/useAuthStore";
 
 // 개발 환경에서의 기본값 설정
-const URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:8080";
+const URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
 // TypeScript와 Axios 호환성 문제 피하기 위해 일반 객체로 생성
 const baseService = axios.create({
