@@ -40,7 +40,7 @@ const TeamCard = ({ team, projectCount }: TeamCardProps) => {
     <>
       <div
         className="w-full max-w-[350px] aspect-[350/230] group block relative text-[clamp(12px,2.5vw,16px)]"
-        aria-label={`${team.name} 팀 카드`}
+        aria-label={`${team.teamName} 팀 카드`}
       >
         {/* 폴더 탭 */}
         <div
@@ -61,7 +61,9 @@ const TeamCard = ({ team, projectCount }: TeamCardProps) => {
           <div className="flex flex-col gap-[0.25em]">
             <div className="flex justify-between items-start">
               <h3 className="truncate text-[1.5em] font-bold text-gray-800">
-                <Link to={`/dashboard/team/${team.id}`}>{team.name}</Link>
+                <Link to={`/dashboard/team/${team.teamId}`}>
+                  {team.teamName}
+                </Link>
               </h3>
 
               <ContextMenu
@@ -90,10 +92,10 @@ const TeamCard = ({ team, projectCount }: TeamCardProps) => {
         onClose={() => setIsDeleteOpen(false)}
         onDelete={() => {
           // TODO: 팀 삭제 로직 연결
-          console.log("팀 삭제:", team.name);
+          console.log("팀 삭제:", team.teamName);
           setIsDeleteOpen(false);
         }}
-        teamName={team.name}
+        teamName={team.teamName}
         projectCount={projectCount}
       />
     </>
