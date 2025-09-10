@@ -1,15 +1,12 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-import type {
-  CreateMapPinRequest,
-  MapPinResponse,
-} from "../../types/planTypes";
-import baseService from "../../service/baseService";
+import baseService from "../../../service/baseService";
+import type { CreateMapPinRequest, MapPin } from "../../../types/planTypes";
 
 interface PinResponseType {
   status: number;
   message: string;
-  data: MapPinResponse;
+  data: MapPin;
 }
 
 const usePostPin = () => {
@@ -25,8 +22,8 @@ const usePostPin = () => {
         `/v1/projects/${projectId}/pins`,
         pin
       );
-      const data = response.data.data as MapPinResponse;
-      return data.id;
+      const data = response.data.data as MapPin;
+      return { serverId: data.id, serverPlaceId: data.place.id };
     } catch (error) {
       console.error(error);
       setError(error as string);

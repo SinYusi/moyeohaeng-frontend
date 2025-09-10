@@ -4,8 +4,8 @@ import { useFavoriteStore } from "../../../stores/useFavoriteStore";
 import { useSpotCollectionStore } from "../../../stores/useSpotCollectionStore";
 import { getCategoryIcon } from "../../../utils/categoryUtils";
 import useAuthStore from "../../../stores/useAuthStore";
-import usePostPin from "../../../hooks/plan/usePostPin";
-import useDeletePin from "../../../hooks/plan/useDeletePin";
+import usePostPin from "../../../hooks/plan/pin/usePostPin";
+import useDeletePin from "../../../hooks/plan/pin/useDeletePin";
 
 interface InfoOverlayProps {
   clickedPlace: {
@@ -38,7 +38,7 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
         removeFavorite(favorite.id);
       }
     } else {
-      const postPinId = await postPin({
+      const result = await postPin({
         name: clickedPlace.place.place_name || "",
         address:
           clickedPlace.place.road_address_name ||
@@ -50,7 +50,9 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
         category: clickedPlace.place.category_group_name || "기타",
         author: email || "",
       });
-      postPinId && addFavorite(clickedPlace.place, postPinId);
+      if (result) {
+        addFavorite(clickedPlace.place, result.serverId, result.serverPlaceId);
+      }
     }
   };
 
