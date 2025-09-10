@@ -81,6 +81,20 @@ const MapSection = () => {
     );
   };
 
+  const handlePlaceSelect = (
+    place: kakao.maps.services.PlacesSearchResultItem
+  ) => {
+    if (!map) return;
+
+    // 선택된 장소로 지도 중심 이동
+    const position = new kakao.maps.LatLng(Number(place.y), Number(place.x));
+    map.setCenter(position);
+    map.setLevel(3); // 적절한 확대 레벨로 설정
+
+    // 선택된 장소를 검색 결과에 추가하여 핀으로 표시
+    setSearchResults([place]);
+  };
+
   const searchNearby = (lat: number, lng: number) => {
     if (!map) return;
 
@@ -208,7 +222,11 @@ const MapSection = () => {
 
       {/* 맵 상단 부분 */}
       <div className="absolute top-5 left-4 right-4 z-10 flex flex-col items-center gap-3">
-        <SearchBar map={map} onSubmitSearch={handleSearchSubmit} />
+        <SearchBar
+          map={map}
+          onSubmitSearch={handleSearchSubmit}
+          onPlaceSelect={handlePlaceSelect}
+        />
         <CategoryFilterBtns
           selectedFilters={selectedFilters}
           setSelectedFilters={setSelectedFilters}
