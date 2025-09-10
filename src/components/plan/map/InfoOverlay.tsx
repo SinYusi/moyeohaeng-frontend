@@ -27,7 +27,6 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
   const { addToCollection, isInCollection } = useSpotCollectionStore();
   const { postPin } = usePostPin();
   // TODO: postPin 에러 처리
-  console.log("InfoOverlay clickedPlace.place", clickedPlace.place);
 
   const kakoPlaceId = clickedPlace.kakaoPlace.id;
   const isFavorited = isFavorite(kakoPlaceId);

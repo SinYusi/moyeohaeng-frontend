@@ -26,7 +26,6 @@ const usePostPlaceBlock = () => {
         placeBlock
       );
 
-      console.log(response);
       const data = response.data.data as PlaceBlock;
       return data.id;
     } catch (error) {

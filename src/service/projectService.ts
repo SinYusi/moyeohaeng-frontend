@@ -67,7 +67,6 @@ export class ProjectService {
       params.append("sort", sortType);
 
       const response = await this.api.get(`/v1/projects?${params.toString()}`);
-      console.log("프로젝트 조회 성공:", response.data);
       return response.data;
     } catch (error) {
       console.error("프로젝트 조회 실패:", error);
