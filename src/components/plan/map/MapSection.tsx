@@ -8,6 +8,7 @@ import { useFavoriteStore } from "../../../stores/useFavoriteStore";
 import FavoritePin from "./FavoritePin";
 import CategoryFilterBtns from "../CategoryFilterBtns";
 import useGetPins from "../../../hooks/plan/pin/useGetPins";
+import type { Place } from "../../../types/planTypes";
 
 const MapSection = () => {
   const [loading, error] = useKakaoLoader({
@@ -18,6 +19,7 @@ const MapSection = () => {
   const [clickedPlace, setClickedPlace] = useState<{
     position: { lat: number; lng: number };
     kakaoPlace: kakao.maps.services.PlacesSearchResultItem;
+    place?: Place;
     distance: number;
   } | null>(null);
   const [searchResults, setSearchResults] = useState<
@@ -263,6 +265,7 @@ const MapSection = () => {
                       lng: favorite.place.longitude,
                     },
                     kakaoPlace: kakaoPlaceData,
+                    place: favorite.place,
                     distance: distance,
                   });
                 }}

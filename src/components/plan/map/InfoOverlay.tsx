@@ -6,22 +6,28 @@ import { getCategoryIcon } from "../../../utils/categoryUtils";
 import useAuthStore from "../../../stores/useAuthStore";
 import usePostPin from "../../../hooks/plan/pin/usePostPin";
 import useDeletePin from "../../../hooks/plan/pin/useDeletePin";
+import usePostPlaceBlock from "../../../hooks/plan/placeBlock/usePostPlaceBlock";
+import type { Place } from "../../../types/planTypes";
 
 interface InfoOverlayProps {
   clickedPlace: {
     position: { lat: number; lng: number };
     kakaoPlace: kakao.maps.services.PlacesSearchResultItem;
+    place?: Place;
     distance: number;
   };
   onClose: () => void;
 }
 
 const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
+  const { postPlaceBlock } = usePostPlaceBlock();
+
   const { isFavorite, addFavorite, removeFavorite, getFavorite } =
     useFavoriteStore();
   const { addToCollection, isInCollection } = useSpotCollectionStore();
   const { postPin } = usePostPin();
   // TODO: postPin 에러 처리
+  console.log("InfoOverlay clickedPlace.place", clickedPlace.place);
 
   const kakoPlaceId = clickedPlace.kakaoPlace.id;
   const isFavorited = isFavorite(kakoPlaceId);
@@ -74,6 +80,9 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
     e.stopPropagation();
 
     // TODO: API 연결
+    postPlaceBlock({
+      placeId: clickedPlace.place?.id || "",
+    });
 
     const collectionData = {
       name: clickedPlace.kakaoPlace.place_name || "",
