@@ -24,6 +24,10 @@ export interface PlaceCardVM {
   detailLink?: string;
 }
 
+export interface CreatePlaceBlockRequest {
+  placeId: string;
+}
+
 export function toPlaceCardVM(model: PlaceBlock): PlaceCardVM {
   return {
     id: model.id,
