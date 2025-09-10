@@ -30,10 +30,17 @@ const ScheduleBlock = ({ place }: { place: PlaceBlock }) => {
         {/* Place */}
         <div className="flex flex-col gap-[2px]">
           {/* LocationName */}
-          <div className="flex items-center gap-1">
-            <p className="text-base font-bold text-[#131416] truncate">
-              {place.name}
-            </p>
+          <div
+            className="flex items-center gap-1 cursor-pointer"
+            onClick={() => {
+              if (place.detailLink) {
+                window.open(place.detailLink, "_blank");
+              }
+            }}
+          >
+              <p className="text-base font-bold text-[#131416] truncate hover:text-[#4f5fbf] transition-colors duration-200">
+                {place.name}
+              </p>
             <ChevronRight size={16} color="#c0c7ce" className="flex-shrink-0" />
           </div>
           <p className="text-xs font-medium text-[#5a6572] overflow-hidden text-ellipsis whitespace-nowrap">
