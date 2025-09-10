@@ -1,16 +1,26 @@
 // Types for PlaceBlock (GET PlaceBlock API)
 export interface PlaceBlock {
   id: number;
-  projectId: number;
   name: string;
   address: string;
   latitude: number;
   longitude: number;
-  memo?: string;
-  detailLink?: string;
+  detailLink: string;
   category: string;
-  color: string; // hex color e.g. #FF8A00
-  author: string;
+  memo: string;
+  createdAt: string;
+  likeSummary: {
+    totalCount: number;
+    liked: boolean;
+    likedMembers: string[];
+  };
+  commentSummary: {
+    totalCount: number;
+    lastComment: {
+      content: string;
+      author: string;
+    };
+  };
 }
 
 // View model variables a PlaceCard component would likely consume
@@ -19,7 +29,6 @@ export interface PlaceCardVM {
   title: string; // name
   subtitle: string; // address
   category: string;
-  categoryColor: string; // color
   memo?: string;
   detailLink?: string;
 }
@@ -34,7 +43,6 @@ export function toPlaceCardVM(model: PlaceBlock): PlaceCardVM {
     title: model.name,
     subtitle: model.address,
     category: model.category,
-    categoryColor: model.color,
     memo: model.memo,
     detailLink: model.detailLink,
   };
