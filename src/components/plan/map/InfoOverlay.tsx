@@ -1,4 +1,4 @@
-import { Calendar, Plus, Star, X } from "lucide-react";
+import { Calendar, ChevronRight, Plus, Star, X } from "lucide-react";
 import ColorTextBtn from "../../common/ColorTextBtn";
 import { useFavoriteStore } from "../../../stores/useFavoriteStore";
 import { useSpotCollectionStore } from "../../../stores/useSpotCollectionStore";
@@ -138,9 +138,21 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
           </div>
           {/* 중단 - 장소 이름, 주소, 상세보기 버튼, 즐겨찾기 아이콘 */}
           <div className="flex flex-col gap-2">
-            <p className="text-xl font-semibold text-[#131416]">
-              {clickedPlace.place?.place_name}
-            </p>
+            <div
+              className="flex items-center gap-1 cursor-pointer"
+              onClick={() =>
+                window.open(`https://place.map.kakao.com/${placeId}`, "_blank")
+              }
+            >
+              <p className="text-xl font-semibold text-[#131416] truncate hover:text-[#4f5fbf] transition-colors duration-200">
+                {clickedPlace.place?.place_name}
+              </p>
+              <ChevronRight
+                size={16}
+                color="#c0c7ce"
+                className="flex-shrink-0"
+              />
+            </div>
             <p className="text-sm text-[#7b8482]">
               {clickedPlace.place?.road_address_name ||
                 clickedPlace.place?.address_name}
