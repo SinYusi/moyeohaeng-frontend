@@ -17,7 +17,7 @@ const CategoryFilterBtns = ({
   // 원하는 카테고리 순서 정의
   const categoryOrder = [
     "음식점",
-    "카페", 
+    "카페",
     "관광명소",
     "숙박",
     "문화시설",
@@ -28,16 +28,22 @@ const CategoryFilterBtns = ({
     "약국",
     "지하철역",
     "주차장",
+    "주유소,충전소",
     "은행",
     "편의점",
     "학교",
     "학원",
-    "어린이집"
+    "어린이집,유치원",
+    "기타",
   ];
 
   // 즐겨찾기/컬렉션에서 실제 존재하는 카테고리만 추출
   const availableCategories = Array.from(
-    new Set(mode === "favorite" ? favorites.map((fav) => fav.place.category) : collections.map((col) => col.category))
+    new Set(
+      mode === "favorite"
+        ? favorites.map((fav) => fav.place.category)
+        : collections.map((col) => col.category)
+    )
   ).filter((category) => category && category !== "장소");
 
   // 카테고리 정렬: 선택된 것들을 앞으로, 그 안에서도 정의된 순서대로
@@ -52,12 +58,12 @@ const CategoryFilterBtns = ({
     // 둘 다 선택되었거나 둘 다 선택되지 않은 경우, 정의된 순서대로
     const aIndex = categoryOrder.indexOf(a);
     const bIndex = categoryOrder.indexOf(b);
-    
+
     // 정의된 순서에 없는 카테고리는 뒤로
     if (aIndex === -1 && bIndex === -1) return a.localeCompare(b);
     if (aIndex === -1) return 1;
     if (bIndex === -1) return -1;
-    
+
     return aIndex - bIndex;
   });
 
