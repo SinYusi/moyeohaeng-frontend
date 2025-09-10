@@ -16,8 +16,13 @@ const usePostPlaceBlock = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const projectId = useParams().id;
-  // TODO: projectId 없을 시 에러 처리
+
   const postPlaceBlock = async (placeBlock: CreatePlaceBlockRequest) => {
+    if (!projectId) {
+      console.error("Missing projectId in route params");
+      setError("Missing project ID");
+      return;
+    }
     try {
       setLoading(true);
       setError(null);

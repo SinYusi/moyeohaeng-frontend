@@ -25,7 +25,7 @@ const MapSection = () => {
   const [searchResults, setSearchResults] = useState<
     kakao.maps.services.PlacesSearchResultItem[]
   >([]);
-  const { favorites, addAllFavorites } = useFavoriteStore();
+  const { favorites, addAllFavorites, isFavorite } = useFavoriteStore();
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const categories = [
     "FD6", // 음식점
@@ -176,10 +176,8 @@ const MapSection = () => {
       >
         {searchResults
           .filter((kakaoResultPlace) => {
-            const placeId =
-              kakaoResultPlace.id ||
-              `${kakaoResultPlace.place_name}-${kakaoResultPlace.x}-${kakaoResultPlace.y}`;
-            return !favorites.some((fav) => fav.id === placeId);
+            const placeId = kakaoResultPlace.id?.toString();
+            return placeId ? !isFavorite(placeId) : true;
           })
           .map((kakaoResultPlace, index) => (
             <CustomOverlayMap
