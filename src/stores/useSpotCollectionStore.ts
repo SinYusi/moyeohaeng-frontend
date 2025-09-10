@@ -4,6 +4,7 @@ import type { PlaceBlock } from "../types/planTypes";
 interface SpotCollectionState {
   collections: PlaceBlock[];
   addToCollection: (item: Omit<PlaceBlock, "id" | "createdAt">) => void;
+  fetchCollections: (placeBlocks: PlaceBlock[]) => void;
   removeFromCollection: (id: string) => void;
   updateCollection: (id: string, updates: Partial<PlaceBlock>) => void;
   toggleLike: (id: string) => void;
@@ -25,6 +26,12 @@ export const useSpotCollectionStore = create<SpotCollectionState>()(
 
       set((state) => ({
         collections: [...state.collections, newItem],
+      }));
+    },
+
+    fetchCollections: (placeBlocks: PlaceBlock[]) => {
+      set(() => ({
+        collections: [...placeBlocks],
       }));
     },
 

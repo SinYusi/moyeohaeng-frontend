@@ -1,25 +1,38 @@
 import GroupSection from "./GroupSection";
 import AllBlockSection from "./AllBlockSection";
 import { useSpotCollectionStore } from "../../../stores/useSpotCollectionStore";
-import emptyCollection from "../../../assets/images/empty.png";
+import useGetPlaceBlock from "../../../hooks/plan/placeBlock/useGetPlaceBlock";
+import { useEffect } from "react";
+import Guide from "./Guide";
 
 const SpotCollectionBoard = () => {
-  const { collections } = useSpotCollectionStore();
-  if (collections.length === 0)
+  const { collections, fetchCollections } = useSpotCollectionStore();
+  const { placeBlocks, loading, error } = useGetPlaceBlock();
+
+  useEffect(() => {
+    if (placeBlocks.length > 0) {
+      fetchCollections(placeBlocks);
+    }
+  }, [placeBlocks, fetchCollections]);
+
+  if (loading) {
     return (
       <div className="w-full h-full px-9 py-6 flex flex-col items-center justify-center gap-8">
-        <img src={emptyCollection} alt="emptyCollection" className="w-[70%]" />
-        <div className="flex flex-col items-center gap-4">
-          <p className="text-[24px] text-[#131416] font-[700] text-center">
-            마음에 드는 장소를 모아 함께 이야기해 보세요.
-          </p>
-          <p className="text-[18px] text-[#5a6572] font-[500] text-center tracking-[-0.4px]">
-            지도에서 원하는 장소를 찾은 뒤, 장소 모음에 추가하면 <br /> 다른
-            여행원과 비교하고 의견을 나눌 수 있어요.
-          </p>
-        </div>
+        <div className="text-lg text-[#131416]">데이터를 불러오는 중...</div>
       </div>
     );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full h-full px-9 py-6 flex flex-col items-center justify-center gap-8">
+        <div className="text-lg text-red-500">에러가 발생했습니다: {error}</div>
+      </div>
+    );
+  }
+  if (collections.length === 0) {
+    return <Guide />;
+  }
   return (
     <div className="w-full h-full flex flex-col">
       <div className="flex-1 px-9 py-6 flex flex-col items-center gap-8 overflow-y-auto">
