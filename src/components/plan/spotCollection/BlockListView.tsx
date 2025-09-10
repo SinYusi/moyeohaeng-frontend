@@ -9,6 +9,7 @@ const BlockListView = () => {
       <CategoryFilterBtns
         selectedFilters={selectedFilters}
         setSelectedFilters={setSelectedFilters}
+        mode="collection"
       />
       <BlockListSection />
     </div>
