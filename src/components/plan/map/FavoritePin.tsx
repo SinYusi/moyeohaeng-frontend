@@ -2,7 +2,7 @@ import { Star } from "lucide-react";
 
 const FavoritePin = () => {
   return (
-    <div className="relative">
+    <div className="relative cursor-pointer">
       {/* 원 배경 */}
       <div
         className="w-5 h-5 rounded-full flex items-center justify-center border border-[#3b4553]"

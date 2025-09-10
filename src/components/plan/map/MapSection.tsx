@@ -147,7 +147,7 @@ const MapSection = () => {
         },
         {
           location: new kakao.maps.LatLng(lat, lng),
-          radius: 5, // 반경을 10m로 설정
+          radius: 10,
         }
       );
     });
@@ -180,7 +180,29 @@ const MapSection = () => {
               xAnchor={0.5}
               zIndex={1000}
             >
-              <BasePin />
+              <div
+                onClick={() => {
+                  new kakao.maps.LatLng(Number(place.y), Number(place.x));
+                  const distance = 0;
+                  setClickedPlace({
+                    position: {
+                      lat: Number(place.y),
+                      lng: Number(place.x),
+                    },
+                    place: place,
+                    distance: distance,
+                  });
+                }}
+                onMouseDown={(e: React.MouseEvent) => {
+                  e.stopPropagation();
+                }}
+                onMouseUp={(e: React.MouseEvent) => {
+                  e.stopPropagation();
+                }}
+                style={{ cursor: "pointer" }}
+              >
+                <BasePin />
+              </div>
             </CustomOverlayMap>
           ))}
         {favorites.map((favorite) => {
@@ -202,6 +224,39 @@ const MapSection = () => {
                 className={`transition-opacity duration-200 ${
                   isFiltered ? "opacity-100" : "opacity-50"
                 }`}
+                onClick={() => {
+                  const distance = 0;
+                  const placeData: kakao.maps.services.PlacesSearchResultItem =
+                    {
+                      id: favorite.place.detailLink.split("/").pop() || "",
+                      place_name: favorite.place.name,
+                      address_name: favorite.place.address,
+                      road_address_name: favorite.place.address,
+                      x: favorite.place.longitude.toString(),
+                      y: favorite.place.latitude.toString(),
+                      place_url: favorite.place.detailLink,
+                      category_group_name: favorite.place.category,
+                      category_group_code: "",
+                      category_name: favorite.place.category,
+                      distance: "",
+                      phone: "",
+                    };
+
+                  setClickedPlace({
+                    position: {
+                      lat: favorite.place.latitude,
+                      lng: favorite.place.longitude,
+                    },
+                    place: placeData,
+                    distance: distance,
+                  });
+                }}
+                onMouseDown={(e: React.MouseEvent) => {
+                  e.stopPropagation();
+                }}
+                onMouseUp={(e: React.MouseEvent) => {
+                  e.stopPropagation();
+                }}
               >
                 <FavoritePin />
               </div>
