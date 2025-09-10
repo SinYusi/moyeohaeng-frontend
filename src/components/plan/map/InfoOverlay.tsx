@@ -6,58 +6,67 @@ import { getCategoryIcon } from "../../../utils/categoryUtils";
 import useAuthStore from "../../../stores/useAuthStore";
 import usePostPin from "../../../hooks/plan/pin/usePostPin";
 import useDeletePin from "../../../hooks/plan/pin/useDeletePin";
+import usePostPlaceBlock from "../../../hooks/plan/placeBlock/usePostPlaceBlock";
+import type { Place } from "../../../types/planTypes";
 
 interface InfoOverlayProps {
   clickedPlace: {
     position: { lat: number; lng: number };
-    place: kakao.maps.services.PlacesSearchResultItem;
+    kakaoPlace: kakao.maps.services.PlacesSearchResultItem;
+    place?: Place;
     distance: number;
   };
   onClose: () => void;
 }
 
 const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
+  const { postPlaceBlock } = usePostPlaceBlock();
+
   const { isFavorite, addFavorite, removeFavorite, getFavorite } =
     useFavoriteStore();
   const { addToCollection, isInCollection } = useSpotCollectionStore();
   const { postPin } = usePostPin();
   // TODO: postPin 에러 처리
 
-  const placeId = clickedPlace.place.id;
-  const isFavorited = isFavorite(placeId);
-  const isCollected = isInCollection(placeId);
+  const kakoPlaceId = clickedPlace.kakaoPlace.id;
+  const isFavorited = isFavorite(kakoPlaceId);
+  const isCollected = isInCollection(kakoPlaceId);
   const email = useAuthStore.getState().email;
   const { deletePin } = useDeletePin();
 
   const handleFavoriteClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
     if (isFavorited) {
-      const favorite = getFavorite(placeId);
+      const favorite = getFavorite(kakoPlaceId);
       if (favorite) {
         await deletePin(favorite.id);
         removeFavorite(favorite.id);
       }
     } else {
       const result = await postPin({
-        name: clickedPlace.place.place_name || "",
+        name: clickedPlace.kakaoPlace.place_name || "",
         address:
-          clickedPlace.place.road_address_name ||
-          clickedPlace.place.address_name ||
+          clickedPlace.kakaoPlace.road_address_name ||
+          clickedPlace.kakaoPlace.address_name ||
           "",
-        latitude: Number(clickedPlace.place.y),
-        longitude: Number(clickedPlace.place.x),
-        detailLink: `https://place.map.kakao.com/${placeId}`,
-        category: clickedPlace.place.category_group_name || "기타",
+        latitude: Number(clickedPlace.kakaoPlace.y),
+        longitude: Number(clickedPlace.kakaoPlace.x),
+        detailLink: `https://place.map.kakao.com/${kakoPlaceId}`,
+        category: clickedPlace.kakaoPlace.category_group_name || "기타",
         author: email || "",
       });
       if (result) {
-        addFavorite(clickedPlace.place, result.serverId, result.serverPlaceId);
+        addFavorite(
+          clickedPlace.kakaoPlace,
+          result.serverId,
+          result.serverPlaceId
+        );
       }
     }
   };
 
   const handleDetailClick = () => {
-    const kakaoMapUrl = `https://place.map.kakao.com/${placeId}`;
+    const kakaoMapUrl = `https://place.map.kakao.com/${kakoPlaceId}`;
     window.open(kakaoMapUrl, "_blank", "noopener,noreferrer");
   };
 
@@ -69,19 +78,24 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
   const handleAddToCollection = (e: React.MouseEvent) => {
     e.stopPropagation();
 
-    // TODO: API 연결
+    const favorite = getFavorite(kakoPlaceId);
+    if (!favorite) return;
+
+    postPlaceBlock({
+      placeId: favorite.place.id,
+    });
 
     const collectionData = {
-      name: clickedPlace.place.place_name || "",
+      name: clickedPlace.kakaoPlace.place_name || "",
       address:
-        clickedPlace.place.road_address_name ||
-        clickedPlace.place.address_name ||
+        clickedPlace.kakaoPlace.road_address_name ||
+        clickedPlace.kakaoPlace.address_name ||
         "",
-      latitude: Number(clickedPlace.place.y),
-      longitude: Number(clickedPlace.place.x),
+      latitude: Number(clickedPlace.kakaoPlace.y),
+      longitude: Number(clickedPlace.kakaoPlace.x),
       memo: "",
-      detailLink: `https://place.map.kakao.com/${placeId}`,
-      category: clickedPlace.place.category_group_name || "기타",
+      detailLink: `https://place.map.kakao.com/${kakoPlaceId}`,
+      category: clickedPlace.kakaoPlace.category_group_name || "기타",
       createAt: new Date().toISOString(),
       likeSummary: {
         totalCount: 0,
@@ -123,11 +137,11 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
             <div className="text-[#5a6572] rounded-sm text-sm font-medium flex items-center justify-center py-1">
               <span className="mr-1">
                 {getCategoryIcon(
-                  clickedPlace.place?.category_group_name || "",
+                  clickedPlace.kakaoPlace?.category_group_name || "",
                   20
                 )}
               </span>
-              {clickedPlace.place?.category_group_name || "장소"}
+              {clickedPlace.kakaoPlace?.category_group_name || "장소"}
             </div>
             <button
               onClick={handleCloseClick}
@@ -141,11 +155,14 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
             <div
               className="flex items-center gap-1 cursor-pointer"
               onClick={() =>
-                window.open(`https://place.map.kakao.com/${placeId}`, "_blank")
+                window.open(
+                  `https://place.map.kakao.com/${kakoPlaceId}`,
+                  "_blank"
+                )
               }
             >
               <p className="text-xl font-semibold text-[#131416] truncate hover:text-[#4f5fbf] transition-colors duration-200">
-                {clickedPlace.place?.place_name}
+                {clickedPlace.kakaoPlace?.place_name}
               </p>
               <ChevronRight
                 size={16}
@@ -154,8 +171,8 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
               />
             </div>
             <p className="text-sm text-[#7b8482]">
-              {clickedPlace.place?.road_address_name ||
-                clickedPlace.place?.address_name}
+              {clickedPlace.kakaoPlace?.road_address_name ||
+                clickedPlace.kakaoPlace?.address_name}
             </p>
           </div>
           <div className="flex items-center justify-between self-stretch">

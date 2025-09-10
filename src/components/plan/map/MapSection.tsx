@@ -8,6 +8,7 @@ import { useFavoriteStore } from "../../../stores/useFavoriteStore";
 import FavoritePin from "./FavoritePin";
 import CategoryFilterBtns from "../CategoryFilterBtns";
 import useGetPins from "../../../hooks/plan/pin/useGetPins";
+import type { Place } from "../../../types/planTypes";
 
 const MapSection = () => {
   const [loading, error] = useKakaoLoader({
@@ -17,13 +18,14 @@ const MapSection = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [clickedPlace, setClickedPlace] = useState<{
     position: { lat: number; lng: number };
-    place: kakao.maps.services.PlacesSearchResultItem;
+    kakaoPlace: kakao.maps.services.PlacesSearchResultItem;
+    place?: Place;
     distance: number;
   } | null>(null);
   const [searchResults, setSearchResults] = useState<
     kakao.maps.services.PlacesSearchResultItem[]
   >([]);
-  const { favorites, addAllFavorites } = useFavoriteStore();
+  const { favorites, addAllFavorites, isFavorite } = useFavoriteStore();
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const categories = [
     "FD6", // 음식점
@@ -82,17 +84,20 @@ const MapSection = () => {
   };
 
   const handlePlaceSelect = (
-    place: kakao.maps.services.PlacesSearchResultItem
+    kakaoPlace: kakao.maps.services.PlacesSearchResultItem
   ) => {
     if (!map) return;
 
     // 선택된 장소로 지도 중심 이동
-    const position = new kakao.maps.LatLng(Number(place.y), Number(place.x));
+    const position = new kakao.maps.LatLng(
+      Number(kakaoPlace.y),
+      Number(kakaoPlace.x)
+    );
     map.setCenter(position);
     map.setLevel(3); // 적절한 확대 레벨로 설정
 
     // 선택된 장소를 검색 결과에 추가하여 핀으로 표시
-    setSearchResults([place]);
+    setSearchResults([kakaoPlace]);
   };
 
   const searchNearby = (lat: number, lng: number) => {
@@ -124,12 +129,15 @@ const MapSection = () => {
                 new kakao.maps.LatLng(+closestPlace.y, +closestPlace.x)
               );
 
-              allResults.forEach((place) => {
-                const placePosition = new kakao.maps.LatLng(+place.y, +place.x);
+              allResults.forEach((_place) => {
+                const placePosition = new kakao.maps.LatLng(
+                  +_place.y,
+                  +_place.x
+                );
                 const distance = getDistance(clickPosition, placePosition);
                 if (distance < minDistance) {
                   minDistance = distance;
-                  closestPlace = place;
+                  closestPlace = _place;
                 }
               });
 
@@ -139,7 +147,7 @@ const MapSection = () => {
                   lat: Number(closestPlace.y),
                   lng: Number(closestPlace.x),
                 },
-                place: closestPlace,
+                kakaoPlace: closestPlace,
                 distance: minDistance,
               });
             }
@@ -167,29 +175,36 @@ const MapSection = () => {
         }}
       >
         {searchResults
-          .filter((place) => {
-            const placeId =
-              place.id || `${place.place_name}-${place.x}-${place.y}`;
-            return !favorites.some((fav) => fav.id === placeId);
+          .filter((kakaoResultPlace) => {
+            const placeId = kakaoResultPlace.id?.toString();
+            return placeId ? !isFavorite(placeId) : true;
           })
-          .map((place, index) => (
+          .map((kakaoResultPlace, index) => (
             <CustomOverlayMap
-              key={`search-${place.id || place.place_name}-${index}`}
-              position={{ lat: Number(place.y), lng: Number(place.x) }}
+              key={`search-${
+                kakaoResultPlace.id || kakaoResultPlace.place_name
+              }-${index}`}
+              position={{
+                lat: Number(kakaoResultPlace.y),
+                lng: Number(kakaoResultPlace.x),
+              }}
               yAnchor={0.5}
               xAnchor={0.5}
               zIndex={1000}
             >
               <div
                 onClick={() => {
-                  new kakao.maps.LatLng(Number(place.y), Number(place.x));
+                  new kakao.maps.LatLng(
+                    Number(kakaoResultPlace.y),
+                    Number(kakaoResultPlace.x)
+                  );
                   const distance = 0;
                   setClickedPlace({
                     position: {
-                      lat: Number(place.y),
-                      lng: Number(place.x),
+                      lat: Number(kakaoResultPlace.y),
+                      lng: Number(kakaoResultPlace.x),
                     },
-                    place: place,
+                    kakaoPlace: kakaoResultPlace,
                     distance: distance,
                   });
                 }}
@@ -226,7 +241,7 @@ const MapSection = () => {
                 }`}
                 onClick={() => {
                   const distance = 0;
-                  const placeData: kakao.maps.services.PlacesSearchResultItem =
+                  const kakaoPlaceData: kakao.maps.services.PlacesSearchResultItem =
                     {
                       id: favorite.place.detailLink.split("/").pop() || "",
                       place_name: favorite.place.name,
@@ -247,7 +262,8 @@ const MapSection = () => {
                       lat: favorite.place.latitude,
                       lng: favorite.place.longitude,
                     },
-                    place: placeData,
+                    kakaoPlace: kakaoPlaceData,
+                    place: favorite.place,
                     distance: distance,
                   });
                 }}

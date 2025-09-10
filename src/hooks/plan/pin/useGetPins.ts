@@ -25,7 +25,6 @@ const useGetPins = () => {
       const response = await baseService.get(`/v1/projects/${projectId}/pins`);
       const pinData = response.data as GetPinsResponse;
       setPins(pinData.data);
-      console.log(response.data);
     } catch (error) {
       console.error("핀 데이터 로딩 실패:", error);
       setError(error as string);
