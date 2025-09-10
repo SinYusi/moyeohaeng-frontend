@@ -17,6 +17,7 @@ import StoreAlt from "../assets/images/StoreAlt.svg";
 import Subway from "../assets/images/Subway.svg";
 import TickerStar from "../assets/images/TickerStar.svg";
 import ChildrenToy from "../assets/images/ChildrenToy.svg";
+import { Pin } from "lucide-react";
 
 export const getCategoryIcon = (categoryName: string, size: number) => {
   const iconMap: { [key: string]: React.ReactNode } = {
@@ -49,9 +50,9 @@ export const getCategoryIcon = (categoryName: string, size: number) => {
     편의점: <img src={StoreAlt} alt="편의점" width={size} height={size} />,
     학교: <img src={SchoolSvg} alt="학교" width={size} height={size} />,
     학원: <img src={BuildingLibrary} alt="학원" width={size} height={size} />,
-    어린이집: (
+    "어린이집,유치원": (
       <img src={ChildrenToy} alt="어린이집" width={size} height={size} />
     ),
   };
-  return iconMap[categoryName] || "📍";
+  return iconMap[categoryName] || <Pin size={size} />;
 };
