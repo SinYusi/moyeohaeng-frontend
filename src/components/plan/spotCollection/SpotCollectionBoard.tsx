@@ -21,9 +21,11 @@ const SpotCollectionBoard = () => {
       </div>
     );
   return (
-    <div className="w-full px-9 py-6 flex flex-col items-center gap-8">
-      <GroupSection />
-      <AllBlockSection />
+    <div className="w-full h-full flex flex-col">
+      <div className="flex-1 px-9 py-6 flex flex-col items-center gap-8 overflow-y-auto">
+        <GroupSection />
+        <AllBlockSection />
+      </div>
     </div>
   );
 };

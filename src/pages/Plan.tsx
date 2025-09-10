@@ -13,7 +13,7 @@ const Plan = () => {
     openModifyGroupModal,
   } = useModalStore();
   return (
-    <div className="flex w-full h-screen bg-gray-100">
+    <div className="flex w-full h-screen bg-gray-100 overflow-hidden">
       {/* 좌측 영역 (헤더 + 좌측 패널 + 중간 패널) */}
       <div className="flex flex-col w-[57.292%]">
         {/* 상단 헤더 - 좌측 패널과 중간 패널을 통과 */}
@@ -54,9 +54,9 @@ const Plan = () => {
         </div>
 
         {/* 좌측 패널과 중간 패널 컨테이너 */}
-        <div className="flex flex-1">
+        <div className="flex flex-1 min-h-0">
           {/* 좌측 패널 - 셀렉션 및 스크랩북 */}
-          <div className="w-[70.833%] h-full bg-white border-r border-gray-200 overflow-y-auto">
+          <div className="w-[70.833%] h-full bg-white border-r border-gray-200">
             <SpotCollectionBoard />
           </div>
 
@@ -76,7 +76,7 @@ const Plan = () => {
       </div>
 
       {/* 우측 패널 - 지도 */}
-      <div className="w-[42.708%] h-full bg-white overflow-y-auto">
+      <div className="w-[42.708%] h-full bg-white">
         <MapSection />
       </div>
     </div>
