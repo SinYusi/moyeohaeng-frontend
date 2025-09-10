@@ -14,20 +14,51 @@ const CategoryFilterBtns = ({
 }) => {
   const { favorites } = useFavoriteStore();
   const { collections } = useSpotCollectionStore();
-  // 즐겨찾기에서 카테고리 목록 추출
-  // TODO: 즐겨찾기와 장소 블록에서 카테고리 목록 조건 추출
+  // 원하는 카테고리 순서 정의
+  const categoryOrder = [
+    "음식점",
+    "카페", 
+    "관광명소",
+    "숙박",
+    "문화시설",
+    "대형마트",
+    "공공기관",
+    "중개업소",
+    "병원",
+    "약국",
+    "지하철역",
+    "주차장",
+    "은행",
+    "편의점",
+    "학교",
+    "학원",
+    "어린이집"
+  ];
+
+  // 즐겨찾기/컬렉션에서 실제 존재하는 카테고리만 추출
   const availableCategories = Array.from(
     new Set(mode === "favorite" ? favorites.map((fav) => fav.place.category) : collections.map((col) => col.category))
   ).filter((category) => category && category !== "장소");
 
-  // 선택된 카테고리를 왼쪽으로 정렬
+  // 카테고리 정렬: 선택된 것들을 앞으로, 그 안에서도 정의된 순서대로
   const sortedCategories = [...availableCategories].sort((a, b) => {
     const aSelected = selectedFilters.includes(a);
     const bSelected = selectedFilters.includes(b);
 
+    // 선택된 카테고리가 앞으로 오도록
     if (aSelected && !bSelected) return -1;
     if (!aSelected && bSelected) return 1;
-    return 0;
+
+    // 둘 다 선택되었거나 둘 다 선택되지 않은 경우, 정의된 순서대로
+    const aIndex = categoryOrder.indexOf(a);
+    const bIndex = categoryOrder.indexOf(b);
+    
+    // 정의된 순서에 없는 카테고리는 뒤로
+    if (aIndex === -1 && bIndex === -1) return a.localeCompare(b);
+    if (aIndex === -1) return 1;
+    if (bIndex === -1) return -1;
+    
+    return aIndex - bIndex;
   });
 
   // 필터 토글 함수
