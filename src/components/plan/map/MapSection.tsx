@@ -77,7 +77,7 @@ const MapSection = () => {
           setSearchResults([]);
         }
       },
-      { bounds: map.getBounds() }
+      { size: 15, page: 1 }
     );
   };
 
@@ -142,7 +142,7 @@ const MapSection = () => {
   return (
     <div className="w-full h-full relative">
       <Map
-        center={{ lat: 33.450701, lng: 126.570667 }}
+        center={{ lat: 37.9339465490811, lng: 127.22633055710195 }}
         style={{ width: "100%", height: "100%" }}
         level={3}
         onCreate={setMap}
