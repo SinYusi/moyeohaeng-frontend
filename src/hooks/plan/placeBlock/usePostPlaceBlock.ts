@@ -19,8 +19,13 @@ const usePostPlaceBlock = () => {
 
   const postPlaceBlock = async (placeBlock: CreatePlaceBlockRequest) => {
     if (!projectId) {
-      console.error("Missing projectId in route params");
-      setError("Missing project ID");
+      console.error("projectId를 찾을 수 없습니다.");
+      setError("프로젝트 ID를 찾을 수 없습니다.");
+      return;
+    }
+    if (!placeBlock.placeId) {
+      console.error("placeId를 찾을 수 없습니다.");
+      setError("placeId를 찾을 수 없습니다.");
       return;
     }
     try {

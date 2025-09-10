@@ -78,9 +78,11 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
   const handleAddToCollection = (e: React.MouseEvent) => {
     e.stopPropagation();
 
-    // TODO: API 연결
+    const favorite = getFavorite(kakoPlaceId);
+    if (!favorite) return;
+
     postPlaceBlock({
-      placeId: clickedPlace.place?.id || "",
+      placeId: favorite.place.id,
     });
 
     const collectionData = {
