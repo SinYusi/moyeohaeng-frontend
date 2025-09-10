@@ -11,7 +11,7 @@ const BlockListView = () => {
         setSelectedFilters={setSelectedFilters}
         mode="collection"
       />
-      <BlockListSection />
+      <BlockListSection selectedFilters={selectedFilters} />
     </div>
   );
 };
