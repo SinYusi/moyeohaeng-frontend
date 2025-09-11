@@ -53,7 +53,7 @@ const CommentSheet = () => {
       {/* ContentBody */}
       <div className="flex flex-col items-center gap-6 flex-1 self-stretch overflow-y-auto hide-scroll">
         {/* SelectedBlockView */}
-        <div className="h-[180px] flex flex-col justify-center items-center self-stretch rounded-[8px] bg-[#f9fafb] w-full px-[10%] py-[8%]">
+        <div className="min-h-[180px] flex flex-col justify-center items-center self-stretch rounded-[8px] bg-[#f9fafb] w-full px-[10%] py-[8%]">
           <ScheduleBlock place={place} />
         </div>
         {/* CommentSection */}
