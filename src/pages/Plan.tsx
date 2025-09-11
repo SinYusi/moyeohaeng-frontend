@@ -1,9 +1,7 @@
 import MapSection from "../components/plan/map/MapSection";
+import CommentSheet from "../components/plan/modal/CommentSheet";
 import SpotCollectionBoard from "../components/plan/spotCollection/SpotCollectionBoard";
-import CommentSlideModal from "../components/plan/modal/CommentSlideModal";
 import { useModalStore } from "../stores/useModalStore";
-import CreateGroupSlideModal from "../components/plan/modal/CreateGroupSlideModal";
-import AddPlaceToGroupSlideModal from "../components/plan/modal/AddPlaceToGroupSlideModal";
 
 const Plan = () => {
   const {
@@ -61,15 +59,15 @@ const Plan = () => {
           </div>
 
           {/* 중간 패널 - 여행 일정 */}
-          <div className="relative w-[29.167%] h-full bg-white border-r border-gray-200 overflow-y-auto">
+          <div className={`relative w-[29.167%] h-full bg-white border-r border-gray-200 ${
+            activeModal === null ? "overflow-y-auto" : "overflow-y-hidden"
+          }`}>
+            {activeModal === "comment" && <CommentSheet />}
             <div className="p-5">
               <h2 className="text-lg font-medium text-gray-800 mb-2">
                 중간 패널
               </h2>
               <p className="text-sm text-gray-600">여행 일정 영역</p>
-              {activeModal === "comment" && <CommentSlideModal />}
-              {activeModal === "createGroup" && <CreateGroupSlideModal />}
-              {activeModal === "modifyGroup" && <AddPlaceToGroupSlideModal />}
             </div>
           </div>
         </div>
