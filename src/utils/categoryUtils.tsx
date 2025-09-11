@@ -17,7 +17,7 @@ import StoreAlt from "../assets/images/StoreAlt.svg";
 import Subway from "../assets/images/Subway.svg";
 import TickerStar from "../assets/images/TickerStar.svg";
 import ChildrenToy from "../assets/images/ChildrenToy.svg";
-import { Pin } from "lucide-react";
+import Box from "../assets/images/Box.svg";
 
 export const getCategoryIcon = (categoryName: string, size: number) => {
   const iconMap: { [key: string]: React.ReactNode } = {
@@ -54,5 +54,9 @@ export const getCategoryIcon = (categoryName: string, size: number) => {
       <img src={ChildrenToy} alt="어린이집" width={size} height={size} />
     ),
   };
-  return iconMap[categoryName] || <Pin size={size} />;
+  return (
+    iconMap[categoryName] || (
+      <img src={Box} alt="기타" width={size} height={size} />
+    )
+  );
 };
