@@ -8,6 +8,7 @@ interface SpotCollectionState {
   removeFromCollection: (id: string) => void;
   updateCollection: (id: string, updates: Partial<PlaceBlock>) => void;
   toggleLike: (id: string) => void;
+  updateCommentSummary: (placeBlockId: string, commentContent: string, authorName: string) => void;
   isInCollection: (placeId: string) => boolean;
   getCollectionByCategory: (category: string) => PlaceBlock[];
   getPlaceById: (placeId: string) => PlaceBlock | undefined;
@@ -61,6 +62,26 @@ export const useSpotCollectionStore = create<SpotCollectionState>()(
                 ...item.likeSummary,
                 liked: newLiked,
                 totalCount: newTotalCount,
+              },
+            };
+          }
+          return item;
+        }),
+      }));
+    },
+
+    updateCommentSummary: (placeBlockId, commentContent, authorName) => {
+      set((state) => ({
+        collections: state.collections.map((item) => {
+          if (item.id === placeBlockId) {
+            return {
+              ...item,
+              commentSummary: {
+                totalCount: item.commentSummary.totalCount + 1,
+                lastComment: {
+                  content: commentContent,
+                  author: authorName,
+                },
               },
             };
           }

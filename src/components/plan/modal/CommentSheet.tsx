@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { useModalStore } from "../../../stores/useModalStore";
 import { useSpotCollectionStore } from "../../../stores/useSpotCollectionStore";
+import useMemberStore from "../../../stores/useMemberStore";
 import SlideModal from "../SlideModal";
 import ScheduleBlock from "../spotCollection/ScheduleBlock";
 import { ArrowUp } from "lucide-react";
@@ -13,7 +14,8 @@ const CommentSheet = () => {
   const [comment, setComment] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
   const { modalData } = useModalStore();
-  const { getPlaceById } = useSpotCollectionStore();
+  const { getPlaceById, updateCommentSummary } = useSpotCollectionStore();
+  const { member } = useMemberStore();
   const { postComment } = usePostComment();
 
   const formatTimeAgo = (createdAt: string) => {
@@ -43,7 +45,15 @@ const CommentSheet = () => {
     if (comment.trim() === "") {
       return;
     }
-    await postComment(place.id, comment);
+    
+    const trimmedComment = comment.trim();
+    const result = await postComment(place.id, trimmedComment);
+    
+    if (result && member) {
+      // 코멘트 추가 성공 시 SpotCollectionStore의 commentSummary 업데이트
+      updateCommentSummary(place.id, trimmedComment, member.name);
+    }
+    
     setComment("");
     inputRef.current?.blur();
     getComment();
