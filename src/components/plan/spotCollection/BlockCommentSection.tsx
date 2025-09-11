@@ -4,6 +4,7 @@ import GrayBgTextBtn from "../../common/GrayBgTextBtn";
 import { useSpotCollectionStore } from "../../../stores/useSpotCollectionStore";
 import FilledThumbsUp from "../../../assets/images/FilledThumbsUp.svg";
 import { useModalStore } from "../../../stores/useModalStore";
+import useToggleLike from "../../../hooks/plan/placeBlock/useToggleLike";
 
 const BlockCommentSection = ({
   userInteraction,
@@ -12,11 +13,31 @@ const BlockCommentSection = ({
   userInteraction: PlaceBlock;
   id: string;
 }) => {
-  const { toggleLike } = useSpotCollectionStore();
+  const { updateCollection } = useSpotCollectionStore();
   const { openCommentModal } = useModalStore();
+  const { toggleLike: apiToggleLike, loading } = useToggleLike();
 
-  const handleLikeClick = () => {
-    toggleLike(id);
+  const handleLikeClick = async () => {
+    if (loading) return; // 로딩 중이면 클릭 무시
+
+    const result = await apiToggleLike(id);
+    
+    if (result) {
+      // API 성공 시 store 업데이트 - 좋아요 상태 토글
+      const newLiked = !userInteraction.likeSummary.liked;
+      const newTotalCount = Math.max(
+        0,
+        userInteraction.likeSummary.totalCount + (newLiked ? 1 : -1)
+      );
+
+      updateCollection(id, {
+        likeSummary: {
+          ...userInteraction.likeSummary,
+          liked: newLiked,
+          totalCount: newTotalCount,
+        },
+      });
+    }
   };
 
   const handleCommentClick = () => {
@@ -38,7 +59,7 @@ const BlockCommentSection = ({
               alt="좋아요"
               width={16}
               height={16}
-              className="cursor-pointer"
+              className={`cursor-pointer ${loading ? "opacity-50" : ""}`}
               onClick={handleLikeClick}
             />
           ) : (
@@ -46,7 +67,7 @@ const BlockCommentSection = ({
               size={16}
               color="#3b4553"
               fill={`${userInteraction.likeSummary.liked ? "#3b4553" : "none"}`}
-              className="cursor-pointer"
+              className={`cursor-pointer ${loading ? "opacity-50" : ""}`}
               onClick={handleLikeClick}
             />
           )}
