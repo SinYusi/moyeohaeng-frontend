@@ -44,6 +44,16 @@ export interface PlaceBlock {
   };
 }
 
+export interface Comment {
+  content: string;
+  createdAt: string;
+  id: string;
+  modifiedAt: string;
+  name: string;
+  placeBlockId: string;
+  profileImage: string | null;
+}
+
 // 장소 블록 그룹
 export interface PlaceBlockGroup {
   id: string;
