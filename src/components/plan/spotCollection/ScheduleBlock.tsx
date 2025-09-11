@@ -2,17 +2,41 @@ import { ChevronRight, Ellipsis, Pencil } from "lucide-react";
 import { getCategoryIcon } from "../../../utils/categoryUtils";
 import Divider from "../../common/Divider";
 import { useSpotCollectionStore } from "../../../stores/useSpotCollectionStore";
+import usePutMemo from "../../../hooks/plan/placeBlock/usePutMemo";
 import type { PlaceBlock } from "../../../types/planTypes";
+import { useState, useEffect } from "react";
 
 const ScheduleBlock = ({ place }: { place: PlaceBlock }) => {
   const { updateCollection, getPlaceById, setClickedPlace } = useSpotCollectionStore();
+  const { putMemo, loading } = usePutMemo();
+  const [memoValue, setMemoValue] = useState("");
 
   // 전역 스토어에서 최신 데이터를 가져옴
   const currentPlace = getPlaceById(place.id) || place;
 
+  // currentPlace.memo가 변경될 때마다 memoValue 동기화
+  useEffect(() => {
+    setMemoValue(currentPlace.memo || "");
+  }, [currentPlace.memo]);
+
   const handleMemoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newMemo = e.target.value;
-    updateCollection(place.id, { memo: newMemo });
+    setMemoValue(e.target.value);
+  };
+
+  const handleMemoSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (memoValue.trim() === currentPlace.memo) {
+      return; // 값이 변경되지 않으면 API 호출하지 않음
+    }
+
+    const result = await putMemo(currentPlace.id, memoValue.trim());
+    
+    if (result) {
+      // API 성공 시 스토어 업데이트
+      updateCollection(place.id, { memo: memoValue.trim() });
+    }
   };
 
   const handleBlockClick = (e: React.MouseEvent) => {
@@ -87,22 +111,30 @@ const ScheduleBlock = ({ place }: { place: PlaceBlock }) => {
         {/* Memo */}
         <div className="flex flex-col items-start gap-2 self-stretch">
           <Divider color="#7b8482" />
-          <div className="flex items-center gap-2 w-full overflow-hidden">
+          <form onSubmit={handleMemoSubmit} className="flex items-center gap-2 w-full overflow-hidden">
             <input
               type="text"
-              value={currentPlace.memo || ""}
+              value={memoValue}
               onChange={handleMemoChange}
               onClick={(e) => e.stopPropagation()}
               placeholder="메모를 적어주세요 (최대 14자)"
               maxLength={14}
+              disabled={loading}
               className={`flex-1 text-xs font-medium outline-none ${
-                currentPlace.memo
+                memoValue
                   ? "text-[#131416]"
                   : "text-[#7b8482] placeholder:text-[#7b8482]"
-              }`}
+              } ${loading ? "opacity-50" : ""}`}
             />
-            <Pencil size={16} color="#7b8482" className="cursor-pointer" />
-          </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className={`cursor-pointer ${loading ? "opacity-50" : ""}`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Pencil size={16} color="#7b8482" />
+            </button>
+          </form>
         </div>
       </div>
     </div>
