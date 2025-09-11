@@ -4,10 +4,16 @@ import { useSpotCollectionStore } from "../../../stores/useSpotCollectionStore";
 import useGetPlaceBlock from "../../../hooks/plan/placeBlock/useGetPlaceBlock";
 import { useEffect } from "react";
 import Guide from "./Guide";
+import { useModalStore } from "../../../stores/useModalStore";
 
 const SpotCollectionBoard = () => {
   const { collections, fetchCollections } = useSpotCollectionStore();
   const { placeBlocks, loading, error } = useGetPlaceBlock();
+  const { closeModal } = useModalStore();
+
+  useEffect(() => {
+    closeModal();
+  }, []);
 
   useEffect(() => {
     if (placeBlocks.length > 0) {

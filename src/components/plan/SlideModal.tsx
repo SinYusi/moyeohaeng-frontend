@@ -65,15 +65,13 @@ const SlideModal: React.FC<SlideModalProps> = ({ children }) => {
               <div className="w-10 h-1 rounded-[999px] bg-[#c0c7ce]" />
             </div>
 
-            <div className="flex flex-row items-center justify-between h-12 self-stretch w-full mb-2">
+            <div className="flex flex-row items-center justify-between h-12 self-stretch w-full">
               <p className="font-semibold text-xl">
                 {activeModal === "comment" && "코멘트"}
               </p>
               <X size={32} className="cursor-pointer" onClick={handleClose} />
             </div>
-
-            {/* 내용 영역 */}
-            <div className="flex-1 overflow-y-auto">{children}</div>
+            {children}
           </motion.div>
         </motion.div>
       )}

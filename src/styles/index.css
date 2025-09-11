@@ -19,10 +19,12 @@ body {
   font-family: "SUIT-Regular", -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, sans-serif;
   overflow: overlay;
+  /* 스크롤바 공간을 항상 예약하여 레이아웃 변화 방지 */
+  scrollbar-gutter: stable;
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 4px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
@@ -34,10 +36,20 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #d1d5db;
 }
+
 :root {
   --fill-deep: #3b4553;
   --stroke-deep: #131416;
   --text-white: white;
   --text-subtler: #7b848e;
   --surface-default: white;
+}
+
+.hide-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hide-scroll::-webkit-scrollbar {
+  display: none;
 }

@@ -1,4 +1,4 @@
-import { Plus, ThumbsUp } from "lucide-react";
+import { CircleUser, Plus, ThumbsUp } from "lucide-react";
 import type { PlaceBlock } from "../../../types/planTypes";
 import GrayBgTextBtn from "../../common/GrayBgTextBtn";
 import { useSpotCollectionStore } from "../../../stores/useSpotCollectionStore";
@@ -56,17 +56,29 @@ const BlockCommentSection = ({
         </div>
       </div>
       {/* CommentArea */}
-      <div className="flex flex-col justify-center items-center px-3 py-2 rounded-[12px] self-stretch bg-[#f9fafb]">
+      <div
+        className="flex flex-col justify-center px-3 py-2 rounded-[12px] self-stretch bg-[#f9fafb] cursor-pointer hover:bg-[#e7edf6]"
+        onClick={handleCommentClick}
+      >
         {/* FirstComment */}
-        <div className="flex items-start py-1 gap-[6px] self-stretch">
-          {userInteraction.commentSummary.totalCount > 0 ? (
-            <div></div>
-          ) : (
-            <p className="text-xs font-medium text-[#7b8482]">
-              가장 먼저 의견을 남겨보세요
+        {userInteraction.commentSummary.totalCount > 0 ? (
+          // CommentArea
+          <>
+            <div className="flex py-1 items-center gap-[6px] self-stretch">
+              <CircleUser size={16} color="#fa6060" />
+              <p className="text-xs text-[#131416]">
+                {userInteraction.commentSummary.lastComment.content}
+              </p>
+            </div>
+            <p className="text-xs text-[#7b8482] self-end">
+              {userInteraction.commentSummary.totalCount - 1}개 더보기
             </p>
-          )}
-        </div>
+          </>
+        ) : (
+          <p className="text-xs font-medium text-[#7b8482]">
+            가장 먼저 의견을 남겨보세요
+          </p>
+        )}
       </div>
     </div>
   );

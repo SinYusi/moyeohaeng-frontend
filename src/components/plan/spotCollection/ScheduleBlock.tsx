@@ -6,7 +6,7 @@ import type { PlaceBlock } from "../../../types/planTypes";
 
 const ScheduleBlock = ({ place }: { place: PlaceBlock }) => {
   const { updateCollection, getPlaceById } = useSpotCollectionStore();
-  
+
   // 전역 스토어에서 최신 데이터를 가져옴
   const currentPlace = getPlaceById(place.id) || place;
 
@@ -21,7 +21,9 @@ const ScheduleBlock = ({ place }: { place: PlaceBlock }) => {
       <div className="flex justify-between items-center self-stretch">
         <div className="flex items-center gap-1 ">
           {getCategoryIcon(currentPlace.category, 16)}
-          <p className="text-xs font-medium text-[#5a6572]">{currentPlace.category}</p>
+          <p className="text-xs font-medium text-[#5a6572] overflow-hidden text-ellipsis whitespace-nowrap">
+            {currentPlace.category}
+          </p>
         </div>
         <Ellipsis size={16} color="#3b4553" />
       </div>
@@ -38,9 +40,9 @@ const ScheduleBlock = ({ place }: { place: PlaceBlock }) => {
               }
             }}
           >
-              <p className="text-base font-bold text-[#131416] truncate hover:text-[#4f5fbf] transition-colors duration-200">
-                {currentPlace.name}
-              </p>
+            <p className="text-base font-bold text-[#131416] truncate hover:text-[#4f5fbf] transition-colors duration-200">
+              {currentPlace.name}
+            </p>
             <ChevronRight size={16} color="#c0c7ce" className="flex-shrink-0" />
           </div>
           <p className="text-xs font-medium text-[#5a6572] overflow-hidden text-ellipsis whitespace-nowrap">

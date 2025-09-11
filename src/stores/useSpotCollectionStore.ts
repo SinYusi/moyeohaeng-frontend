@@ -89,7 +89,7 @@ export const useSpotCollectionStore = create<SpotCollectionState>()(
 
     getPlaceById: (id) => {
       const { collections } = get();
-      return collections.find((item) => item.id === id);
+      return collections.find((item) => item.id.toString() === id);
     },
   })
 );

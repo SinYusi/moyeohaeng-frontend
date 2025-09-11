@@ -17,7 +17,7 @@ const TIME_UNITS = [
 ];
 
 /**
- * 주어진 시간으로부터 현재까지 얼마나 지났는지 계산하여 반환합니다.
+ * 주어진 시간으로부터 현재까지 얼마나 지났는지 계산하여 반환합니다. (한국 시간 기준)
  * @param input 계산할 날짜 문자열 (ISO 8601 형식 권장)
  * @returns { value: number | string, unit: string } 경과된 시간의 값과 단위를 포함하는 객체
  */
@@ -25,10 +25,16 @@ export function getTimeAgo(input: string): {
   value: number | string;
   unit: string;
 } {
+  // 한국 시간대(Asia/Seoul)로 변환
   const date = new Date(input);
   const now = new Date();
+  
+  // 한국 시간으로 변환 (UTC+9)
+  const koreaDate = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
+  const koreaNow = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Seoul" }));
+  
   const diffInMinutes = Math.floor(
-    (now.getTime() - date.getTime()) / (1000 * 60)
+    (koreaNow.getTime() - koreaDate.getTime()) / (1000 * 60)
   );
 
   if (Number.isNaN(diffInMinutes)) {
