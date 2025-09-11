@@ -7,6 +7,7 @@ import useAuthStore from "../../../stores/useAuthStore";
 import usePostPin from "../../../hooks/plan/pin/usePostPin";
 import useDeletePin from "../../../hooks/plan/pin/useDeletePin";
 import usePostPlaceBlock from "../../../hooks/plan/placeBlock/usePostPlaceBlock";
+import useDeletePlaceBlock from "../../../hooks/plan/placeBlock/useDeletePlaceBlock";
 import type {
   Place,
   PostPlaceBlockResponse,
@@ -24,10 +25,11 @@ interface InfoOverlayProps {
 
 const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
   const { postPlaceBlock } = usePostPlaceBlock();
+  const { deletePlaceBlock } = useDeletePlaceBlock();
 
   const { isFavorite, addFavorite, removeFavorite, getFavorite } =
     useFavoriteStore();
-  const { addToCollection, isInCollection } = useSpotCollectionStore();
+  const { addToCollection, isInCollection, getCollectionByPlaceId, removeFromCollectionByPlaceId } = useSpotCollectionStore();
   const { postPin } = usePostPin();
   // TODO: postPin 에러 처리
 
@@ -42,8 +44,24 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
     if (isFavorited) {
       const favorite = getFavorite(kakoPlaceId);
       if (favorite) {
+        // 핀 삭제 전에 해당 장소가 장소 블록에 있는지 확인
+        const existingPlaceBlock = getCollectionByPlaceId(kakoPlaceId);
+        
+        // 핀 삭제
         await deletePin(favorite.id);
         removeFavorite(favorite.id);
+        
+        // 장소 블록이 있다면 API 호출로 서버에서도 삭제하고 스토어에서도 제거
+        if (existingPlaceBlock) {
+          try {
+            await deletePlaceBlock(existingPlaceBlock.id);
+            removeFromCollectionByPlaceId(kakoPlaceId);
+          } catch (error) {
+            console.error("장소 블록 삭제 실패:", error);
+            // 에러가 발생해도 UI상에서는 제거 (서버와 클라이언트 상태 불일치 방지를 위해)
+            removeFromCollectionByPlaceId(kakoPlaceId);
+          }
+        }
       }
     } else {
       const result = await postPin({

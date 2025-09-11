@@ -14,6 +14,7 @@ interface SpotCollectionState {
   addToCollection: (item: PlaceBlock) => void;
   fetchCollections: (placeBlocks: PlaceBlock[]) => void;
   removeFromCollection: (id: string) => void;
+  removeFromCollectionByPlaceId: (placeId: string) => void;
   updateCollection: (id: string, updates: Partial<PlaceBlock>) => void;
   toggleLike: (id: string) => void;
   updateCommentSummary: (placeBlockId: string, commentContent: string, authorName: string) => void;
@@ -21,6 +22,7 @@ interface SpotCollectionState {
   isInCollection: (placeId: string) => boolean;
   getCollectionByCategory: (category: string) => PlaceBlock[];
   getPlaceById: (placeId: string) => PlaceBlock | undefined;
+  getCollectionByPlaceId: (placeId: string) => PlaceBlock | undefined;
 }
 
 export const useSpotCollectionStore = create<SpotCollectionState>()(
@@ -119,6 +121,21 @@ export const useSpotCollectionStore = create<SpotCollectionState>()(
     getPlaceById: (id) => {
       const { collections } = get();
       return collections.find((item) => item.id.toString() === id);
+    },
+
+    removeFromCollectionByPlaceId: (placeId) => {
+      set((state) => ({
+        collections: state.collections.filter(
+          (item) => item.detailLink.split("/").pop() !== placeId
+        ),
+      }));
+    },
+
+    getCollectionByPlaceId: (placeId) => {
+      const { collections } = get();
+      return collections.find(
+        (item) => item.detailLink.split("/").pop() === placeId
+      );
     },
   })
 );
