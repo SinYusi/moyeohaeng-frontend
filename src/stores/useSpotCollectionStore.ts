@@ -3,7 +3,7 @@ import type { PlaceBlock } from "../types/planTypes";
 
 interface SpotCollectionState {
   collections: PlaceBlock[];
-  addToCollection: (item: Omit<PlaceBlock, "id" | "createdAt">) => void;
+  addToCollection: (item: PlaceBlock) => void;
   fetchCollections: (placeBlocks: PlaceBlock[]) => void;
   removeFromCollection: (id: string) => void;
   updateCollection: (id: string, updates: Partial<PlaceBlock>) => void;
@@ -18,14 +18,8 @@ export const useSpotCollectionStore = create<SpotCollectionState>()(
     collections: [],
 
     addToCollection: (item) => {
-      const newItem: PlaceBlock = {
-        ...item,
-        // TODO: id, addedAt api 연결
-        id: Date.now() + Math.random().toString(),
-      };
-
       set((state) => ({
-        collections: [...state.collections, newItem],
+        collections: [...state.collections, item],
       }));
     },
 

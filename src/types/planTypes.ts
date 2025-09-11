@@ -19,8 +19,7 @@ export interface MapPin {
 // 지도 핀 생성 API 요청용
 export type CreateMapPinRequest = Omit<Place, "id">;
 
-// 장소 블록
-export interface PlaceBlock {
+export type PostPlaceBlockResponse = {
   id: string;
   name: string;
   address: string;
@@ -30,6 +29,10 @@ export interface PlaceBlock {
   category: string;
   memo?: string;
   createAt: string;
+};
+
+// 장소 블록
+export type PlaceBlock = PostPlaceBlockResponse & {
   likeSummary: {
     totalCount: number;
     liked: boolean;
@@ -42,7 +45,7 @@ export interface PlaceBlock {
       author: string;
     };
   };
-}
+};
 
 export interface Comment {
   content: string;

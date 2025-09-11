@@ -28,6 +28,7 @@ const CommentSheet = () => {
     console.log("placeId is not defined");
     return null;
   }
+  console.log("placeId", placeId);
 
   const place = getPlaceById(placeId.toString());
   if (!place) {

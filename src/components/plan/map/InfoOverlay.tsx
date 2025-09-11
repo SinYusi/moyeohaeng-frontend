@@ -7,7 +7,10 @@ import useAuthStore from "../../../stores/useAuthStore";
 import usePostPin from "../../../hooks/plan/pin/usePostPin";
 import useDeletePin from "../../../hooks/plan/pin/useDeletePin";
 import usePostPlaceBlock from "../../../hooks/plan/placeBlock/usePostPlaceBlock";
-import type { Place } from "../../../types/planTypes";
+import type {
+  Place,
+  PostPlaceBlockResponse,
+} from "../../../types/planTypes";
 
 interface InfoOverlayProps {
   clickedPlace: {
@@ -75,28 +78,19 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
     onClose();
   };
 
-  const handleAddToCollection = (e: React.MouseEvent) => {
+  const handleAddToCollection = async (e: React.MouseEvent) => {
     e.stopPropagation();
 
     const favorite = getFavorite(kakoPlaceId);
     if (!favorite) return;
 
-    postPlaceBlock({
-      placeId: favorite.place.id,
-    });
+    const response = (await postPlaceBlock(
+      favorite.place.id
+    )) as PostPlaceBlockResponse;
+    if (!response) return;
 
-    const collectionData = {
-      name: clickedPlace.kakaoPlace.place_name || "",
-      address:
-        clickedPlace.kakaoPlace.road_address_name ||
-        clickedPlace.kakaoPlace.address_name ||
-        "",
-      latitude: Number(clickedPlace.kakaoPlace.y),
-      longitude: Number(clickedPlace.kakaoPlace.x),
-      memo: "",
-      detailLink: `https://place.map.kakao.com/${kakoPlaceId}`,
-      category: clickedPlace.kakaoPlace.category_group_name || "기타",
-      createAt: new Date().toISOString(),
+    const placeBlock = {
+      ...response,
       likeSummary: {
         totalCount: 0,
         liked: false,
@@ -111,7 +105,7 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
       },
     };
 
-    addToCollection(collectionData);
+    addToCollection(placeBlock);
   };
 
   return (
