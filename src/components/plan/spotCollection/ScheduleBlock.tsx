@@ -5,7 +5,7 @@ import { useSpotCollectionStore } from "../../../stores/useSpotCollectionStore";
 import type { PlaceBlock } from "../../../types/planTypes";
 
 const ScheduleBlock = ({ place }: { place: PlaceBlock }) => {
-  const { updateCollection, getPlaceById } = useSpotCollectionStore();
+  const { updateCollection, getPlaceById, setClickedPlace } = useSpotCollectionStore();
 
   // 전역 스토어에서 최신 데이터를 가져옴
   const currentPlace = getPlaceById(place.id) || place;
@@ -14,9 +14,43 @@ const ScheduleBlock = ({ place }: { place: PlaceBlock }) => {
     const newMemo = e.target.value;
     updateCollection(place.id, { memo: newMemo });
   };
+
+  const handleBlockClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    // PlaceBlock에서 kakao place 정보 생성
+    const kakaoPlaceId = currentPlace.detailLink.split("/").pop();
+    
+    const kakaoPlace: kakao.maps.services.PlacesSearchResultItem = {
+      id: kakaoPlaceId || "",
+      place_name: currentPlace.name,
+      category_group_name: currentPlace.category,
+      address_name: currentPlace.address,
+      road_address_name: currentPlace.address,
+      x: currentPlace.longitude.toString(),
+      y: currentPlace.latitude.toString(),
+      category_group_code: "",
+      category_name: "",
+      distance: "",
+      phone: "",
+      place_url: currentPlace.detailLink
+    };
+
+    setClickedPlace({
+      position: {
+        lat: currentPlace.latitude,
+        lng: currentPlace.longitude
+      },
+      kakaoPlace,
+      distance: 0
+    });
+  };
   return (
     // BlockFrame 컴포넌트
-    <div className="rounded-[14px] border border-[1.5px] border-[#131416] py-[14px] px-[26px] flex flex-col justify-center items-start self-stretch gap-1 shadow-[0_4px_8px_0_rgba(19,20,22,0.16)]">
+    <div 
+      className="rounded-[14px] border border-[1.5px] border-[#131416] py-[14px] px-[26px] flex flex-col justify-center items-start self-stretch gap-1 shadow-[0_4px_8px_0_rgba(19,20,22,0.16)] cursor-pointer hover:bg-[#f9fafb] transition-colors duration-200"
+      onClick={handleBlockClick}
+    >
       {/* CategorySection */}
       <div className="flex justify-between items-center self-stretch">
         <div className="flex items-center gap-1 ">
@@ -34,7 +68,8 @@ const ScheduleBlock = ({ place }: { place: PlaceBlock }) => {
           {/* LocationName */}
           <div
             className="flex items-center gap-1 cursor-pointer"
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               if (currentPlace.detailLink) {
                 window.open(currentPlace.detailLink, "_blank");
               }
@@ -57,6 +92,7 @@ const ScheduleBlock = ({ place }: { place: PlaceBlock }) => {
               type="text"
               value={currentPlace.memo || ""}
               onChange={handleMemoChange}
+              onClick={(e) => e.stopPropagation()}
               placeholder="메모를 적어주세요 (최대 14자)"
               maxLength={14}
               className={`flex-1 text-xs font-medium outline-none ${

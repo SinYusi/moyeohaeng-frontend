@@ -1,14 +1,23 @@
 import { create } from "zustand";
-import type { PlaceBlock } from "../types/planTypes";
+import type { PlaceBlock, Place } from "../types/planTypes";
+
+export interface ClickedPlace {
+  position: { lat: number; lng: number };
+  kakaoPlace: kakao.maps.services.PlacesSearchResultItem;
+  place?: Place;
+  distance: number;
+}
 
 interface SpotCollectionState {
   collections: PlaceBlock[];
+  clickedPlace: ClickedPlace | null;
   addToCollection: (item: PlaceBlock) => void;
   fetchCollections: (placeBlocks: PlaceBlock[]) => void;
   removeFromCollection: (id: string) => void;
   updateCollection: (id: string, updates: Partial<PlaceBlock>) => void;
   toggleLike: (id: string) => void;
   updateCommentSummary: (placeBlockId: string, commentContent: string, authorName: string) => void;
+  setClickedPlace: (place: ClickedPlace | null) => void;
   isInCollection: (placeId: string) => boolean;
   getCollectionByCategory: (category: string) => PlaceBlock[];
   getPlaceById: (placeId: string) => PlaceBlock | undefined;
@@ -17,6 +26,7 @@ interface SpotCollectionState {
 export const useSpotCollectionStore = create<SpotCollectionState>()(
   (set, get) => ({
     collections: [],
+    clickedPlace: null,
 
     addToCollection: (item) => {
       set((state) => ({
@@ -88,6 +98,10 @@ export const useSpotCollectionStore = create<SpotCollectionState>()(
           return item;
         }),
       }));
+    },
+
+    setClickedPlace: (place) => {
+      set({ clickedPlace: place });
     },
 
     isInCollection: (placeId) => {

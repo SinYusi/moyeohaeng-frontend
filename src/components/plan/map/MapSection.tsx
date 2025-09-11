@@ -5,10 +5,10 @@ import getDistance from "../../../utils/getDistance";
 import BasePin from "./BasePin";
 import InfoOverlay from "./InfoOverlay";
 import { useFavoriteStore } from "../../../stores/useFavoriteStore";
+import { useSpotCollectionStore } from "../../../stores/useSpotCollectionStore";
 import FavoritePin from "./FavoritePin";
 import CategoryFilterBtns from "../CategoryFilterBtns";
 import useGetPins from "../../../hooks/plan/pin/useGetPins";
-import type { Place } from "../../../types/planTypes";
 
 const MapSection = () => {
   const [loading, error] = useKakaoLoader({
@@ -16,16 +16,11 @@ const MapSection = () => {
     libraries: ["services", "clusterer"],
   });
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
-  const [clickedPlace, setClickedPlace] = useState<{
-    position: { lat: number; lng: number };
-    kakaoPlace: kakao.maps.services.PlacesSearchResultItem;
-    place?: Place;
-    distance: number;
-  } | null>(null);
   const [searchResults, setSearchResults] = useState<
     kakao.maps.services.PlacesSearchResultItem[]
   >([]);
   const { favorites, addAllFavorites, isFavorite } = useFavoriteStore();
+  const { clickedPlace, setClickedPlace } = useSpotCollectionStore();
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const categories = [
     "FD6", // 음식점
@@ -52,6 +47,18 @@ const MapSection = () => {
   useEffect(() => {
     addAllFavorites(pins);
   }, [pins]);
+
+  // clickedPlace가 변경될 때 지도 중심을 해당 위치로 이동
+  useEffect(() => {
+    if (map && clickedPlace) {
+      const position = new kakao.maps.LatLng(
+        clickedPlace.position.lat,
+        clickedPlace.position.lng
+      );
+      map.setCenter(position);
+      map.setLevel(3); // 적절한 확대 레벨로 설정
+    }
+  }, [map, clickedPlace]);
 
   if (loading || pinsLoading) return <div>Loading...</div>;
   if (error || pinsError) return <div>지도 로딩 중 오류 발생</div>;
