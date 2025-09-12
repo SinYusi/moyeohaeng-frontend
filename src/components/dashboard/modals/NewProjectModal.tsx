@@ -5,30 +5,39 @@ import ModalButton from "../../common/modal/ModalButton";
 import usePostProject from "../../../hooks/project/usePostProject";
 import useMemberStore from "../../../stores/useMemberStore";
 import { getTeamId } from "../../../utils/teamUtils";
+import usePutProject from "../../../hooks/project/usePutProject";
+import { MOYOEHANG_COLORS } from "../../../types/colors";
 
 interface NewProjectModalProps {
   isOpen: boolean;
-  onClose: () => void;
   modalTitle?: string;
-  initialName?: string;
+  projectId?: string;
+  initialProjectName?: string;
+  initialProjectColor?: string;
+  type: "create" | "update";
+  onClose: () => void;
   onSuccess?: () => void;
 }
 
 const NewProjectModal: React.FC<NewProjectModalProps> = ({
   isOpen,
-  onClose,
   modalTitle,
-  initialName,
+  projectId,
+  initialProjectName,
+  initialProjectColor,
+  type,
+  onClose,
   onSuccess,
 }) => {
-  const [projectName, setProjectName] = useState(initialName ?? "");
-  const [selectedColor, setSelectedColor] = useState("");
+  const [projectName, setProjectName] = useState(initialProjectName ?? "");
+  const [selectedColor, setSelectedColor] = useState(initialProjectColor ?? "");
   const { member } = useMemberStore();
   const { createProject, isLoading, error } = usePostProject();
+  const { updateProject } = usePutProject();
 
   const handleClose = () => {
-    setProjectName(initialName ?? "");
-    setSelectedColor("");
+    setProjectName(initialProjectName ?? "");
+    setSelectedColor(initialProjectColor ?? "");
     onClose();
   };
 
@@ -37,6 +46,16 @@ const NewProjectModal: React.FC<NewProjectModalProps> = ({
   const handleSubmit = async () => {
     if (!projectName.trim() || isLoading) return;
 
+    if (type === "create") {
+      await create();
+    } else {
+      await update();
+    }
+    handleClose();
+    onSuccess?.();
+  };
+
+  const create = async () => {
     try {
       const teamId = await getTeamId(urlTeamId, member?.email);
 
@@ -50,23 +69,31 @@ const NewProjectModal: React.FC<NewProjectModalProps> = ({
         color: selectedColor,
         teamId: teamId,
       });
-
-      handleClose();
-      onSuccess?.();
     } catch (err) {
       alert(error || `프로젝트 생성에 실패했습니다. 다시 시도해주세요.`);
     }
   };
 
+  const update = async () => {
+    try {
+      await updateProject(projectId!, {
+        title: projectName.trim(),
+        color: selectedColor,
+      });
+    } catch (err) {
+      alert(error || `프로젝트 수정에 실패했습니다. 다시 시도해주세요.`);
+    }
+  };
+
   // TODO 나중에 전역으로 빼기
   const colors = [
-    { id: "coral", value: "#FB7354" },
-    { id: "lemon", value: "#FFE74C" },
-    { id: "lime", value: "#8EE888" },
-    { id: "mint", value: "#7FEDDC" },
-    { id: "sky", value: "#73C3FB" },
-    { id: "purple", value: "#CF94FF" },
-    { id: "rose", value: "#FFA6BF" },
+    { id: "coral", value: MOYOEHANG_COLORS.coral },
+    { id: "lemon", value: MOYOEHANG_COLORS.lemon },
+    { id: "lime", value: MOYOEHANG_COLORS.lime },
+    { id: "mint", value: MOYOEHANG_COLORS.mint },
+    { id: "sky", value: MOYOEHANG_COLORS.sky },
+    { id: "purple", value: MOYOEHANG_COLORS.purple },
+    { id: "rose", value: MOYOEHANG_COLORS.rose },
   ];
 
   const modalFooter = (
@@ -80,7 +107,7 @@ const NewProjectModal: React.FC<NewProjectModalProps> = ({
           variant="primary"
           disabled={!projectName.trim() || isLoading}
         >
-          {isLoading ? "생성 중..." : "만들기"}
+          {isLoading ? "생성 중..." : type === "create" ? "만들기" : "수정하기"}
         </ModalButton>
       </div>
     </div>

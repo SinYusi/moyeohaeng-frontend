@@ -62,17 +62,17 @@ const ProjectSection: React.FC<ProjectSectionProps> = ({ projects }) => {
       switch (sortBy) {
         case "최근 수정한 순":
           return (
-            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+            new Date(b.modifiedAt).getTime() - new Date(a.modifiedAt).getTime()
           );
         case "최근 생성한 순":
           return (
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            new Date(b.modifiedAt).getTime() - new Date(a.modifiedAt).getTime()
           );
         case "이름순":
           return a.title.localeCompare(b.title);
         default:
           return (
-            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+            new Date(b.modifiedAt).getTime() - new Date(a.modifiedAt).getTime()
           );
       }
     });
