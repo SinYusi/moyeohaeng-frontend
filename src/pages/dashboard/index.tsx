@@ -33,9 +33,7 @@ const Dashboard = () => {
     }
 
     // /dashboard 및 /dashboard/home의 경우 기본적으로 홈으로 설정
-    return (
-      <DashboardHome onNewProject={handleNewProject} />
-    );
+    return <DashboardHome onNewProject={handleNewProject} />;
   };
 
   return (
@@ -44,6 +42,7 @@ const Dashboard = () => {
 
       {/* Project Create Modal */}
       <NewProjectModal
+        type="create"
         isOpen={isProjectModalOpen}
         onClose={() => setIsProjectModalOpen(false)}
         onSuccess={() => {

@@ -9,20 +9,22 @@ import DeleteProjectModal from "../modals/DeleteProjectModal";
 import type { Project } from "../../../types/project";
 import { getTimeAgo } from "../../../utils/timeUtils";
 import { Link } from "react-router-dom";
+import useDeleteProject from "../../../hooks/project/useDeleteProject";
 
 type ProjectCardProps = Project;
 
 const ProjectCard = ({
-  days,
   title,
-  people,
-  updatedAt,
+  modifiedAt,
   startDate,
+  color,
+  travelDays,
+  team,
   id,
 }: ProjectCardProps) => {
   // 시간을 '~분 전'과 같은 읽기 쉬운 형식으로 변환
 
-  const { value: timeValue, unit: timeUnit } = getTimeAgo(updatedAt);
+  const { value: timeValue, unit: timeUnit } = getTimeAgo(modifiedAt);
 
   // 재사용 가능한 스타일 클래스
   const border = "border-[1.5px] border-[var(--stroke-deep,#131416)]";
@@ -32,6 +34,8 @@ const ProjectCard = ({
   // 컨텍스트 메뉴는 공통 컴포넌트 사용
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const { deleteProject } = useDeleteProject();
+
   const menuItems: ContextMenuItem[] = [
     {
       id: "edit",
@@ -92,7 +96,7 @@ const ProjectCard = ({
                   <div
                     className={`${textWhite} text-base font-medium leading-[22px]`}
                   >
-                    {days}
+                    {travelDays}
                   </div>
                   <div
                     className={`${textWhite} text-base font-medium leading-[22px]`}
@@ -116,7 +120,7 @@ const ProjectCard = ({
                   <div
                     className={`${textWhite} text-base font-medium leading-[22px]`}
                   >
-                    {people}
+                    {team?.members?.length}
                   </div>
                   <div
                     className={`${textWhite} text-base font-medium leading-[22px]`}
@@ -173,10 +177,13 @@ const ProjectCard = ({
 
       {/* Modals */}
       <NewProjectModal
+        type="update"
+        projectId={id}
         isOpen={isEditOpen}
+        initialProjectColor={color}
+        initialProjectName={title}
         onClose={() => setIsEditOpen(false)}
         modalTitle="프로젝트 편집"
-        initialName={title}
         onSuccess={() => {
           window.location.reload();
         }}
@@ -186,9 +193,10 @@ const ProjectCard = ({
         isOpen={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
         onDelete={() => {
-          // TODO: 삭제 로직 연동
+          deleteProject(id);
           console.log("프로젝트 삭제:", { title });
           setIsDeleteOpen(false);
+          window.location.reload();
         }}
         projectName={title}
       />
