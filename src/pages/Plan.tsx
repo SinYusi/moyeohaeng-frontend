@@ -6,84 +6,22 @@ import SpotCollectionBoard from "../components/plan/spotCollection/SpotCollectio
 import useGetProjectInfo from "../hooks/project/useGetProjectInfo";
 import { useModalStore } from "../stores/useModalStore";
 import { useParams } from "react-router-dom";
-import { useSpotCollectionStore } from "../stores/useSpotCollectionStore";
 import { SSEService } from "../service/SSEService";
 import useGetPlaceBlock from "../hooks/plan/placeBlock/useGetPlaceBlock";
-import type { SSEMessage } from "../types/sseTypes";
 import CreateGroupSheet from "../components/plan/modal/CreateGroupSheet";
 import GroupDetailPanel from "../components/plan/spotCollection/GroupDetailPanel";
 import { useSearchParams } from "react-router-dom";
-
-interface SSEEventData {
-  eventType: string;
-  message: SSEMessage;
-  fullId: string;
-  timestamp: string;
-}
+import { useSSEEventHandler } from "../hooks/plan/useSSEEventHandler";
 
 const Plan = () => {
   const { projectInfo } = useGetProjectInfo();
   const [searchParams] = useSearchParams();
   const groupId = searchParams.get("groupId");
   const { id: projectId } = useParams<{ id: string }>();
-  const { getPlaceBlock } = useGetPlaceBlock();
+  const { refetch } = useGetPlaceBlock();
   const { activeModal } = useModalStore();
 
-  const updateLikedMembers = useSpotCollectionStore(
-    (state) => state.updateLikedMembers
-  );
-
-  const handleSSEEvent = (eventData: SSEEventData) => {
-    const { message, eventType } = eventData;
-    if (!message || !eventType) return;
-
-    console.log(`handleSSEEvent [SSE] Processing ${eventType} event:`, message);
-
-    switch (eventType) {
-      case "PIN":
-        if (message.actionType === "UPDATE" && message.payload) {
-          // 프로젝트 업데이트 처리
-        }
-        break;
-      case "PLACE_BLOCK_LIKE":
-        if (message.actionType === "LIKE_UPDATE" && message.payload) {
-          const { placeBlockId, author, liked } = message.payload;
-          updateLikedMembers(placeBlockId.toString(), author, liked);
-        }
-        break;
-      case "PLACE_BLOCK_COMMENT":
-        if (message.actionType === "CREATED" && message.payload) {
-          if (message.actionType === "CREATED" && message.payload) {
-            const id = message.payload.id;
-            if (id) {
-              console.log("[case PLACE_BLOCK] Place block created:", id);
-              // 새로운 블록이 추가되면 전체 리스트를 다시 불러옴
-              getPlaceBlock();
-            }
-          }
-        }
-        break;
-      case "PLACE_BLOCK":
-        console.log("[case PLACE_BLOCK] PLACE_BLOCK event");
-
-        if (message.actionType === "CREATED" && message.payload) {
-          const id = message.payload.id;
-          if (id) {
-            // 새로운 블록이 추가되면 전체 리스트를 다시 불러옴
-            getPlaceBlock();
-          }
-        }
-        break;
-      case "PLACE_GROUP":
-        if (message.actionType === "UPDATE" && message.payload) {
-          // TODO 그룹 업데이트 처리
-        }
-        break;
-
-      default:
-        console.log(`[SSE] Unhandled event type: ${eventType}`);
-    }
-  };
+  const handleSSEEvent = useSSEEventHandler(refetch);
 
   useEffect(() => {
     if (!projectId) {
@@ -138,7 +76,7 @@ const Plan = () => {
       unsubscribeLike();
       unsubscribeBlock();
     };
-  }, [projectId, updateLikedMembers]);
+  }, [projectId]);
   return (
     <div className="flex w-full h-screen bg-gray-100 overflow-hidden">
       {/* 좌측 영역 (헤더 + 좌측 패널 + 중간 패널) */}
