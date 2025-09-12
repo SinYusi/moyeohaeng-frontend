@@ -43,13 +43,13 @@ const NewProjectModal: React.FC<NewProjectModalProps> = ({
 
   const { teamId: urlTeamId } = useParams();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!projectName.trim() || isLoading) return;
 
     if (type === "create") {
-      create();
+      await create();
     } else {
-      update();
+      await update();
     }
     handleClose();
     onSuccess?.();
