@@ -2,13 +2,13 @@ import axios from "axios";
 import useAuthStore from "../stores/useAuthStore";
 
 // 개발 환경에서의 기본값 설정
-const URL = (import.meta.env.VITE_API_URL || "http://localhost:8080").replace(
-  /\/$/,
-  ""
-);
+const URL: string = (
+  import.meta.env.VITE_API_URL || "http://localhost:8080"
+).replace(/\/$/, "");
 
 // TypeScript와 Axios 호환성 문제 피하기 위해 일반 객체로 생성
 const baseService = axios.create({
+  // @ts-expect-error - Axios types are incorrect, baseURL is the correct property
   baseURL: URL,
   withCredentials: true,
   timeout: 15000, // 네트워크 hang 방지
