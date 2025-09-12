@@ -3,21 +3,26 @@ import BaseModal from "../../common/modal/BaseModal";
 import ModalButton from "../../common/modal/ModalButton";
 
 interface DeleteProjectModalProps {
+  projectName: string;
   isOpen: boolean;
   onClose: () => void;
   onDelete: () => void;
-  projectName: string;
 }
 
 const DeleteProjectModal: React.FC<DeleteProjectModalProps> = ({
   isOpen,
+  projectName,
   onClose,
   onDelete,
-  projectName,
 }) => {
   const handleClose = () => {
     onClose();
   };
+
+  const handleDelete = () => {
+    onDelete();
+  };
+
   const modalFooter = (
     <div className="self-stretch inline-flex justify-end items-center">
       <div className="flex justify-start items-center gap-2">
@@ -27,7 +32,7 @@ const DeleteProjectModal: React.FC<DeleteProjectModalProps> = ({
           </ModalButton>
         </div>
         <div className="h-9">
-          <ModalButton onClick={onDelete} variant="primary">
+          <ModalButton onClick={handleDelete} variant="primary">
             프로젝트삭제
           </ModalButton>
         </div>
