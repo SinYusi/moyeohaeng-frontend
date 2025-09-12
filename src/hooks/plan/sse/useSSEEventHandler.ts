@@ -1,5 +1,5 @@
-import type { SSEEventData } from "../../types/sseTypes";
-import { useSpotCollectionStore } from "../../stores/useSpotCollectionStore";
+import type { SSEEventData } from "../../../types/sseTypes";
+import { useSpotCollectionStore } from "../../../stores/useSpotCollectionStore";
 import { createEventHandlers } from "./eventHandlers";
 
 // SSE 이벤트 핸들러 훅

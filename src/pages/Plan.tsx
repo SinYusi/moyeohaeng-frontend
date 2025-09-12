@@ -11,7 +11,7 @@ import useGetPlaceBlock from "../hooks/plan/placeBlock/useGetPlaceBlock";
 import CreateGroupSheet from "../components/plan/modal/CreateGroupSheet";
 import GroupDetailPanel from "../components/plan/spotCollection/GroupDetailPanel";
 import { useSearchParams } from "react-router-dom";
-import { useSSEEventHandler } from "../hooks/plan/useSSEEventHandler";
+import { useSSEEventHandler } from "../hooks/plan/sse/useSSEEventHandler";
 
 const Plan = () => {
   const { projectInfo } = useGetProjectInfo();
