@@ -1,26 +1,29 @@
 import type { Team } from "./team";
 
+export const PROJECT_ACCESS = {
+  PRIVATE: "PRIVATE",
+  PUBLIC: "PUBLIC",
+  PROTECTED: "PROTECTED",
+};
+
+export type ProjectAccess = keyof typeof PROJECT_ACCESS;
 export interface Project {
   id: string;
   externalId: string;
   title: string;
-  description: string;
-  days: number;
-  people: number;
-  modifiedTime: string;
+  color: string;
+  projectAccess: ProjectAccess; // Enum
   startDate: string;
   endDate: string;
-  updatedAt: string;
-  createdAt: number;
-  active: boolean;
-  color: string;
-  durationDays: number;
-  finished: boolean;
+  travelDays: number;
   isAllowGuest: boolean;
   isAllowViewer: boolean;
-  projectAccess: string;
+  modifiedAt: string;
   public: boolean;
+  active: boolean;
+  upcoming: boolean;
+  finished: boolean;
+  durationDays: number;
   remainingDays: number;
-  travelDays: number;
   team: Team;
 }
