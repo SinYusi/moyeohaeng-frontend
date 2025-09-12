@@ -7,7 +7,7 @@ interface AllBlockListProps {
 }
 
 const AllBlockList = ({ selectedFilters }: AllBlockListProps) => {
-  const { collections } = useSpotCollectionStore();
+  const collections = useSpotCollectionStore((state) => state.collections);
   const { activeModal, modalData } = useModalStore();
 
   const filteredCollections = collections.filter((collection) => {
@@ -23,11 +23,13 @@ const AllBlockList = ({ selectedFilters }: AllBlockListProps) => {
   return (
     <div className="grid gap-x-3 grid-cols-1 xl:grid-cols-2 3xl:grid-cols-3">
       {filteredCollections.map((collection) => {
-        const isSelected = selectedPlaces.some((place) => place.id === collection.id);
+        const isSelected = selectedPlaces.some(
+          (place) => place.id === collection.id
+        );
         return (
-          <SelectionScheduleBlock 
-            key={collection.id} 
-            place={collection} 
+          <SelectionScheduleBlock
+            key={collection.id}
+            place={collection}
             isSelectionMode={isSelectionMode}
             isSelected={isSelected}
           />

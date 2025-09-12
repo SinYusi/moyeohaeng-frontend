@@ -1,7 +1,6 @@
 import { CircleUser, Plus, ThumbsUp } from "lucide-react";
 import type { PlaceBlock } from "../../../types/planTypes";
 import GrayBgTextBtn from "../../common/GrayBgTextBtn";
-import { useSpotCollectionStore } from "../../../stores/useSpotCollectionStore";
 import FilledThumbsUp from "../../../assets/images/FilledThumbsUp.svg";
 import { useModalStore } from "../../../stores/useModalStore";
 import useToggleLike from "../../../hooks/plan/placeBlock/useToggleLike";
@@ -15,30 +14,21 @@ const BlockCommentSection = ({
   id: string;
   isSelectionMode?: boolean;
 }) => {
-  const { updateCollection } = useSpotCollectionStore();
   const { openCommentModal } = useModalStore();
   const { toggleLike: apiToggleLike, loading } = useToggleLike();
 
   const handleLikeClick = async () => {
     if (loading || isSelectionMode) return; // 로딩 중이거나 선택 모드면 클릭 무시
 
-    const result = await apiToggleLike(id);
-    
-    if (result) {
-      // API 성공 시 store 업데이트 - 좋아요 상태 토글
-      const newLiked = !userInteraction.likeSummary.liked;
-      const newTotalCount = Math.max(
-        0,
-        userInteraction.likeSummary.totalCount + (newLiked ? 1 : -1)
-      );
-
-      updateCollection(id, {
-        likeSummary: {
-          ...userInteraction.likeSummary,
-          liked: newLiked,
-          totalCount: newTotalCount,
-        },
+    try {
+      const result = await apiToggleLike(id);
+      console.log("[Like] Request sent:", {
+        id,
+        currentLiked: userInteraction.likeSummary.liked,
+        result,
       });
+    } catch (error) {
+      console.error("[Like] Failed to toggle like:", error);
     }
   };
 
@@ -48,7 +38,11 @@ const BlockCommentSection = ({
   };
 
   return (
-    <div className={`flex flex-col px-[2px] items-start gap-1 self-stretch ${isSelectionMode ? 'opacity-50' : ''}`}>
+    <div
+      className={`flex flex-col px-[2px] items-start gap-1 self-stretch ${
+        isSelectionMode ? "opacity-50" : ""
+      }`}
+    >
       {/* CommentHeader */}
       <div className="flex justify-between items-center self-stretch">
         <GrayBgTextBtn onClick={handleCommentClick}>
@@ -62,7 +56,9 @@ const BlockCommentSection = ({
               alt="좋아요"
               width={16}
               height={16}
-              className={`${!isSelectionMode ? 'cursor-pointer' : ''} ${loading || isSelectionMode ? "opacity-50" : ""}`}
+              className={`${!isSelectionMode ? "cursor-pointer" : ""} ${
+                loading || isSelectionMode ? "opacity-50" : ""
+              }`}
               onClick={handleLikeClick}
             />
           ) : (
@@ -70,7 +66,9 @@ const BlockCommentSection = ({
               size={16}
               color="#3b4553"
               fill={`${userInteraction.likeSummary.liked ? "#3b4553" : "none"}`}
-              className={`${!isSelectionMode ? 'cursor-pointer' : ''} ${loading || isSelectionMode ? "opacity-50" : ""}`}
+              className={`${!isSelectionMode ? "cursor-pointer" : ""} ${
+                loading || isSelectionMode ? "opacity-50" : ""
+              }`}
               onClick={handleLikeClick}
             />
           )}
@@ -82,7 +80,7 @@ const BlockCommentSection = ({
       {/* CommentArea */}
       <div
         className={`flex flex-col justify-center px-3 py-2 rounded-[12px] self-stretch bg-[#f9fafb] ${
-          !isSelectionMode ? 'cursor-pointer hover:bg-[#e7edf6]' : ''
+          !isSelectionMode ? "cursor-pointer hover:bg-[#e7edf6]" : ""
         }`}
         onClick={handleCommentClick}
       >
