@@ -1,55 +1,20 @@
 import MapSection from "../components/plan/map/MapSection";
 import CommentSheet from "../components/plan/modal/CommentSheet";
+import PlanHeader from "../components/plan/PlanHeader";
 import SpotCollectionBoard from "../components/plan/spotCollection/SpotCollectionBoard";
+import useGetProjectInfo from "../hooks/project/useGetProjectInfo";
 import { useModalStore } from "../stores/useModalStore";
 
 const Plan = () => {
-  const {
-    activeModal,
-    openCommentModal,
-    openCreateGroupModal,
-    openModifyGroupModal,
-  } = useModalStore();
+  const { activeModal } = useModalStore();
+  const { projectInfo } = useGetProjectInfo();
+
   return (
     <div className="flex w-full h-screen bg-gray-100 overflow-hidden">
       {/* 좌측 영역 (헤더 + 좌측 패널 + 중간 패널) */}
       <div className="flex flex-col w-[57.292%]">
         {/* 상단 헤더 - 좌측 패널과 중간 패널을 통과 */}
-        <div className="flex items-center justify-between h-16 bg-white border-b border-gray-200 px-6">
-          <h1 className="text-xl font-semibold text-gray-800">프로젝트 이름</h1>
-          <div className="flex items-center space-x-4">
-            <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
-              초대하기
-            </button>
-            {/* 테스트용 모달 오픈 버튼들 */}
-            <button
-              className="px-3 py-2 bg-gray-100 rounded-lg text-sm hover:bg-gray-200"
-              onClick={() => openCommentModal(1)}
-            >
-              모달 테스트(코멘트)
-            </button>
-            <button
-              className="px-3 py-2 bg-gray-100 rounded-lg text-sm hover:bg-gray-200"
-              onClick={() => openCreateGroupModal()}
-            >
-              모달 테스트(그룹 생성)
-            </button>
-            <button
-              className="px-3 py-2 bg-gray-100 rounded-lg text-sm hover:bg-gray-200"
-              onClick={() => openModifyGroupModal()}
-            >
-              모달 테스트(그룹 수정)
-            </button>
-            <div className="flex space-x-2">
-              <div className="w-8 h-8 bg-pink-400 rounded-full"></div>
-              <div className="w-8 h-8 bg-orange-400 rounded-full"></div>
-              <div className="w-8 h-8 bg-green-400 rounded-full"></div>
-              <div className="w-8 h-8 bg-purple-400 rounded-full"></div>
-              <div className="w-8 h-8 bg-pink-400 rounded-full"></div>
-              <div className="w-8 h-8 bg-orange-400 rounded-full"></div>
-            </div>
-          </div>
-        </div>
+        <PlanHeader projectName={projectInfo?.title || ""} />
 
         {/* 좌측 패널과 중간 패널 컨테이너 */}
         <div className="flex flex-1 min-h-0">
@@ -59,9 +24,11 @@ const Plan = () => {
           </div>
 
           {/* 중간 패널 - 여행 일정 */}
-          <div className={`relative w-[29.167%] h-full bg-white border-r border-gray-200 ${
-            activeModal === null ? "overflow-y-auto" : "overflow-y-hidden"
-          }`}>
+          <div
+            className={`relative w-[29.167%] h-full bg-white border-r border-gray-200 ${
+              activeModal === null ? "overflow-y-auto" : "overflow-y-hidden"
+            }`}
+          >
             {activeModal === "comment" && <CommentSheet />}
             <div className="p-5">
               <h2 className="text-lg font-medium text-gray-800 mb-2">
