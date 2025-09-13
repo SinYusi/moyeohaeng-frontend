@@ -4,6 +4,7 @@ import PlanHeader from "../components/plan/header/PlanHeader";
 import SpotCollectionBoard from "../components/plan/spotCollection/SpotCollectionBoard";
 import useGetProjectInfo from "../hooks/project/useGetProjectInfo";
 import { useModalStore } from "../stores/useModalStore";
+import CreateGroupSheet from "../components/plan/modal/CreateGroupSheet";
 
 const Plan = () => {
   const { activeModal } = useModalStore();
@@ -30,6 +31,7 @@ const Plan = () => {
             }`}
           >
             {activeModal === "comment" && <CommentSheet />}
+            {activeModal === "createGroup" && <CreateGroupSheet />}
             <div className="p-5">
               <h2 className="text-lg font-medium text-gray-800 mb-2">
                 중간 패널

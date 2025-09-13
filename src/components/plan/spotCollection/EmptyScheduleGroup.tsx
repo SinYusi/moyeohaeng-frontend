@@ -1,8 +1,10 @@
 import { Plus } from "lucide-react";
+import { useModalStore } from "../../../stores/useModalStore";
 
 const EmptyScheduleGroup: React.FC = () => {
+  const { openCreateGroupModal } = useModalStore();
   const handleAddGroup = () => {
-    console.log("add group");
+    openCreateGroupModal();
   };
 
   return (

@@ -68,6 +68,7 @@ const SlideModal: React.FC<SlideModalProps> = ({ children }) => {
             <div className="flex flex-row items-center justify-between h-12 self-stretch w-full">
               <p className="font-semibold text-xl">
                 {activeModal === "comment" && "코멘트"}
+                {activeModal === "createGroup" && "새 그룹 만들기"}
               </p>
               <X size={32} className="cursor-pointer" onClick={handleClose} />
             </div>
