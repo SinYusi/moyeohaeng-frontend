@@ -1,14 +1,22 @@
 import GroupSectionHeader from "./SectionHeader";
 import GrayBgTextBtn from "../../common/GrayBgTextBtn";
-import { ChevronDown, Plus } from "lucide-react";
+import { ChevronDown, ChevronUp, Plus } from "lucide-react";
+import { useState } from "react";
+import GroupList from "./GroupList";
 
 const GroupSection = () => {
+  const [isOpen, setIsOpen] = useState(true);
+
   return (
     <div className="w-full flex flex-col gap-3">
       <GroupSectionHeader>
         <div className="flex items-center">
-          <GrayBgTextBtn>
-            <ChevronDown size={24} color="#3b4553" />
+          <GrayBgTextBtn onClick={() => setIsOpen((prev) => !prev)}>
+            {isOpen ? (
+              <ChevronUp size={24} color="#3b4553" />
+            ) : (
+              <ChevronDown size={24} color="#3b4553" />
+            )}
           </GrayBgTextBtn>
           <p className="text-lg font-medium text-[#131416]">그룹 모음</p>
         </div>
@@ -19,6 +27,7 @@ const GroupSection = () => {
         </GrayBgTextBtn>
       </GroupSectionHeader>
       {/* TODO: 그룹 리스트 카드 추가 */}
+      <GroupList />
     </div>
   );
 };
