@@ -1,6 +1,6 @@
 import MapSection from "../components/plan/map/MapSection";
 import CommentSheet from "../components/plan/modal/CommentSheet";
-import PlanHeader from "../components/plan/PlanHeader";
+import PlanHeader from "../components/plan/header/PlanHeader";
 import SpotCollectionBoard from "../components/plan/spotCollection/SpotCollectionBoard";
 import useGetProjectInfo from "../hooks/project/useGetProjectInfo";
 import { useModalStore } from "../stores/useModalStore";
