@@ -2,7 +2,7 @@ import React from "react";
 
 interface ModalButtonProps {
   children: React.ReactNode;
-  onClick: () => void;
+  onClick: (e: React.MouseEvent) => void;
   variant?: "primary" | "secondary" | "danger";
   disabled?: boolean;
 }

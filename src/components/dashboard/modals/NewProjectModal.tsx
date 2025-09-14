@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import BaseModal from "../../common/modal/BaseModal";
 import ModalButton from "../../common/modal/ModalButton";
 import usePostProject from "../../../hooks/project/usePostProject";
@@ -34,7 +34,7 @@ const NewProjectModal: React.FC<NewProjectModalProps> = ({
   const { member } = useMemberStore();
   const { createProject, isLoading, error } = usePostProject();
   const { updateProject } = usePutProject();
-
+  const navigate = useNavigate();
   const handleClose = () => {
     setProjectName(initialProjectName ?? "");
     setSelectedColor(initialProjectColor ?? "");
@@ -43,7 +43,8 @@ const NewProjectModal: React.FC<NewProjectModalProps> = ({
 
   const { teamId: urlTeamId } = useParams();
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!projectName.trim() || isLoading) return;
 
     if (type === "create") {
@@ -64,11 +65,12 @@ const NewProjectModal: React.FC<NewProjectModalProps> = ({
         return;
       }
 
-      await createProject({
+      const newProject = await createProject({
         title: projectName.trim(),
         color: selectedColor,
         teamId: teamId,
       });
+      navigate(`/plan/${newProject?.id}?isNew=true`);
     } catch (err) {
       alert(error || `프로젝트 생성에 실패했습니다. 다시 시도해주세요.`);
     }
@@ -103,7 +105,7 @@ const NewProjectModal: React.FC<NewProjectModalProps> = ({
       </div>
       <div className="w-20">
         <ModalButton
-          onClick={handleSubmit}
+          onClick={(e: React.MouseEvent) => handleSubmit(e)}
           variant="primary"
           disabled={!projectName.trim() || isLoading}
         >
