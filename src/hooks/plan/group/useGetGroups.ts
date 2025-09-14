@@ -35,7 +35,7 @@ const useGetGroups = () => {
     getGroups();
   }, [getGroups]);
 
-  return { group, isLoading, error, getGroup };
+  return { group, isLoading, error, getGroups };
 };
 
 export default useGetGroups;

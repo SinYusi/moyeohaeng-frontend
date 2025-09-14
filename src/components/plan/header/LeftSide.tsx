@@ -8,7 +8,7 @@ const LeftSide: React.FC<{ projectName: string }> = ({ projectName }) => {
       <ChevronLeft
         size={24}
         color="#3b4553"
-        onClick={() => navigate(-1)}
+        onClick={() => navigate('/dashboard')}
         className="cursor-pointer"
       />
       <h1 className="text-xl font-semibold text-[#131416] tracking-[-0.4px]">
