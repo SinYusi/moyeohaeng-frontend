@@ -14,7 +14,6 @@ const useGetPlaceBlock = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { id } = useParams<{ id: string }>();
-  console.log("projectId:", id);
 
   const getPlaceBlock = useCallback(async () => {
     if (!id) {
