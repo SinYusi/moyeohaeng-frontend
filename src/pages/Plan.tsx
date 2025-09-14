@@ -10,16 +10,19 @@ import { SSEService } from "../service/SSEService";
 import useGetPlaceBlock from "../hooks/plan/placeBlock/useGetPlaceBlock";
 import CreateGroupSheet from "../components/plan/modal/CreateGroupSheet";
 import GroupDetailPanel from "../components/plan/spotCollection/GroupDetailPanel";
+import TravelScheduleModal from "../components/plan/modal/TravelScheduleModal";
 import { useSearchParams } from "react-router-dom";
 import { useSSEEventHandler } from "../hooks/plan/sse/useSSEEventHandler";
+import { useState, useEffect } from "react";
 
 const Plan = () => {
   const { projectInfo } = useGetProjectInfo();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const groupId = searchParams.get("groupId");
   const { id: projectId } = useParams<{ id: string }>();
   const { refetch } = useGetPlaceBlock();
   const { activeModal } = useModalStore();
+  const isNew = searchParams.get("isNew") === "true";
 
   const handleSSEEvent = useSSEEventHandler(refetch);
 
@@ -77,6 +80,21 @@ const Plan = () => {
       unsubscribeBlock();
     };
   }, [projectId]);
+  const [showTravelModal, setShowTravelModal] = useState(false);
+
+  useEffect(() => {
+    if (isNew) {
+      setShowTravelModal(true);
+    }
+  }, [isNew]);
+
+  const handleTravelModalClose = () => {
+    setShowTravelModal(false);
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.delete("isNew");
+    setSearchParams(newSearchParams);
+  };
+
   return (
     <div className="flex w-full h-screen bg-gray-100 overflow-hidden">
       {/* 좌측 영역 (헤더 + 좌측 패널 + 중간 패널) */}
@@ -99,12 +117,7 @@ const Plan = () => {
           >
             {activeModal === "comment" && <CommentSheet />}
             {activeModal === "createGroup" && <CreateGroupSheet />}
-            <div className="p-5">
-              <h2 className="text-lg font-medium text-gray-800 mb-2">
-                중간 패널
-              </h2>
-              <p className="text-sm text-gray-600">여행 일정 영역</p>
-            </div>
+            
           </div>
         </div>
       </div>
@@ -113,6 +126,13 @@ const Plan = () => {
       <div className="w-[42.708%] h-full bg-white">
         <MapSection />
       </div>
+
+      {/* 여행 일정 설정 모달 */}
+      <TravelScheduleModal
+        isOpen={showTravelModal}
+        onClose={handleTravelModalClose}
+        projectTitle={projectInfo?.title || ""}
+      />
     </div>
   );
 };
