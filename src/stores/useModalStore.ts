@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import type { PlaceBlock } from "../types/planTypes";
 
-type ActiveModal = "comment" | "createGroup" | "modifyGroup" | null;
+type ActiveModal = "comment" | "createGroup" | "modifyGroup" | "travelSchedule" | "addToSchedule" | null;
 
 interface ModalData {
   // comment modal을 위한 데이터
@@ -10,6 +10,21 @@ interface ModalData {
   selectedPlaces?: PlaceBlock[];
   onGroupCreated?: () => void;
   // modifyGroup modal을 위한 데이터
+  // travelSchedule modal을 위한 데이터
+  projectTitle?: string;
+  onTravelScheduleComplete?: () => void;
+  // addToSchedule modal을 위한 데이터
+  placeInfo?: {
+    kakoPlaceId: string;
+    placeName: string;
+    address: string;
+    category: string;
+  };
+  projectInfo?: {
+    startDate: string;
+    endDate: string;
+    durationDays: number;
+  };
 }
 
 interface ModalState {
@@ -20,6 +35,20 @@ interface ModalState {
   // Specific helpers
   openCommentModal: (placeId: number) => void;
   openModifyGroupModal: () => void;
+  openTravelScheduleModal: (projectTitle: string, onComplete?: () => void) => void;
+  openAddToScheduleModal: (
+    placeInfo: {
+      kakoPlaceId: string;
+      placeName: string;
+      address: string;
+      category: string;
+    },
+    projectInfo?: {
+      startDate: string;
+      endDate: string;
+      durationDays: number;
+    }
+  ) => void;
   // Backward compatibility (maps to creatGroup)
   openCreateGroupModal: (onGroupCreated?: () => void) => void;
   closeModal: () => void;
@@ -39,6 +68,22 @@ export const useModalStore = create<ModalState>((set) => ({
     set({ activeModal: "createGroup", modalData: { selectedPlaces: [], onGroupCreated } }),
   openModifyGroupModal: () =>
     set({ activeModal: "modifyGroup", modalData: {} }),
+  openTravelScheduleModal: (projectTitle: string, onComplete?: () => void) =>
+    set({ activeModal: "travelSchedule", modalData: { projectTitle, onTravelScheduleComplete: onComplete } }),
+  openAddToScheduleModal: (
+    placeInfo: {
+      kakoPlaceId: string;
+      placeName: string;
+      address: string;
+      category: string;
+    },
+    projectInfo?: {
+      startDate: string;
+      endDate: string;
+      durationDays: number;
+    }
+  ) =>
+    set({ activeModal: "addToSchedule", modalData: { placeInfo, projectInfo } }),
   closeModal: () => set({ activeModal: null, modalData: {} }),
   addSelectedPlace: (place: PlaceBlock) =>
     set((state) => ({

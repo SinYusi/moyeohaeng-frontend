@@ -78,8 +78,8 @@ export interface Group {
 export interface ScheduleTimeBlock {
   id: string;
   day: number;
-  startTime: string;
-  endTime: string;
+  startTime: string | null;
+  endTime: string | null;
   memo?: string;
   placeDetail: {
     id: string;
@@ -90,4 +90,31 @@ export interface ScheduleTimeBlock {
     detailLink: string;
     category: string;
   };
+}
+
+// 여행 일정 전체 데이터
+export interface TravelSchedule {
+  startDate: string; // YYYY-MM-DD 형태
+  endDate: string; // YYYY-MM-DD 형태
+  duration: number; // 여행 기간 (일 수)
+  timeBlocks: ScheduleTimeBlock[];
+}
+
+// 일정 Store 상태
+export interface ScheduleState {
+  schedule: TravelSchedule | null;
+  isScheduleSet: boolean;
+  currentProjectId: string | null; // 현재 로드된 프로젝트 ID
+}
+
+// 일정 Store 액션
+export interface ScheduleActions {
+  setSchedule: (schedule: TravelSchedule, projectId?: string) => void;
+  addTimeBlock: (timeBlock: ScheduleTimeBlock) => void;
+  updateTimeBlock: (id: string, updates: Partial<ScheduleTimeBlock>) => void;
+  removeTimeBlock: (id: string) => void;
+  setTimeBlocks: (timeBlocks: ScheduleTimeBlock[]) => void;
+  clearSchedule: () => void;
+  setCurrentProject: (projectId: string | null) => void;
+  getTimeBlocksByDay: (day: number) => ScheduleTimeBlock[];
 }

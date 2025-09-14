@@ -1,11 +1,12 @@
 import { create } from "zustand";
-import type { PlaceBlock, Place } from "../types/planTypes";
+import type { PlaceBlock, Place, ScheduleTimeBlock } from "../types/planTypes";
 
 export interface ClickedPlace {
   position: { lat: number; lng: number };
   kakaoPlace: kakao.maps.services.PlacesSearchResultItem;
   place?: Place;
   distance: number;
+  timeBlock?: ScheduleTimeBlock;
 }
 
 interface SpotCollectionState {

@@ -6,11 +6,20 @@ import BasePin from "./BasePin";
 import InfoOverlay from "./InfoOverlay";
 import { useFavoriteStore } from "../../../stores/useFavoriteStore";
 import { useSpotCollectionStore } from "../../../stores/useSpotCollectionStore";
+import { useScheduleStore } from "../../../stores/useScheduleStore";
 import FavoritePin from "./FavoritePin";
+import SchedulePin from "./SchedulePin";
+import SchedulePolyline from "./SchedulePolyline";
 import CategoryFilterBtns from "../CategoryFilterBtns";
 import useGetPins from "../../../hooks/plan/pin/useGetPins";
 
-const MapSection = () => {
+const MapSection = ({ projectInfo }: { 
+  projectInfo?: {
+    startDate: string;
+    endDate: string;
+    durationDays: number;
+  };
+}) => {
   const [loading, error] = useKakaoLoader({
     appkey: import.meta.env.VITE_KAKAO_APP_KEY,
     libraries: ["services", "clusterer"],
@@ -21,6 +30,7 @@ const MapSection = () => {
   >([]);
   const { favorites, addAllFavorites, isFavorite } = useFavoriteStore();
   const { clickedPlace, setClickedPlace } = useSpotCollectionStore();
+  const { schedule } = useScheduleStore();
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const categories = [
     "FD6", // 음식점
@@ -181,6 +191,10 @@ const MapSection = () => {
           searchNearby(lat, lng);
         }}
       >
+        {/* 일정 핀들을 연결하는 점선 */}
+        {schedule?.timeBlocks && (
+          <SchedulePolyline timeBlocks={schedule.timeBlocks} />
+        )}
         {searchResults
           .filter((kakaoResultPlace) => {
             const placeId = kakaoResultPlace.id?.toString();
@@ -227,7 +241,92 @@ const MapSection = () => {
               </div>
             </CustomOverlayMap>
           ))}
-        {favorites.map((favorite) => {
+        
+        {/* 일정 핀들 - 시간이 지정된 것들만 시간 순으로 정렬하여 표시 */}
+        {schedule?.timeBlocks
+          .filter((timeBlock) => 
+            timeBlock.placeDetail.latitude && 
+            timeBlock.placeDetail.longitude &&
+            timeBlock.startTime && 
+            timeBlock.endTime
+          )
+          .sort((a, b) => {
+            // 일차별로 먼저 정렬, 같은 일차 내에서는 시간순 정렬
+            if (a.day !== b.day) {
+              return a.day - b.day;
+            }
+            return a.startTime!.localeCompare(b.startTime!);
+          })
+          .map((timeBlock, index) => {
+            // 같은 위치에 favorite 핀이 있는지 확인
+            const hasFavoritePin = favorites.some((favorite) => 
+              Math.abs(favorite.place.latitude - timeBlock.placeDetail.latitude) < 0.0001 &&
+              Math.abs(favorite.place.longitude - timeBlock.placeDetail.longitude) < 0.0001
+            );
+
+            return (
+              <CustomOverlayMap
+                key={`schedule-${timeBlock.id}`}
+                position={{
+                  lat: timeBlock.placeDetail.latitude,
+                  lng: timeBlock.placeDetail.longitude,
+                }}
+                yAnchor={0.5}
+                xAnchor={0.5}
+                zIndex={hasFavoritePin ? 1003 : 1002} // favorite 핀과 겹치면 더 높은 zIndex
+              >
+                <div
+                  onClick={() => {
+                    const distance = 0;
+                    const kakaoPlaceData: kakao.maps.services.PlacesSearchResultItem = {
+                      id: timeBlock.placeDetail.id,
+                      place_name: timeBlock.placeDetail.name,
+                      address_name: timeBlock.placeDetail.address,
+                      road_address_name: timeBlock.placeDetail.address,
+                      x: timeBlock.placeDetail.longitude.toString(),
+                      y: timeBlock.placeDetail.latitude.toString(),
+                      place_url: timeBlock.placeDetail.detailLink,
+                      category_group_name: timeBlock.placeDetail.category,
+                      category_group_code: "",
+                      category_name: timeBlock.placeDetail.category,
+                      distance: "",
+                      phone: "",
+                    };
+
+                    setClickedPlace({
+                      position: {
+                        lat: timeBlock.placeDetail.latitude,
+                        lng: timeBlock.placeDetail.longitude,
+                      },
+                      kakaoPlace: kakaoPlaceData,
+                      distance: distance,
+                      timeBlock: timeBlock, // 시간 블록 정보 추가
+                    });
+                  }}
+                  onMouseDown={(e: React.MouseEvent) => {
+                    e.stopPropagation();
+                  }}
+                  onMouseUp={(e: React.MouseEvent) => {
+                    e.stopPropagation();
+                  }}
+                  style={{ cursor: "pointer" }}
+                >
+                  <SchedulePin day={timeBlock.day} sequenceNumber={index + 1} />
+                </div>
+              </CustomOverlayMap>
+            );
+          })}
+
+        {favorites
+          .filter((favorite) => {
+            // 일정 핀과 겹치지 않는 favorite 핀들만 표시
+            const hasSchedulePin = schedule?.timeBlocks.some((timeBlock) => 
+              Math.abs(timeBlock.placeDetail.latitude - favorite.place.latitude) < 0.0001 &&
+              Math.abs(timeBlock.placeDetail.longitude - favorite.place.longitude) < 0.0001
+            );
+            return !hasSchedulePin;
+          })
+          .map((favorite) => {
           const isFiltered =
             selectedFilters.length === 0 ||
             selectedFilters.includes(favorite.place.category);
@@ -296,6 +395,7 @@ const MapSection = () => {
             <InfoOverlay
               clickedPlace={clickedPlace}
               onClose={() => setClickedPlace(null)}
+              projectInfo={projectInfo}
             />
           </CustomOverlayMap>
         )}

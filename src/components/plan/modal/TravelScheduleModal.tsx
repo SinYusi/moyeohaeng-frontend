@@ -1,20 +1,15 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import usePutProject from "../../../hooks/project/usePutProject";
+import { useModalStore } from "../../../stores/useModalStore";
+import { useScheduleStore } from "../../../stores/useScheduleStore";
 
-interface TravelScheduleModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  projectTitle: string;
-}
-
-const TravelScheduleModal: React.FC<TravelScheduleModalProps> = ({
-  isOpen,
-  onClose,
-  projectTitle,
-}) => {
+const TravelScheduleModal: React.FC = () => {
+  const { activeModal, modalData, closeModal } = useModalStore();
+  const { setSchedule } = useScheduleStore();
   const [startDate, setStartDate] = useState("");
   const [duration, setDuration] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const { id: projectId } = useParams();
   const { updateProject, isLoading } = usePutProject();
@@ -23,7 +18,13 @@ const TravelScheduleModal: React.FC<TravelScheduleModalProps> = ({
     // 상태 초기화
     setStartDate("");
     setDuration("");
-    onClose();
+    
+    // URL에서 isNew 파라미터 제거
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.delete("isNew");
+    setSearchParams(newSearchParams);
+    
+    closeModal();
   };
 
   // endDate 계산 함수
@@ -31,7 +32,7 @@ const TravelScheduleModal: React.FC<TravelScheduleModalProps> = ({
     if (!startDate || !duration) return "";
 
     const start = new Date(startDate);
-    const durationDays = parseInt(duration) - 1; // duration이 1일이면 시작일과 종료일이 같음
+    const durationDays = parseInt(duration)
     const end = new Date(start);
     end.setDate(start.getDate() + durationDays);
 
@@ -45,23 +46,31 @@ const TravelScheduleModal: React.FC<TravelScheduleModalProps> = ({
 
   // 완료 버튼 클릭 핸들러
   const handleComplete = async () => {
-    if (!projectId || !isCompleteEnabled() || !projectTitle) return;
+    if (!projectId || !isCompleteEnabled() || !modalData.projectTitle) return;
 
     try {
       const endDate = calculateEndDate(startDate, duration);
 
       await updateProject(projectId, {
-        title: projectTitle, // props로 받은 title 사용
+        title: modalData.projectTitle, // modalData에서 title 사용
         startDate,
         endDate,
         validDateRange: true,
       });
 
-      console.log("Project updated successfully", {
+      // 전역 스케줄 store에 일정 정보 저장
+      setSchedule({
         startDate,
         endDate,
-        duration,
-      });
+        duration: parseInt(duration),
+        timeBlocks: [], // 초기에는 빈 배열
+      }, projectId);
+      
+      // 완료 콜백 호출 (프로젝트 정보 새로고침을 위해)
+      if (modalData.onTravelScheduleComplete) {
+        modalData.onTravelScheduleComplete();
+      }
+      
       handleClose();
     } catch (error) {
       console.error("프로젝트 업데이트 실패:", error);
@@ -69,7 +78,7 @@ const TravelScheduleModal: React.FC<TravelScheduleModalProps> = ({
     }
   };
 
-  if (!isOpen) return null;
+  if (activeModal !== "travelSchedule") return null;
   return (
     <>
       {/* 배경 오버레이 */}
