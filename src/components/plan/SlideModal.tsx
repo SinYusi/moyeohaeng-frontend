@@ -31,7 +31,9 @@ const SlideModal: React.FC<SlideModalProps> = ({ children }) => {
       {activeModal !== null && (
         <motion.div
           key="overlay"
-          className="absolute inset-0 z-50 flex items-end bg-white/50" // 배경 반투명
+          className={`absolute inset-0 z-50 flex items-end ${
+            activeModal === "createGroup" ? "bg-[#f9fafb]" : "bg-[#fff]"
+          }`}
           initial={{ opacity: 0 }}
           animate={{ opacity: isClosing ? 0 : 1 }}
           exit={{ opacity: 0 }}
