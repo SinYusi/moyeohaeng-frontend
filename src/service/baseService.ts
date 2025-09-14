@@ -8,7 +8,6 @@ const URL: string = (
 
 // TypeScript와 Axios 호환성 문제 피하기 위해 일반 객체로 생성
 const baseService = axios.create({
-  // @ts-expect-error - Axios types are incorrect, baseURL is the correct property
   baseURL: URL,
   withCredentials: true,
   timeout: 15000, // 네트워크 hang 방지

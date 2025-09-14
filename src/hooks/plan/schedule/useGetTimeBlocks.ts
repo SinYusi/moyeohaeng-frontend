@@ -32,7 +32,7 @@ const useGetTimeBlocks = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { id: projectId } = useParams<{ id: string }>();
-  const { schedule, setTimeBlocks: setStoreTimeBlocks } = useScheduleStore();
+  const { setTimeBlocks: setStoreTimeBlocks } = useScheduleStore();
 
   const fetchTimeBlocks = useCallback(async () => {
     if (!projectId) {
@@ -44,29 +44,31 @@ const useGetTimeBlocks = () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await baseService.get<GetTimeBlocksResponse>(
         `/v1/projects/${projectId}/time-blocks`
       );
 
       if (response.data.status === 200) {
         // API 응답 데이터를 ScheduleTimeBlock 형태로 변환
-        const convertedTimeBlocks: ScheduleTimeBlock[] = response.data.data.map((block) => ({
-          id: block.id.toString(),
-          day: block.day,
-          startTime: block.startTime || null,
-          endTime: block.endTime || null,
-          memo: block.memo,
-          placeDetail: {
-            id: block.placeDetail.id.toString(),
-            name: block.placeDetail.name,
-            address: block.placeDetail.address,
-            latitude: block.placeDetail.latitude,
-            longitude: block.placeDetail.longitude,
-            detailLink: block.placeDetail.detailLink,
-            category: block.placeDetail.category,
-          },
-        }));
+        const convertedTimeBlocks: ScheduleTimeBlock[] = response.data.data.map(
+          (block) => ({
+            id: block.id.toString(),
+            day: block.day,
+            startTime: block.startTime || null,
+            endTime: block.endTime || null,
+            memo: block.memo,
+            placeDetail: {
+              id: block.placeDetail.id.toString(),
+              name: block.placeDetail.name,
+              address: block.placeDetail.address,
+              latitude: block.placeDetail.latitude,
+              longitude: block.placeDetail.longitude,
+              detailLink: block.placeDetail.detailLink,
+              category: block.placeDetail.category,
+            },
+          })
+        );
 
         setLocalTimeBlocks(convertedTimeBlocks);
 
@@ -79,7 +81,8 @@ const useGetTimeBlocks = () => {
       return [];
     } catch (error: any) {
       console.error("시간 블록 조회 실패:", error);
-      const errorMessage = error.response?.data?.message || "시간 블록 조회에 실패했습니다.";
+      const errorMessage =
+        error.response?.data?.message || "시간 블록 조회에 실패했습니다.";
       setError(errorMessage);
       throw error;
     } finally {

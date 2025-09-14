@@ -9,15 +9,14 @@ import {
   useScheduleStore,
   isScheduleMatchingProject,
 } from "../stores/useScheduleStore";
-// import { useParams } from "react-router-dom";
-// import { SSEService } from "../service/SSEService";
-// import useGetPlaceBlock from "../hooks/plan/placeBlock/useGetPlaceBlock";
+import { SSEService } from "../service/SSEService";
+import useGetPlaceBlock from "../hooks/plan/placeBlock/useGetPlaceBlock";
 import CreateGroupSheet from "../components/plan/modal/CreateGroupSheet";
 import GroupDetailPanel from "../components/plan/spotCollection/GroupDetailPanel";
 import TravelScheduleModal from "../components/plan/modal/TravelScheduleModal";
 import AddToScheduleModal from "../components/plan/modal/AddToScheduleModal";
 import { useSearchParams, useParams } from "react-router-dom";
-// import { useSSEEventHandler } from "../hooks/plan/sse/useSSEEventHandler";
+import { useSSEEventHandler } from "../hooks/plan/sse/useSSEEventHandler";
 import { useEffect } from "react";
 import Schedule from "../hooks/plan/schedule/Schedule";
 
@@ -26,68 +25,68 @@ const Plan = () => {
   const [searchParams] = useSearchParams();
   const { id: projectId } = useParams<{ id: string }>();
   const groupId = searchParams.get("groupId");
-  // const { refetch } = useGetPlaceBlock();
+  const { refetch } = useGetPlaceBlock();
   const { activeModal, openTravelScheduleModal } = useModalStore();
   const { setSchedule, setCurrentProject, clearSchedule } = useScheduleStore();
   const { setClickedPlace } = useSpotCollectionStore();
   const isNew = searchParams.get("isNew") === "true";
 
-  // const handleSSEEvent = useSSEEventHandler(refetch);
+  const handleSSEEvent = useSSEEventHandler(refetch);
 
-  // useEffect(() => {
-  //   if (!projectId) {
-  //     console.warn("No project ID available for SSE connection");
-  //     return;
-  //   }
+  useEffect(() => {
+    if (!projectId) {
+      console.warn("No project ID available for SSE connection");
+      return;
+    }
 
-  //   console.log("Setting up SSE connection for project:", projectId);
-  //   const sseService = SSEService.getInstance();
-  //   sseService.setProjectId(projectId);
+    console.log("Setting up SSE connection for project:", projectId);
+    const sseService = SSEService.getInstance();
+    sseService.setProjectId(projectId);
 
-  //   // SSE 이벤트 구독
-  //   const unsubscribeLike = sseService.subscribe(
-  //     "PLACE_BLOCK_LIKE",
-  //     (data: any) => {
-  //       try {
-  //         handleSSEEvent(data);
-  //       } catch (error) {
-  //         console.error("[SSE] Error processing LIKE event:", error);
-  //       }
-  //     }
-  //   );
+    // SSE 이벤트 구독
+    const unsubscribeLike = sseService.subscribe(
+      "PLACE_BLOCK_LIKE",
+      (data: any) => {
+        try {
+          handleSSEEvent(data);
+        } catch (error) {
+          console.error("[SSE] Error processing LIKE event:", error);
+        }
+      }
+    );
 
-  //   const unsubscribeBlock = sseService.subscribe(
-  //     "PLACE_BLOCK",
-  //     (data: any) => {
-  //       try {
-  //         handleSSEEvent(data);
-  //       } catch (error) {
-  //         console.error("[SSE] Error processing BLOCK event:", error);
-  //       }
-  //     }
-  //   );
+    const unsubscribeBlock = sseService.subscribe(
+      "PLACE_BLOCK",
+      (data: any) => {
+        try {
+          handleSSEEvent(data);
+        } catch (error) {
+          console.error("[SSE] Error processing BLOCK event:", error);
+        }
+      }
+    );
 
-  //   // 디버깅을 위한 상태 검사
-  //   const checkConnection = () => {
-  //     const connections = (sseService as any).connections?.size || 0;
-  //     const listeners = (sseService as any).listeners?.size || 0;
-  //     console.log("SSE connection state:", {
-  //       projectId,
-  //       connections,
-  //       listeners,
-  //       timestamp: new Date().toISOString(),
-  //     });
-  //   };
+    // 디버깅을 위한 상태 검사
+    const checkConnection = () => {
+      const connections = (sseService as any).connections?.size || 0;
+      const listeners = (sseService as any).listeners?.size || 0;
+      console.log("SSE connection state:", {
+        projectId,
+        connections,
+        listeners,
+        timestamp: new Date().toISOString(),
+      });
+    };
 
-  //   const timer = setTimeout(checkConnection, 1000);
+    const timer = setTimeout(checkConnection, 1000);
 
-  //   return () => {
-  //     console.log("Cleaning up SSE connection for project:", projectId);
-  //     clearTimeout(timer);
-  //     unsubscribeLike();
-  //     unsubscribeBlock();
-  //   };
-  // }, [projectId]);
+    return () => {
+      console.log("Cleaning up SSE connection for project:", projectId);
+      clearTimeout(timer);
+      unsubscribeLike();
+      unsubscribeBlock();
+    };
+  }, [projectId]);
 
   // 프로젝트 ID 변경 시 현재 프로젝트 설정
   useEffect(() => {
