@@ -1,7 +1,9 @@
 import { Fragment } from "react/jsx-runtime";
 import SlideModal from "../SlideModal";
 import { useState } from "react";
-import { Check } from "lucide-react";
+import { Check, X } from "lucide-react";
+import { useModalStore } from "../../../stores/useModalStore";
+import ScheduleBlock from "../spotCollection/ScheduleBlock";
 
 const COLORS = [
   "#fb7354",
@@ -16,6 +18,9 @@ const COLORS = [
 const CreateGroupSheet = () => {
   const [groupName, setGroupName] = useState("");
   const [selectedColor, setSelectedColor] = useState(COLORS[0]); // 기본값으로 첫 번째 색상 선택
+  const { modalData, removeSelectedPlace } = useModalStore();
+
+  const selectedPlaces = modalData.selectedPlaces || [];
 
   return (
     <SlideModal>
@@ -55,13 +60,33 @@ const CreateGroupSheet = () => {
             ))}
           </div>
         </div>
-        <div className="flex flex-col justify-center items-start gap-2 w-full flex-1 self-stretch">
-          <p className="text-[#5a6572] text-xs">선택된 장소</p>
-          <div className="flex py-6 px-4 flex-col items-center gap-4 flex-1 self-stretch rounded-[8px] border border-[#c0c7ce] bg-[#f9fafb] hide-scroll">
-            {/* TODO: 선택된 장소 목록 표시 */}
+        <div className="flex flex-col justify-center items-start gap-2 w-full flex-1 self-stretch min-h-0">
+          <p className="text-[#5a6572] text-xs">
+            선택된 장소 ({selectedPlaces.length})
+          </p>
+          <div className="flex py-6 px-4 flex-col items-start gap-4 flex-1 self-stretch rounded-[8px] border border-[#c0c7ce] bg-[#f9fafb] overflow-y-auto hide-scroll min-h-0">
+            {selectedPlaces.length === 0 ? (
+              <div className="flex flex-col items-center justify-center w-full h-full py-8">
+                <p className="text-[#7b8482] text-sm">선택된 장소가 없습니다</p>
+                <p className="text-[#7b8482] text-xs mt-1">
+                  장소를 선택해주세요
+                </p>
+              </div>
+            ) : (
+              selectedPlaces.map((place) => (
+                <ScheduleBlock place={place} key={place.id} />
+              ))
+            )}
           </div>
         </div>
-        <button className="mb-4 w-full flex flex-col pl-3 pr-4 items-center justify-center shrink-0 rounded-[6px] bg-[#131416] text-[#fff] font-semibold h-12">
+        <button
+          className={`mb-4 w-full flex flex-col pl-3 pr-4 items-center justify-center shrink-0 rounded-[6px] font-semibold h-12 transition-colors ${
+            groupName.trim() && selectedPlaces.length > 0
+              ? "bg-[#131416] text-[#fff] hover:bg-[#3b4553] cursor-pointer"
+              : "bg-[#edf0f3] text-[#7b8482] cursor-not-allowed"
+          }`}
+          disabled={!groupName.trim() || selectedPlaces.length === 0}
+        >
           + 그룹 만들기
         </button>
       </Fragment>

@@ -9,16 +9,18 @@ import useToggleLike from "../../../hooks/plan/placeBlock/useToggleLike";
 const BlockCommentSection = ({
   userInteraction,
   id,
+  isSelectionMode = false,
 }: {
   userInteraction: PlaceBlock;
   id: string;
+  isSelectionMode?: boolean;
 }) => {
   const { updateCollection } = useSpotCollectionStore();
   const { openCommentModal } = useModalStore();
   const { toggleLike: apiToggleLike, loading } = useToggleLike();
 
   const handleLikeClick = async () => {
-    if (loading) return; // 로딩 중이면 클릭 무시
+    if (loading || isSelectionMode) return; // 로딩 중이거나 선택 모드면 클릭 무시
 
     const result = await apiToggleLike(id);
     
@@ -41,11 +43,12 @@ const BlockCommentSection = ({
   };
 
   const handleCommentClick = () => {
+    if (isSelectionMode) return;
     openCommentModal(Number(id));
   };
 
   return (
-    <div className="flex flex-col px-[2px] items-start gap-1 self-stretch">
+    <div className={`flex flex-col px-[2px] items-start gap-1 self-stretch ${isSelectionMode ? 'opacity-50' : ''}`}>
       {/* CommentHeader */}
       <div className="flex justify-between items-center self-stretch">
         <GrayBgTextBtn onClick={handleCommentClick}>
@@ -59,7 +62,7 @@ const BlockCommentSection = ({
               alt="좋아요"
               width={16}
               height={16}
-              className={`cursor-pointer ${loading ? "opacity-50" : ""}`}
+              className={`${!isSelectionMode ? 'cursor-pointer' : ''} ${loading || isSelectionMode ? "opacity-50" : ""}`}
               onClick={handleLikeClick}
             />
           ) : (
@@ -67,7 +70,7 @@ const BlockCommentSection = ({
               size={16}
               color="#3b4553"
               fill={`${userInteraction.likeSummary.liked ? "#3b4553" : "none"}`}
-              className={`cursor-pointer ${loading ? "opacity-50" : ""}`}
+              className={`${!isSelectionMode ? 'cursor-pointer' : ''} ${loading || isSelectionMode ? "opacity-50" : ""}`}
               onClick={handleLikeClick}
             />
           )}
@@ -78,7 +81,9 @@ const BlockCommentSection = ({
       </div>
       {/* CommentArea */}
       <div
-        className="flex flex-col justify-center px-3 py-2 rounded-[12px] self-stretch bg-[#f9fafb] cursor-pointer hover:bg-[#e7edf6]"
+        className={`flex flex-col justify-center px-3 py-2 rounded-[12px] self-stretch bg-[#f9fafb] ${
+          !isSelectionMode ? 'cursor-pointer hover:bg-[#e7edf6]' : ''
+        }`}
         onClick={handleCommentClick}
       >
         {/* FirstComment */}
