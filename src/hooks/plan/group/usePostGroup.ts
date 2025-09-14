@@ -2,10 +2,11 @@ import { useParams } from "react-router-dom";
 import baseService from "../../../service/baseService";
 import type { Group } from "../../../types/planTypes";
 import { useState } from "react";
+
 interface GroupRequest {
   name: string;
   color: string;
-  placeIds: string[];
+  placeBlockIds: string[];
 }
 
 interface GroupResponse {

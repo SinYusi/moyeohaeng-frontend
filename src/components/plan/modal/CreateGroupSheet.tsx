@@ -27,7 +27,7 @@ const CreateGroupSheet = () => {
     const result = await postGroup({
       name: groupName,
       color: selectedColor,
-      placeIds: selectedPlaces.map((place) => place.id),
+      placeBlockIds: selectedPlaces.map((place) => place.id),
     });
 
     if (result) {
