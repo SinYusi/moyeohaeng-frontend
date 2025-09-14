@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Check } from "lucide-react";
 import { useModalStore } from "../../../stores/useModalStore";
 import ScheduleBlock from "../spotCollection/ScheduleBlock";
+import usePostGroup from "../../../hooks/plan/group/usePostGroup";
 
 const COLORS = [
   "#fb7354",
@@ -18,9 +19,21 @@ const COLORS = [
 const CreateGroupSheet = () => {
   const [groupName, setGroupName] = useState("");
   const [selectedColor, setSelectedColor] = useState(COLORS[0]); // 기본값으로 첫 번째 색상 선택
-  const { modalData } = useModalStore();
-
+  const { modalData, closeModal } = useModalStore();
+  const { postGroup } = usePostGroup();
   const selectedPlaces = modalData.selectedPlaces || [];
+
+  const handlePostGroup = async () => {
+    const result = await postGroup({
+      name: groupName,
+      color: selectedColor,
+      placeIds: selectedPlaces.map((place) => place.id),
+    });
+
+    if (result) {
+      closeModal();
+    }
+  };
 
   return (
     <SlideModal>
@@ -86,6 +99,7 @@ const CreateGroupSheet = () => {
               : "bg-[#edf0f3] text-[#7b8482] cursor-not-allowed"
           }`}
           disabled={!groupName.trim() || selectedPlaces.length === 0}
+          onClick={handlePostGroup}
         >
           + 그룹 만들기
         </button>
