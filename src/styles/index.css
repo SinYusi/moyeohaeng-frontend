@@ -1,67 +1,55 @@
 @import "tailwindcss";
+@theme {
+  --breakpoint-3xl: 115rem;
+}
+/* @import "figma.css"; */
 
-@layer base {
-  *,
-  *::before,
-  *::after {
-    box-sizing: border-box;
-  }
+@font-face {
+  font-family: "SUIT-Regular";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2")
+    format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
 
-  body {
-    min-height: 100vh;
-    font-family: theme("fontFamily.sans");
-    line-height: 1.5;
-    background-color: theme("colors.white");
-    color: theme("colors.gray.900");
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+html,
+body {
+  height: 100%;
+  background-color: rgb(249 250 251);
+  font-family: "SUIT-Regular", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
+  overflow: overlay;
+  /* 스크롤바 공간을 항상 예약하여 레이아웃 변화 방지 */
+  scrollbar-gutter: stable;
+}
 
-  img,
-  picture,
-  video,
-  canvas,
-  svg {
-    display: block;
-    max-width: 100%;
-  }
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #c0c7ce;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #d1d5db;
+}
 
-  ul,
-  ol {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
+:root {
+  --fill-deep: #3b4553;
+  --stroke-deep: #131416;
+  --text-white: white;
+  --text-subtler: #7b848e;
+  --surface-default: white;
+}
 
-  a {
-    color: inherit;
-    text-decoration: none;
-  }
+.hide-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
 
-  button,
-  input,
-  select,
-  textarea {
-    font: inherit;
-    color: inherit;
-    background: none;
-    border: none;
-    outline: none;
-  }
-
-  :focus-visible {
-    outline: 2px solid theme("colors.blue.500");
-    outline-offset: 2px;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.001ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.001ms !important;
-      scroll-behavior: auto !important;
-    }
-  }
+.hide-scroll::-webkit-scrollbar {
+  display: none;
 }

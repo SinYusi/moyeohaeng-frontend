@@ -1,35 +1,38 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import { DashboardProvider } from "./contexts/DashboardContext";
 import Login from "./pages/Login";
 import Main from "./pages/Main";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
+import Signup from "./pages/Signup";
+import ResetPassword from "./pages/ResetPassword";
+import Dashboard from "./pages/dashboard";
+import Plan from "./pages/Plan";
+import Logout from "./pages/Logout";
 
 function App() {
-  const pageRoute = [
-    {
-      path: "/",
-      element: <Main />,
-    },
-    {
-      path: "/login",
-      element: <Login />,
-    },
-    {
-      path: "/profile",
-      element: <Profile />,
-    },
-    {
-      path: "*",
-      element: <NotFound />,
-    },
-  ];
-
   return (
     <BrowserRouter>
       <Routes>
-        {pageRoute.map((page) => (
-          <Route path={page.path} element={page.element} key={page.path} />
-        ))}
+        <Route path="/" element={<Navigate to="/dashboard/home" replace />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/logout" element={<Logout />} />
+        <Route path="/main" element={<Main />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/plan/:id" element={<Plan />} />
+
+        {/* Dashboard routes wrapped with DashboardProvider */}
+        <Route path="/dashboard" element={<DashboardProvider />}>
+          <Route index element={<Navigate to="home" replace />} />
+          <Route path="home" element={<Dashboard />} />
+          <Route path="all-team" element={<Dashboard />} />
+          <Route path="shared-projects" element={<Dashboard />} />
+          <Route path="team/:teamId" element={<Dashboard />} />
+        </Route>
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
