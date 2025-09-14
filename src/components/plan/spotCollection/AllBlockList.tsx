@@ -21,7 +21,7 @@ const AllBlockList = ({ selectedFilters }: AllBlockListProps) => {
   const selectedPlaces = modalData.selectedPlaces || [];
 
   return (
-    <div className="grid gap-x-3 gap-y-4 grid-cols-1 xl:grid-cols-2 3xl:grid-cols-3">
+    <div className="grid gap-x-3 grid-cols-1 xl:grid-cols-2 3xl:grid-cols-3">
       {filteredCollections.map((collection) => {
         const isSelected = selectedPlaces.some((place) => place.id === collection.id);
         return (
