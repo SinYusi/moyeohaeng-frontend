@@ -9,7 +9,7 @@ import { useModalStore } from "../../../stores/useModalStore";
 const SpotCollectionBoard = () => {
   const { collections, fetchCollections } = useSpotCollectionStore();
   const { placeBlocks, loading, error } = useGetPlaceBlock();
-  const { closeModal } = useModalStore();
+  const { activeModal, closeModal } = useModalStore();
 
   useEffect(() => {
     closeModal();
@@ -40,7 +40,11 @@ const SpotCollectionBoard = () => {
     return <Guide />;
   }
   return (
-    <div className="w-full h-full flex flex-col">
+    <div
+      className={`w-full h-full flex flex-col ${
+        activeModal === "createGroup" ? "bg-[#faf9fb]" : "#fff"
+      }`}
+    >
       <div className="flex-1 px-9 py-6 flex flex-col items-center gap-8 overflow-y-auto">
         <GroupSection />
         <AllBlockSection />

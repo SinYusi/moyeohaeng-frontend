@@ -4,10 +4,15 @@ import PlanHeader from "../components/plan/header/PlanHeader";
 import SpotCollectionBoard from "../components/plan/spotCollection/SpotCollectionBoard";
 import useGetProjectInfo from "../hooks/project/useGetProjectInfo";
 import { useModalStore } from "../stores/useModalStore";
+import CreateGroupSheet from "../components/plan/modal/CreateGroupSheet";
+import GroupDetailPanel from "../components/plan/spotCollection/GroupDetailPanel";
+import { useSearchParams } from "react-router-dom";
 
 const Plan = () => {
   const { activeModal } = useModalStore();
   const { projectInfo } = useGetProjectInfo();
+  const [searchParams] = useSearchParams();
+  const groupId = searchParams.get("groupId");
 
   return (
     <div className="flex w-full h-screen bg-gray-100 overflow-hidden">
@@ -19,8 +24,8 @@ const Plan = () => {
         {/* 좌측 패널과 중간 패널 컨테이너 */}
         <div className="flex flex-1 min-h-0">
           {/* 좌측 패널 - 셀렉션 및 스크랩북 */}
-          <div className="w-[70.833%] h-full bg-white border-r border-gray-200">
-            <SpotCollectionBoard />
+          <div className="w-[70.833%] h-full bg-white border-r border-gray-200 relative">
+            {groupId ? <GroupDetailPanel /> : <SpotCollectionBoard />}
           </div>
 
           {/* 중간 패널 - 여행 일정 */}
@@ -30,6 +35,7 @@ const Plan = () => {
             }`}
           >
             {activeModal === "comment" && <CommentSheet />}
+            {activeModal === "createGroup" && <CreateGroupSheet />}
             <div className="p-5">
               <h2 className="text-lg font-medium text-gray-800 mb-2">
                 중간 패널

@@ -66,6 +66,14 @@ export interface PlaceBlockGroup {
   placeBlockIds: string[];
 }
 
+export interface Group {
+  id: string;
+  name: string;
+  color: string;
+  memo: string;
+  placeBlockIds: number[];
+}
+
 // 여행 일정 시간 블록
 export interface ScheduleTimeBlock {
   id: string;
