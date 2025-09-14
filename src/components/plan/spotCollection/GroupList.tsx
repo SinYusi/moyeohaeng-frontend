@@ -1,9 +1,18 @@
 import useGetGroup from "../../../hooks/plan/group/useGetGroup";
 import EmptyScheduleGroup from "./EmptyScheduleGroup";
 import ScheduleGroup from "./ScheduleGroup";
+import { forwardRef, useImperativeHandle } from "react";
 
-const GroupList: React.FC = () => {
-  const { group, isLoading, error } = useGetGroup();
+interface GroupListRef {
+  refreshGroups: () => void;
+}
+
+const GroupList = forwardRef<GroupListRef>((_, ref) => {
+  const { group, isLoading, error, getGroup } = useGetGroup();
+
+  useImperativeHandle(ref, () => ({
+    refreshGroups: getGroup,
+  }));
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -24,6 +33,8 @@ const GroupList: React.FC = () => {
       ))}
     </div>
   );
-};
+});
+
+GroupList.displayName = "GroupList";
 
 export default GroupList;

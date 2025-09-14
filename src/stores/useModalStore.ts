@@ -8,6 +8,7 @@ interface ModalData {
   placeId?: number;
   // createGroup modal을 위한 데이터
   selectedPlaces?: PlaceBlock[];
+  onGroupCreated?: () => void;
   // modifyGroup modal을 위한 데이터
 }
 
@@ -20,7 +21,7 @@ interface ModalState {
   openCommentModal: (placeId: number) => void;
   openModifyGroupModal: () => void;
   // Backward compatibility (maps to creatGroup)
-  openCreateGroupModal: () => void;
+  openCreateGroupModal: (onGroupCreated?: () => void) => void;
   closeModal: () => void;
   // Group creation helpers
   addSelectedPlace: (place: PlaceBlock) => void;
@@ -34,8 +35,8 @@ export const useModalStore = create<ModalState>((set) => ({
   openModal: (type, data = {}) => set({ activeModal: type, modalData: data }),
   openCommentModal: (placeId: number) =>
     set({ activeModal: "comment", modalData: { placeId } }),
-  openCreateGroupModal: () =>
-    set({ activeModal: "createGroup", modalData: { selectedPlaces: [] } }),
+  openCreateGroupModal: (onGroupCreated?: () => void) =>
+    set({ activeModal: "createGroup", modalData: { selectedPlaces: [], onGroupCreated } }),
   openModifyGroupModal: () =>
     set({ activeModal: "modifyGroup", modalData: {} }),
   closeModal: () => set({ activeModal: null, modalData: {} }),

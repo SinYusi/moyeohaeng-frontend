@@ -29,8 +29,12 @@ const CreateGroupSheet = () => {
       color: selectedColor,
       placeBlockIds: selectedPlaces.map((place) => place.id),
     });
-
+ 
     if (result) {
+      // 그룹 생성 성공 후 콜백 실행 (그룹 리스트 새로고침)
+      if (modalData.onGroupCreated) {
+        modalData.onGroupCreated();
+      }
       closeModal();
     }
   };
