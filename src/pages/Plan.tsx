@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import MapSection from "../components/plan/map/MapSection";
 import CommentSheet from "../components/plan/modal/CommentSheet";
 import PlanHeader from "../components/plan/header/PlanHeader";
