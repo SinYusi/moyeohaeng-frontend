@@ -1,4 +1,4 @@
-import useGetGroup from "../../../hooks/plan/group/useGetGroup";
+import useGetGroups from "../../../hooks/plan/group/useGetGroups";
 import EmptyScheduleGroup from "./EmptyScheduleGroup";
 import ScheduleGroup from "./ScheduleGroup";
 import { forwardRef, useImperativeHandle } from "react";
@@ -8,10 +8,10 @@ interface GroupListRef {
 }
 
 const GroupList = forwardRef<GroupListRef>((_, ref) => {
-  const { group, isLoading, error, getGroup } = useGetGroup();
+  const { group, isLoading, error, getGroups } = useGetGroups();
 
   useImperativeHandle(ref, () => ({
-    refreshGroups: getGroup,
+    refreshGroups: getGroups,
   }));
 
   if (isLoading) {

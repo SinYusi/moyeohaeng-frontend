@@ -9,13 +9,13 @@ interface GetGroupResponse {
   data: Group[];
 }
 
-const useGetGroup = () => {
+const useGetGroups = () => {
   const [group, setGroup] = useState<Group[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const projectId = useParams().id;
 
-  const getGroup = useCallback(async () => {
+  const getGroups = useCallback(async () => {
     setIsLoading(true);
     setError(null);
 
@@ -32,10 +32,10 @@ const useGetGroup = () => {
   }, [projectId]);
 
   useEffect(() => {
-    getGroup();
-  }, [getGroup]);
+    getGroups();
+  }, [getGroups]);
 
   return { group, isLoading, error, getGroup };
 };
 
-export default useGetGroup;
+export default useGetGroups;
