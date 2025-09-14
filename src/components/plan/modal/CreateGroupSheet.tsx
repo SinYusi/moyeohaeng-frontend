@@ -1,7 +1,7 @@
 import { Fragment } from "react/jsx-runtime";
 import SlideModal from "../SlideModal";
 import { useState } from "react";
-import { Check, X } from "lucide-react";
+import { Check } from "lucide-react";
 import { useModalStore } from "../../../stores/useModalStore";
 import ScheduleBlock from "../spotCollection/ScheduleBlock";
 
@@ -18,7 +18,7 @@ const COLORS = [
 const CreateGroupSheet = () => {
   const [groupName, setGroupName] = useState("");
   const [selectedColor, setSelectedColor] = useState(COLORS[0]); // 기본값으로 첫 번째 색상 선택
-  const { modalData, removeSelectedPlace } = useModalStore();
+  const { modalData } = useModalStore();
 
   const selectedPlaces = modalData.selectedPlaces || [];
 
