@@ -33,7 +33,7 @@ const usePostProject = () => {
         projectData
       );
 
-      if (response.data.status === 200) {
+      if (response.data.status === 201) {
         return response.data.data.project;
       }
 

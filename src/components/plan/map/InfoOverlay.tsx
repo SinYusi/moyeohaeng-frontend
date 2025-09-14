@@ -8,10 +8,8 @@ import usePostPin from "../../../hooks/plan/pin/usePostPin";
 import useDeletePin from "../../../hooks/plan/pin/useDeletePin";
 import usePostPlaceBlock from "../../../hooks/plan/placeBlock/usePostPlaceBlock";
 import useDeletePlaceBlock from "../../../hooks/plan/placeBlock/useDeletePlaceBlock";
-import type {
-  Place,
-  PostPlaceBlockResponse,
-} from "../../../types/planTypes";
+import { useModalStore } from "../../../stores/useModalStore";
+import type { Place, PostPlaceBlockResponse } from "../../../types/planTypes";
 
 interface InfoOverlayProps {
   clickedPlace: {
@@ -21,15 +19,25 @@ interface InfoOverlayProps {
     distance: number;
   };
   onClose: () => void;
+  projectInfo?: {
+    startDate: string;
+    endDate: string;
+    durationDays: number;
+  };
 }
 
-const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
+const InfoOverlay = ({ clickedPlace, onClose, projectInfo }: InfoOverlayProps) => {
   const { postPlaceBlock } = usePostPlaceBlock();
   const { deletePlaceBlock } = useDeletePlaceBlock();
 
   const { isFavorite, addFavorite, removeFavorite, getFavorite } =
     useFavoriteStore();
-  const { addToCollection, isInCollection, getCollectionByPlaceId, removeFromCollectionByPlaceId } = useSpotCollectionStore();
+  const {
+    addToCollection,
+    isInCollection,
+    getCollectionByPlaceId,
+    removeFromCollectionByPlaceId,
+  } = useSpotCollectionStore();
   const { postPin } = usePostPin();
   // TODO: postPin 에러 처리
 
@@ -38,6 +46,7 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
   const isCollected = isInCollection(kakoPlaceId);
   const email = useAuthStore.getState().email;
   const { deletePin } = useDeletePin();
+  const { openAddToScheduleModal } = useModalStore();
 
   const handleFavoriteClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -46,11 +55,11 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
       if (favorite) {
         // 핀 삭제 전에 해당 장소가 장소 블록에 있는지 확인
         const existingPlaceBlock = getCollectionByPlaceId(kakoPlaceId);
-        
+
         // 핀 삭제
         await deletePin(favorite.id);
         removeFavorite(favorite.id);
-        
+
         // 장소 블록이 있다면 API 호출로 서버에서도 삭제하고 스토어에서도 제거
         if (existingPlaceBlock) {
           try {
@@ -124,6 +133,23 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
     };
 
     addToCollection(placeBlock);
+  };
+
+  const handleAddToSchedule = (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    const favorite = getFavorite(kakoPlaceId);
+    if (!favorite) return;
+
+    openAddToScheduleModal({
+      kakoPlaceId: favorite.place.id, // useFavoriteStore의 place.id 사용
+      placeName: clickedPlace.kakaoPlace.place_name || "",
+      address:
+        clickedPlace.kakaoPlace.road_address_name ||
+        clickedPlace.kakaoPlace.address_name ||
+        "",
+      category: clickedPlace.kakaoPlace.category_group_name || "기타",
+    }, projectInfo);
   };
 
   return (
@@ -216,13 +242,11 @@ const InfoOverlay = ({ clickedPlace, onClose }: InfoOverlayProps) => {
             />
             장소 모음 추가
           </ActionBtn>
-          <ActionBtn
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            disabled={!isFavorited}
-          >
-            <Calendar className="w-5 h-5" color="#3b4553" />
+          <ActionBtn onClick={handleAddToSchedule} disabled={!isFavorited}>
+            <Calendar
+              className="w-5 h-5"
+              color={!isFavorited ? "#7b8482" : "#3b4553"}
+            />
             일정에 추가
           </ActionBtn>
         </div>

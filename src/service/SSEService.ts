@@ -6,7 +6,7 @@ export class SSEService {
   private static instance: SSEService;
   private connections: Map<string, AbortController>;
   private config: SSEConfig = {
-    baseUrl: "http://localhost:8080",
+    baseUrl: import.meta.env.VITE_API_URL || "http://localhost:8080",
   };
   private listeners: Map<string, Set<(data: any) => void>>;
 

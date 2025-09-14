@@ -1,6 +1,6 @@
 import type { SSEMessage } from "../../../types/sseTypes";
 import { ACTION_TYPES, EVENT_TYPES } from "../../../types/sseTypes";
-import { createSSEHandler } from "./common/sseHandlerFactory";
+import { createSSEHandler } from "./common/SSEHandlerFactory";
 
 type EventHandler = (message: SSEMessage) => void;
 
