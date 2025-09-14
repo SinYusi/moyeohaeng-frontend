@@ -1,19 +1,82 @@
+import { useEffect } from "react";
 import MapSection from "../components/plan/map/MapSection";
 import CommentSheet from "../components/plan/modal/CommentSheet";
 import PlanHeader from "../components/plan/header/PlanHeader";
 import SpotCollectionBoard from "../components/plan/spotCollection/SpotCollectionBoard";
 import useGetProjectInfo from "../hooks/project/useGetProjectInfo";
 import { useModalStore } from "../stores/useModalStore";
+import { useParams } from "react-router-dom";
+import { SSEService } from "../service/SSEService";
+import useGetPlaceBlock from "../hooks/plan/placeBlock/useGetPlaceBlock";
 import CreateGroupSheet from "../components/plan/modal/CreateGroupSheet";
 import GroupDetailPanel from "../components/plan/spotCollection/GroupDetailPanel";
 import { useSearchParams } from "react-router-dom";
+import { useSSEEventHandler } from "../hooks/plan/sse/useSSEEventHandler";
 
 const Plan = () => {
-  const { activeModal } = useModalStore();
   const { projectInfo } = useGetProjectInfo();
   const [searchParams] = useSearchParams();
   const groupId = searchParams.get("groupId");
+  const { id: projectId } = useParams<{ id: string }>();
+  const { refetch } = useGetPlaceBlock();
+  const { activeModal } = useModalStore();
 
+  const handleSSEEvent = useSSEEventHandler(refetch);
+
+  useEffect(() => {
+    if (!projectId) {
+      console.warn("No project ID available for SSE connection");
+      return;
+    }
+
+    console.log("Setting up SSE connection for project:", projectId);
+    const sseService = SSEService.getInstance();
+    sseService.setProjectId(projectId);
+
+    // SSE 이벤트 구독
+    const unsubscribeLike = sseService.subscribe(
+      "PLACE_BLOCK_LIKE",
+      (data: any) => {
+        try {
+          handleSSEEvent(data);
+        } catch (error) {
+          console.error("[SSE] Error processing LIKE event:", error);
+        }
+      }
+    );
+
+    const unsubscribeBlock = sseService.subscribe(
+      "PLACE_BLOCK",
+      (data: any) => {
+        try {
+          handleSSEEvent(data);
+        } catch (error) {
+          console.error("[SSE] Error processing BLOCK event:", error);
+        }
+      }
+    );
+
+    // 디버깅을 위한 상태 검사
+    const checkConnection = () => {
+      const connections = (sseService as any).connections?.size || 0;
+      const listeners = (sseService as any).listeners?.size || 0;
+      console.log("SSE connection state:", {
+        projectId,
+        connections,
+        listeners,
+        timestamp: new Date().toISOString(),
+      });
+    };
+
+    const timer = setTimeout(checkConnection, 1000);
+
+    return () => {
+      console.log("Cleaning up SSE connection for project:", projectId);
+      clearTimeout(timer);
+      unsubscribeLike();
+      unsubscribeBlock();
+    };
+  }, [projectId]);
   return (
     <div className="flex w-full h-screen bg-gray-100 overflow-hidden">
       {/* 좌측 영역 (헤더 + 좌측 패널 + 중간 패널) */}

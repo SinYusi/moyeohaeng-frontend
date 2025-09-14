@@ -16,8 +16,17 @@ interface SpotCollectionState {
   removeFromCollection: (id: string) => void;
   removeFromCollectionByPlaceId: (placeId: string) => void;
   updateCollection: (id: string, updates: Partial<PlaceBlock>) => void;
+  updateLikedMembers: (
+    placeBlockId: string,
+    author: string,
+    liked: boolean
+  ) => void;
   toggleLike: (id: string) => void;
-  updateCommentSummary: (placeBlockId: string, commentContent: string, authorName: string) => void;
+  updateCommentSummary: (
+    placeBlockId: string,
+    commentContent: string,
+    authorName: string
+  ) => void;
   setClickedPlace: (place: ClickedPlace | null) => void;
   isInCollection: (placeId: string) => boolean;
   getCollectionByCategory: (category: string) => PlaceBlock[];
@@ -32,30 +41,81 @@ export const useSpotCollectionStore = create<SpotCollectionState>()(
 
     addToCollection: (item) => {
       set((state) => ({
-        collections: [...state.collections, item],
+        collections: [...state.collections, item]
       }));
     },
 
     fetchCollections: (placeBlocks: PlaceBlock[]) => {
-      set(() => ({
-        collections: [...placeBlocks],
-      }));
+      set({ collections: placeBlocks });
     },
 
     removeFromCollection: (id) => {
       set((state) => ({
         collections: state.collections.filter(
           (item) => item.id !== id.toString()
-        ),
+        )
       }));
     },
 
     updateCollection: (id, updates) => {
       set((state) => ({
-        collections: state.collections.map((item) =>
-          item.id === id ? { ...item, ...updates } : item
-        ),
+        collections: state.collections.map((item) => {
+          if (item.id === id) {
+            // updates가 PlaceBlock 전체인 경우 그대로 교체
+            if (
+              "place" in updates &&
+              "likeSummary" in updates &&
+              "commentSummary" in updates
+            ) {
+              return updates as PlaceBlock;
+            }
+            // 부분 업데이트인 경우 기존 데이터와 병합
+            return { ...item, ...updates };
+          }
+          return item;
+        }),
       }));
+    },
+
+    updateLikedMembers: (
+      placeBlockId: string,
+      author: string,
+      liked: boolean
+    ) => {
+      set((state) => {
+        // 현재 상태 확인
+        const targetBlock = state.collections.find(item => item.id.toString() === placeBlockId);
+        if (!targetBlock) return state;
+
+        // 새로운 상태 생성
+        const updatedCollections = state.collections.map((item) => {
+          if (item.id.toString() === placeBlockId) {
+            const likedMembers = [...item.likeSummary.likedMembers];
+            const memberIndex = likedMembers.indexOf(author);
+
+            // 좋아요 상태 업데이트
+            if (liked && memberIndex === -1) {
+              likedMembers.push(author);
+            } else if (!liked && memberIndex !== -1) {
+              likedMembers.splice(memberIndex, 1);
+            }
+
+            return {
+              ...item,
+              likeSummary: {
+                ...item.likeSummary,
+                liked,
+                likedMembers,
+                totalCount: likedMembers.length,
+              },
+            };
+          }
+          return item;
+        });
+
+        // 변경된 상태 반환
+        return { collections: updatedCollections };
+      });
     },
 
     toggleLike: (id) => {
@@ -63,17 +123,23 @@ export const useSpotCollectionStore = create<SpotCollectionState>()(
         collections: state.collections.map((item) => {
           if (item.id === id) {
             const newLiked = !item.likeSummary.liked;
-            const newTotalCount = Math.max(
-              0,
-              item.likeSummary.totalCount + (newLiked ? 1 : -1)
-            );
+            const likedMembers = [...item.likeSummary.likedMembers];
+            if (newLiked) {
+              likedMembers.push("current-user"); // TODO: 실제 사용자 ID로 대체 필요
+            } else {
+              const index = likedMembers.indexOf("current-user");
+              if (index > -1) {
+                likedMembers.splice(index, 1);
+              }
+            }
 
             return {
               ...item,
               likeSummary: {
                 ...item.likeSummary,
                 liked: newLiked,
-                totalCount: newTotalCount,
+                likedMembers,
+                totalCount: likedMembers.length,
               },
             };
           }

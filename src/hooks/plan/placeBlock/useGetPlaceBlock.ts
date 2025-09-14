@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import type { PlaceBlock } from "../../../types/planTypes";
 import baseService from "../../../service/baseService";
 import { useParams } from "react-router-dom";
+import { useSpotCollectionStore } from "../../../stores/useSpotCollectionStore";
 
 interface PlaceBlockResponseType {
   status: number;
@@ -15,7 +16,7 @@ const useGetPlaceBlock = () => {
   const [error, setError] = useState<string | null>(null);
   const { id } = useParams<{ id: string }>();
 
-  const getPlaceBlock = useCallback(async () => {
+  const refetch = useCallback(async () => {
     if (!id) {
       setError("Project ID is required");
       return;
@@ -27,7 +28,10 @@ const useGetPlaceBlock = () => {
       const response = await baseService.get<PlaceBlockResponseType>(
         `/v1/projects/${id}/place-blocks`
       );
-      setPlaceBlocks(response.data.data);
+      const newPlaceBlocks = response.data.data;
+      setPlaceBlocks(newPlaceBlocks);
+      // store 상태 업데이트
+      useSpotCollectionStore.getState().fetchCollections(newPlaceBlocks);
     } catch (error) {
       setError(error as string);
     } finally {
@@ -36,10 +40,10 @@ const useGetPlaceBlock = () => {
   }, [id]);
 
   useEffect(() => {
-    getPlaceBlock();
-  }, [getPlaceBlock]);
+    refetch();
+  }, [refetch]);
 
-  return { placeBlocks, loading, error, getPlaceBlock };
+  return { placeBlocks, loading, error, refetch };
 };
 
 export default useGetPlaceBlock;

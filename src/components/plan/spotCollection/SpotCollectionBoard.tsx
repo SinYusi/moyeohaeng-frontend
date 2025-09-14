@@ -19,7 +19,7 @@ const SpotCollectionBoard = () => {
     if (placeBlocks.length > 0) {
       fetchCollections(placeBlocks);
     }
-  }, [placeBlocks, fetchCollections]);
+  }, [placeBlocks]); // collections는 의존성에서 제외
 
   if (loading) {
     return (
