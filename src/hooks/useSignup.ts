@@ -26,7 +26,7 @@ const useSignup = () => {
         userData
       );
 
-      return response.data.status === 200;
+      return response.data.status === 201;
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.message || "회원가입에 실패했습니다.";
