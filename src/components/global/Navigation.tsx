@@ -10,6 +10,8 @@ import { Link, useLocation } from "react-router-dom";
 import useAuthStore from "../../stores/useAuthStore";
 import useGetMyTeams from "../../hooks/team/useGetMyTeams";
 import type { Team } from "../../types/team";
+import logo from "../../assets/images/Logo.svg";
+import symbol from "../../assets/images/Symbol.svg";
 
 interface NavItemProps {
   icon: React.ReactNode;
@@ -91,8 +93,9 @@ const Navigation = ({}: NavigationProps) => {
     <nav className="fixed left-0 h-[calc(100vh)] w-[300px] bg-[var(--surface-inverse,#F9FAFB)] border-r-[1.5px] border-[var(--stroke-deep,#131416)]">
       <div className="flex flex-col h-full px-4">
         {/* Logo */}
-        <div className="py-6 px-4 flex items-center justify-between">
-          <div className="w-[38px] h-[38px] bg-[var(--fill-primary-default,#4F5FBF)]" />
+        <div className="py-6 px-4 flex items-center gap-2">
+          <img src={symbol} alt="symbol" className="w-[28px] h-[28px]" />
+          <img src={logo} alt="logo" className="w-[56px]" />
         </div>
 
         {/* Main Navigation */}
